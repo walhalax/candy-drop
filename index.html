@@ -1142,20 +1142,20 @@
       <div id="difficulty-select">
         <button class="diff-btn selected" data-diff="easy">
           ふつう
-          <div class="diff-desc">はじめての人</div>
+          <div class="diff-desc">はじめてプレイするひと🔰</div>
         </button>
         <button class="diff-btn" data-diff="hard">
           むずかしい
-          <div class="diff-desc">だんだんスピードアップする</div>
+          <div class="diff-desc">だんだんスピードアップするよ！🌀</div>
         </button>
         <button class="diff-btn" data-diff="extreme">
           めちゃムズ
-          <div class="diff-desc">おジャマブロック登場</div>
+          <div class="diff-desc">おじゃまブロック登場👻</div>
         </button>
       </div>
       <button id="start-btn" class="start-btn">▶ ゲームスタート</button>
       <div id="ranking">
-        <h3>ランキング</h3>
+        <h3>🏆️ランキング🏆️</h3>
         <div id="ranking-list"></div>
       </div>
     </div>
@@ -1190,7 +1190,7 @@
     <!-- っちゃムズ説明ポップアップ -->
     <div id="extreme-warning-popup" class="modal hidden" onclick="if(event.target===this)this.classList.add('hidden')">
       <div class="modal-content">
-        <h2>おジャマブロックの消し方</h2>
+        <h2>おじゃまブロックの消し方</h2>
         <p class="popup-desc">消えるブロックとくっついている時だけ一緒に消えるよ！</p>
         <canvas id="extreme-demo-canvas"></canvas>
         <label class="popup-checkbox">
@@ -1208,6 +1208,7 @@
       <div class="modal-content">
         <h2>あそび方</h2>
         <p class="popup-desc">同じ色が4個つながるとその色のブロックだけ消えるよ！</p>
+        <p class="popup-desc" style="margin-top: 8px; font-size: 13px;">いちばん上までうまらないように、たくさんブロックを消して点数をふやそう！</p>
         <canvas id="normal-demo-canvas"></canvas>
         <label class="popup-checkbox">
           <input type="checkbox" id="normal-no-show">
