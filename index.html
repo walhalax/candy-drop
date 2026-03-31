@@ -3781,7 +3781,7 @@
     }
 
     function drawCandyIcon(ctx, size) {
-      const padding = size * 0.1;
+      const padding = size * 0.08;
       const centerX = size / 2;
       const centerY = size / 2;
 
@@ -3794,23 +3794,58 @@
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, size, size);
 
-      // ===== 四隅のキャンディ装飾（ゲーム内と同じスタイル） =====
-      const bigCandySize = size * 0.18;
-      const cornerCandys = [
-        { x: size * 0.18, y: size * 0.18, color: '#ff4d6d' },
-        { x: size * 0.82, y: size * 0.18, color: '#4dabf7' },
-        { x: size * 0.18, y: size * 0.82, color: '#69db7c' },
-        { x: size * 0.82, y: size * 0.82, color: '#ffd43b' }
-      ];
+      // ===== 全キャンディを先に描画（タイトルより後ろ） =====
+      // 2倍サイズ: 大型=36%, 小型=22%
+      const largeSize = size * 0.36;
+      const smallSize = size * 0.22;
+      const allCandys = [];
 
-      cornerCandys.forEach((candy) => {
-        drawGameCandy(ctx, candy.x, candy.y, bigCandySize, candy.color);
+      // 重なり防止用の最小距離
+      const minDistLarge = largeSize * 0.85;
+      const minDistSmall = smallSize * 0.85;
+      const minDistMixed = (largeSize + smallSize) * 0.45;
+
+      function checkOverlap(x, y, s, existing) {
+        for (const e of existing) {
+          const dx = x - e.x;
+          const dy = y - e.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const minD = e.size >= s ? minDistLarge : Math.max(minDistLarge, minDistSmall);
+          if (dist < minD * 0.9) return true;
+        }
+        return false;
+      }
+
+      function placeCandys(count, sz, colors) {
+        const placed = [];
+        let attempts = 0;
+        while (placed.length < count && attempts < 200) {
+          // アイコン全体を範囲としてランダム配置
+          const x = sz / 2 + Math.random() * (size - sz);
+          const y = sz / 2 + Math.random() * (size - sz);
+          const colorIdx = placed.length % colors.length;
+          if (!checkOverlap(x, y, sz, placed) && !checkOverlap(x, y, sz, allCandys)) {
+            placed.push({ x, y, size: sz, color: colors[colorIdx] });
+            allCandys.push({ x, y, size: sz });
+          }
+          attempts++;
+        }
+        return placed;
+      }
+
+      const colors = ['#ff3377', '#33ff88', '#3388ff', '#ffee00', '#ff6633', '#8833ff'];
+      const largeCandys = placeCandys(4, largeSize, colors);
+      const smallCandys = placeCandys(6, smallSize, colors);
+
+      // 全キャンディ描画
+      [...largeCandys, ...smallCandys].forEach((candy) => {
+        drawGameCandy(ctx, candy.x, candy.y, candy.size, candy.color);
       });
 
       // ===== Rainbow Gradient Text: "Candy" =====
-      const candyFontSize = size * 0.30;
-      const dropsFontSize = size * 0.13;
-      const textY = centerY + size * 0.02;
+      const candyFontSize = size * 0.26;
+      const dropsFontSize = size * 0.12;
+      const textY = centerY + size * 0.01;
 
       ctx.font = `900 ${candyFontSize}px 'Nunito', sans-serif`;
       ctx.textAlign = 'center';
@@ -3856,27 +3891,14 @@
       ctx.shadowColor = 'rgba(255, 20, 147, 0.3)';
       ctx.shadowBlur = size * 0.015;
       ctx.shadowOffsetY = size * 0.01;
-      ctx.fillText('Drops', centerX, textY + candyFontSize * 0.65);
-
-      // ===== テキスト周囲のキャンディ装飾 =====
-      const decorCandySize = size * 0.12;
-      const decorCandys = [
-        { x: centerX - candyWidth * 0.5, y: textY - candyFontSize * 0.6, color: '#ff4d6d' },
-        { x: centerX + candyWidth * 0.5, y: textY - candyFontSize * 0.6, color: '#4dabf7' },
-        { x: centerX - candyWidth * 0.35, y: textY + candyFontSize * 0.8, color: '#69db7c' },
-        { x: centerX + candyWidth * 0.35, y: textY + candyFontSize * 0.8, color: '#ffd43b' }
-      ];
-
-      decorCandys.forEach((candy) => {
-        drawGameCandy(ctx, candy.x, candy.y, decorCandySize, candy.color);
-      });
+      ctx.fillText('Drops', centerX, textY + candyFontSize * 0.7);
 
       // ===== 下部の"Puzzle Game" =====
-      ctx.font = `600 ${size * 0.055}px 'Nunito', sans-serif`;
+      ctx.font = `600 ${size * 0.05}px 'Nunito', sans-serif`;
       ctx.fillStyle = '#ff69b4';
       ctx.shadowColor = 'transparent';
       ctx.shadowBlur = 0;
-      ctx.fillText('Puzzle Game', centerX, size - padding * 0.8);
+      ctx.fillText('Puzzle Game', centerX, size - padding * 1.2);
     }
 
     function generateIconBlob(size, callback) {
