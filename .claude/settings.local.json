@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx skills:*)",
+      "Bash(chmod:*)",
+      "Bash(open:*)",
+      "Read(//Users/walhalax/Library/Mobile Documents/com~apple~CloudDocs/Coding/ClaudeCode/Projects/**)",
+      "Bash(python3 -c \":*)",
+      "Skill(design-md)",
+      "Skill(design-md:*)",
+      "Bash(mkdir -p ~/.claude/skills/_web-typography)",
+      "Bash(cp -r ~/.claude/skills/web-typography/web-typography/* ~/.claude/skills/_web-typography/)",
+      "Bash(mkdir -p ~/.claude/skills/_ui-typography)",
+      "Bash(cp -r ~/.claude/skills/ui-typography/typography/skills/typography/* ~/.claude/skills/_ui-typography/)",
+      "Bash(mkdir -p ~/.claude/skills/_slug-font-rendering)",
+      "Bash(mv ~/.claude/skills/_typography ~/.claude/skills/typography-skill)",
+      "Bash(mv ~/.claude/skills/_web-typography ~/.claude/skills/web-typography-skill)",
+      "Bash(mv ~/.claude/skills/_ui-typography ~/.claude/skills/ui-typography-skill)",
+      "Bash(mv ~/.claude/skills/_slug-font-rendering ~/.claude/skills/slug-font-rendering-skill)"
+    ]
+  }
+}

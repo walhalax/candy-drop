@@ -1,0 +1,63 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "CandyDrop (ぷよぷよ)",
+    "languages": ["HTML", "JavaScript", "Shell Script"],
+    "frameworks": ["Vanilla JS", "Canvas API"],
+    "description": "Webブラウザでプレイできるぷよぷよ風パズルゲーム。相同色のキャンディが4つ以上繋がると消去、連鎖で加点、積み上がるとおじゃまぷよが落ちてきてゲームオーバー。",
+    "analyzedAt": "2026-03-28T09:50:00.000Z",
+    "gitCommitHash": null
+  },
+  "nodes": [
+    {"id": "file:index.html", "type": "file", "name": "index.html", "filePath": "index.html", "summary": "Main game file - Puyo Puyo style falling block puzzle game with Canvas rendering, touch/keyboard controls, Web Audio API sound effects, and localStorage for settings persistence.", "tags": ["entry-point", "game", "canvas", "audio"], "complexity": "complex"},
+    {"id": "function:index.html:AudioManager", "type": "class", "name": "AudioManager", "filePath": "index.html", "lineRange": [426, 475], "summary": "Manages Web Audio API context and provides game sound effects including tones, noise, and musical notes", "tags": ["audio", "singleton", "game-engine"], "complexity": "moderate"},
+    {"id": "function:index.html:playTone", "type": "function", "name": "playTone", "filePath": "index.html", "lineRange": [486, 506], "summary": "Plays a single tone with specified frequency, wave type, duration and gain", "tags": ["audio", "utility"], "complexity": "simple"},
+    {"id": "function:index.html:playNotes", "type": "function", "name": "playNotes", "filePath": "index.html", "lineRange": [507, 530], "summary": "Plays multiple musical notes in sequence", "tags": ["audio", "utility"], "complexity": "simple"},
+    {"id": "function:index.html:playNoise", "type": "function", "name": "playNoise", "filePath": "index.html", "lineRange": [531, 567], "summary": "Generates and plays white noise with optional filtering", "tags": ["audio", "utility"], "complexity": "simple"},
+    {"id": "function:index.html:moveSfx", "type": "function", "name": "moveSfx", "filePath": "index.html", "summary": "Sound effect for piece movement", "tags": ["audio", "game-sfx"], "complexity": "simple"},
+    {"id": "function:index.html:rotateSfx", "type": "function", "name": "rotateSfx", "filePath": "index.html", "summary": "Sound effect for piece rotation", "tags": ["audio", "game-sfx"], "complexity": "simple"},
+    {"id": "function:index.html:landSfx", "type": "function", "name": "landSfx", "filePath": "index.html", "summary": "Sound effect for piece landing", "tags": ["audio", "game-sfx"], "complexity": "simple"},
+    {"id": "function:index.html:chainSfx", "type": "function", "name": "chainSfx", "filePath": "index.html", "lineRange": [580, 650], "summary": "Sound effect for chain reactions with escalating pitch and chord variations", "tags": ["audio", "game-sfx", "chain-reaction"], "complexity": "moderate"},
+    {"id": "function:index.html:gameOverSfx", "type": "function", "name": "gameOverSfx", "filePath": "index.html", "summary": "Sound effect for game over", "tags": ["audio", "game-sfx"], "complexity": "simple"},
+    {"id": "function:index.html:clickSfx", "type": "function", "name": "clickSfx", "filePath": "index.html", "summary": "UI click sound effect", "tags": ["audio", "ui-sfx"], "complexity": "simple"},
+    {"id": "file:candy-palette.html", "type": "file", "name": "candy-palette.html", "filePath": "candy-palette.html", "summary": "Color palette utility tool for the game - allows customizing candy colors", "tags": ["utility", "color-picker"], "complexity": "simple"},
+    {"id": "file:start.command", "type": "file", "name": "start.command", "filePath": "start.command", "summary": "macOS shell script launcher to open index.html in the default browser", "tags": ["launcher", "shell-script"], "complexity": "simple"}
+  ],
+  "edges": [
+    {"source": "file:index.html", "target": "function:index.html:AudioManager", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:index.html", "target": "function:index.html:playTone", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:index.html", "target": "function:index.html:playNotes", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:index.html", "target": "function:index.html:playNoise", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:index.html", "target": "function:index.html:moveSfx", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:index.html", "target": "function:index.html:rotateSfx", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:index.html", "target": "function:index.html:landSfx", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:index.html", "target": "function:index.html:chainSfx", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:index.html", "target": "function:index.html:gameOverSfx", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:index.html", "target": "function:index.html:clickSfx", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "function:index.html:AudioManager", "target": "function:index.html:playTone", "type": "calls", "direction": "forward", "weight": 0.8},
+    {"source": "function:index.html:AudioManager", "target": "function:index.html:playNotes", "type": "calls", "direction": "forward", "weight": 0.8},
+    {"source": "function:index.html:AudioManager", "target": "function:index.html:playNoise", "type": "calls", "direction": "forward", "weight": 0.8}
+  ],
+  "layers": [
+    {
+      "id": "layer:audio-system",
+      "name": "Audio System",
+      "description": "Web Audio API based sound effects and music generation",
+      "nodeIds": ["function:index.html:AudioManager", "function:index.html:playTone", "function:index.html:playNotes", "function:index.html:playNoise", "function:index.html:moveSfx", "function:index.html:rotateSfx", "function:index.html:landSfx", "function:index.html:chainSfx", "function:index.html:gameOverSfx", "function:index.html:clickSfx"]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "Game Entry Point",
+      "description": "The main game logic resides in index.html - a self-contained Puyo Puyo style puzzle game",
+      "nodeIds": ["file:index.html"]
+    },
+    {
+      "order": 2,
+      "title": "Audio Engine",
+      "description": "AudioManager class and sound effect functions handle all game audio using Web Audio API",
+      "nodeIds": ["function:index.html:AudioManager", "function:index.html:chainSfx"]
+    }
+  ]
+}

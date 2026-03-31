@@ -1,0 +1,3267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- iOS Safari Optimized Viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <!-- iOS Web App Meta -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CandyDrop">
+  <!-- iOS Touch Optimization -->
+  <meta name="format-detection" content="telephone=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>[Game]Candy-Drops</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* iOS Safe Area Support */
+    html, body {
+      margin: 0;
+      padding: 0;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      /* Prevent pull-to-refresh and rubber-banding */
+      overscroll-behavior: none;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #ffd6e7 0%, #ffb6d9 25%, #ffc8dd 50%, #ffe0f0 75%, #ffd6e7 100%);
+      background-size: 400% 400%;
+      animation: bgShimmer 8s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      min-height: 100dvh;
+      font-family: 'Nunito', 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', sans-serif;
+      font-weight: 700;
+      overflow: hidden;
+      position: fixed;
+      inset: 0;
+    }
+    /* Dark mode styles */
+    body.dark-mode {
+      background: linear-gradient(180deg, #0a0a1a 0%, #1a1a3e 40%, #2a1a4e 70%, #0a0a1a 100%);
+      background-size: 100% 100%;
+      position: relative;
+    }
+    /* Stars background for dark mode */
+    body.dark-mode::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image:
+        radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+        radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.9), transparent),
+        radial-gradient(1px 1px at 230px 80px, #fff, transparent),
+        radial-gradient(2px 2px at 300px 150px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 370px 50px, #fff, transparent),
+        radial-gradient(2px 2px at 450px 180px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 520px 90px, #fff, transparent),
+        radial-gradient(2px 2px at 600px 130px, rgba(255,255,255,0.9), transparent),
+        radial-gradient(1px 1px at 680px 60px, #fff, transparent),
+        radial-gradient(2px 2px at 750px 170px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 100px 200px, #fff, transparent),
+        radial-gradient(2px 2px at 180px 250px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 260px 220px, #fff, transparent),
+        radial-gradient(2px 2px at 340px 280px, rgba(255,255,255,0.9), transparent),
+        radial-gradient(1px 1px at 420px 240px, #fff, transparent),
+        radial-gradient(2px 2px at 500px 300px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 580px 260px, #fff, transparent),
+        radial-gradient(2px 2px at 660px 320px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 740px 290px, #fff, transparent),
+        radial-gradient(2px 2px at 50px 350px, rgba(255,255,255,0.9), transparent),
+        radial-gradient(1px 1px at 130px 400px, #fff, transparent),
+        radial-gradient(2px 2px at 210px 380px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 290px 450px, #fff, transparent),
+        radial-gradient(2px 2px at 380px 420px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 460px 480px, #fff, transparent),
+        radial-gradient(2px 2px at 550px 440px, rgba(255,255,255,0.9), transparent),
+        radial-gradient(1px 1px at 630px 500px, #fff, transparent),
+        radial-gradient(2px 2px at 710px 470px, rgba(255,255,255,0.7), transparent);
+      background-repeat: repeat;
+      background-size: 800px 600px;
+      animation: twinkle 4s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+    body.dark-mode #game-container {
+      background: rgba(10, 10, 26, 0.7);
+      border-color: rgba(100, 100, 150, 0.3);
+      position: relative;
+      z-index: 1;
+    }
+    body.dark-mode #ui {
+      background: rgba(10, 10, 26, 0.8);
+      color: #e0e0ff;
+      border-bottom: 1px solid rgba(100, 100, 150, 0.3);
+    }
+    body.dark-mode #overlay {
+      background: radial-gradient(ellipse at center, rgba(20, 20, 50, 0.98) 0%, rgba(10, 10, 26, 1) 100%);
+      color: #e0e0ff;
+    }
+    body.dark-mode #game-area {
+      background: rgba(10, 10, 26, 0.9);
+      border: 2px solid rgba(100, 100, 150, 0.4);
+    }
+    body.dark-mode canvas {
+      border-color: rgba(100, 100, 200, 0.6);
+      box-shadow: 0 0 20px rgba(80, 80, 180, 0.4);
+    }
+    body.dark-mode #next-container canvas {
+      border-color: rgba(100, 100, 200, 0.5);
+      box-shadow: 0 0 10px rgba(80, 80, 180, 0.3);
+    }
+    body.dark-mode #next-container {
+      color: #e0e0ff;
+      text-shadow:
+        0 1px 0 rgba(150, 150, 255, 0.5),
+        0 2px 0 rgba(100, 100, 200, 0.4),
+        0 3px 6px rgba(80, 80, 180, 0.3);
+    }
+    body.dark-mode #controls {
+      color: #e0e0ff;
+      text-shadow: 0 1px 0 rgba(150, 150, 255, 0.5), 0 1px 3px rgba(80, 80, 180, 0.2);
+      background: rgba(20, 20, 50, 0.8);
+    }
+    body.dark-mode #overlay h1 {
+      color: #fff;
+      text-shadow: 0 0 10px rgba(150, 150, 255, 0.5), 0 0 20px rgba(100, 100, 200, 0.3);
+    }
+    body.dark-mode .diff-btn {
+      background: rgba(30, 30, 60, 0.8);
+      border: 1px solid rgba(100, 100, 150, 0.4);
+      color: #e0e0ff;
+    }
+    body.dark-mode .diff-btn:hover, body.dark-mode .diff-btn.selected {
+      background: rgba(60, 60, 120, 0.9);
+      border-color: rgba(150, 150, 255, 0.6);
+      box-shadow: 0 0 15px rgba(100, 100, 200, 0.3);
+    }
+    body.dark-mode .start-btn {
+      background: linear-gradient(135deg, #4a4a8a 0%, #3a3a7a 100%);
+      border: 2px solid rgba(100, 100, 200, 0.5);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(80, 80, 180, 0.4);
+    }
+    body.dark-mode .start-btn:hover {
+      background: linear-gradient(135deg, #5a5a9a 0%, #4a4a8a 100%);
+      box-shadow: 0 0 30px rgba(100, 100, 200, 0.6);
+    }
+    body.dark-mode .restart-btn, body.dark-mode .title-btn {
+      background: rgba(60, 60, 100, 0.8);
+      border: 1px solid rgba(100, 100, 150, 0.4);
+      color: #e0e0ff;
+    }
+    body.dark-mode .modal-content {
+      background: #2a2a3a;
+      color: #e0e0ff;
+    }
+    body.dark-mode .modal-content h2,
+    body.dark-mode .modal-content .control-group h3 {
+      color: #ff69b4;
+    }
+    body.dark-mode .modal-content .control-group p {
+      color: #c0c0d0;
+    }
+    body.dark-mode .help-btn {
+      background: #3a3a4a;
+      border-color: #ff69b4;
+      color: #ff69b4;
+      box-shadow: 0 4px 15px rgba(100,100,200,0.4);
+    }
+    body.dark-mode .help-btn:hover {
+      background: #4a4a5a;
+      transform: scale(1.05);
+    }
+    body.dark-mode #ranking h3 {
+      color: #ff69b4;
+    }
+    body.dark-mode #ranking {
+      background: rgba(30, 30, 50, 0.9);
+      border-color: #ff69b4;
+      box-shadow: 0 0 20px rgba(100,100,200,0.3), inset 0 0 10px rgba(60,60,100,0.3);
+    }
+    body.dark-mode #ranking-list {
+      color: #c0c0d0;
+    }
+    body.dark-mode #ranking-list .rank-item {
+      border-bottom-color: #4a4a5a;
+    }
+    body.dark-mode #ranking-list .rank-first {
+      color: #ff69b4;
+      text-shadow: 0 1px 0 rgba(150,100,200,0.5), 0 2px 0 rgba(100,100,200,0.4);
+    }
+    #game-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    #game-area {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+    }
+    #game-area {
+      background: rgba(255,245,248,0.95);
+      border-radius: 12px;
+      padding: 8px;
+    }
+    canvas {
+      display: block;
+      border: 3px solid #ff69b4;
+      box-shadow: 0 0 30px rgba(255, 105, 180, 0.5);
+      /* Crisp rendering on iOS */
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+    #ui {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #333;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 0 4px;
+    }
+    #score {
+      color: #ff1493;
+      font-size: 1.5em;
+      font-weight: 800;
+      font-family: 'Nunito', 'Hiragino Sans', sans-serif;
+      letter-spacing: -0.01em;
+      text-shadow:
+        0 1px 0 #ffb6d9,
+        0 2px 0 #ff69b4,
+        0 3px 0 #ff1493,
+        0 4px 8px rgba(255,20,147,0.4);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: inline-block;
+    }
+    #score span {
+      display: inline-block;
+      font-variant-numeric: tabular-nums;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    #score span.pop-anim {
+      animation: scorePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes scorePop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.6); }
+      70% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    #chain {
+      color: #ff69b4;
+      font-size: 1.5em;
+      font-weight: 800;
+      font-family: 'Nunito', 'Hiragino Sans', sans-serif;
+      letter-spacing: -0.01em;
+      text-shadow:
+        0 1px 0 #ffb6d9,
+        0 2px 0 #ff85c0,
+        0 3px 0 #ff1493,
+        0 4px 8px rgba(255,105,180,0.4);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: inline-block;
+    }
+    #chain span {
+      display: inline-block;
+      font-variant-numeric: tabular-nums;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    #chain span.pop-anim {
+      animation: chainPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes chainPop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.6); }
+      70% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    #next-container {
+      position: absolute;
+      top: 0;
+      left: calc(100% + 10px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: #ff1493;
+      font-size: 14px;
+      font-weight: 800;
+      font-family: 'Nunito', 'Hiragino Sans', sans-serif;
+      text-shadow:
+        0 1px 0 #ffb6d9,
+        0 2px 0 #ff69b4,
+        0 3px 4px rgba(255,20,147,0.3);
+      -webkit-font-smoothing: antialiased;
+    }
+    #next-container canvas {
+      border: 2px solid #ff69b4;
+      box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
+    }
+    #controls {
+      width: 100%;
+      text-align: center;
+      color: #ff1493;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Nunito', 'Hiragino Sans', sans-serif;
+      text-shadow: 0 1px 0 #ffb6d9, 0 1px 3px rgba(255,20,147,0.2);
+      background: rgba(255,255,255,0.8);
+      padding: 8px 15px;
+      border-radius: 8px;
+      margin-top: 4px;
+    }
+    #controls span { margin: 0 8px; }
+    #controls .key {
+      background: #ffe0f0;
+      border: 1px solid #ff69b4;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-weight: bold;
+      color: #ff1493;
+    }
+    /* iPad Touch Controls - Bottom Right */
+    #touch-controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(255, 105, 180, 0.3);
+      z-index: 100;
+      /* iOS blur effect */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .control-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+    .touch-btn {
+      width: 56px;
+      height: 56px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(145deg, #fff0f5, #ffe0ec);
+      box-shadow:
+        0 2px 8px rgba(255, 105, 180, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      font-size: 24px;
+      color: #ff1493;
+      cursor: pointer;
+      /* iOS touch feedback */
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select: none;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .touch-btn:active {
+      transform: scale(0.92);
+      background: linear-gradient(145deg, #ffe0ec, #ffd0e0);
+      box-shadow:
+        0 1px 4px rgba(255, 105, 180, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+    .drop-btn {
+      width: 120px;
+      background: linear-gradient(145deg, #ffb6d9, #ff8fcc);
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .drop-btn:active {
+      background: linear-gradient(145deg, #ff8fcc, #ff6bb8);
+    }
+    /* Hide on desktop - show only on touch devices */
+    @media (hover: hover) and (pointer: fine) {
+      #touch-controls {
+        display: none;
+      }
+    }
+    #overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg,
+        rgba(255,182,193,0.85) 0%,
+        rgba(255,240,245,0.90) 30%,
+        rgba(255,230,240,0.88) 70%,
+        rgba(255,200,220,0.85) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #333;
+      z-index: 200;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    #candy-bg {
+      position: fixed;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      z-index: 199;
+      pointer-events: none;
+    }
+    #overlay.hidden { display: none; }
+    #overlay.hidden ~ #candy-bg { z-index: -1; }
+    #overlay h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #ff0000, #ff8800, #ffff00, #00ff00, #0088ff, #8800ff, #ff0088);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: rainbowShift 3s ease infinite;
+    }
+    @keyframes rainbowShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    #overlay p { margin: 8px 0; color: #555; font-size: 14px; }
+    #overlay .key {
+      background: #ffe0f0;
+      border: 1px solid #ff69b4;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-weight: bold;
+      color: #ff1493;
+      display: inline-block;
+      min-width: 24px;
+      text-align: center;
+    }
+    #overlay .start-hint {
+      margin-top: 30px;
+      color: #ff1493;
+      font-weight: bold;
+      font-size: 20px;
+      animation: pulse 1.5s infinite;
+    }
+    .start-btn {
+      margin-top: 25px;
+      padding: 15px 40px;
+      font-size: 20px;
+      font-weight: 900;
+      font-family: 'Nunito', 'Hiragino Sans', sans-serif;
+      color: #fff;
+      background: linear-gradient(145deg, #ff69b4, #ff1493);
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow:
+        0 4px 0 #cc1177,
+        0 6px 20px rgba(255, 105, 180, 0.5);
+      animation: pulse 1.5s infinite;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select: none;
+      min-width: 200px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .start-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 25px rgba(255, 105, 180, 0.6);
+    }
+    .start-btn:active {
+      transform: scale(0.98);
+    }
+    .restart-btn, .title-btn {
+      display: none;
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 15px 40px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #fff;
+      background: linear-gradient(145deg, #ff69b4, #ff1493);
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(255, 105, 180, 0.5);
+      z-index: 150;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select: none;
+    }
+    .restart-btn {
+      top: calc(50% + 60px);
+    }
+    .title-btn {
+      top: calc(50% + 130px);
+      background: linear-gradient(145deg, #888888, #666666);
+    }
+    .restart-btn:active {
+      transform: translateX(-50%) scale(0.98);
+    }
+    .title-btn:active {
+      transform: translateX(-50%) scale(0.98);
+    }
+    #overlay .control-group {
+      margin: 12px 0;
+      text-align: left;
+      min-width: 280px;
+    }
+    #overlay .control-group h3 {
+      color: #ff1493;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    /* Difficulty Selection */
+    #difficulty-select {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 15px 0;
+      align-items: center;
+    }
+    .diff-btn {
+      padding: 10px 20px;
+      border: 2px solid #ff69b4;
+      border-radius: 20px;
+      background: #fff0f5;
+      color: #ff1493;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select: none;
+      min-width: 180px;
+    }
+    .diff-btn:hover {
+      background: #ffe0ec;
+      transform: scale(1.05);
+    }
+    .diff-btn.selected {
+      background: linear-gradient(145deg, #ff69b4, #ff1493);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+    }
+    .diff-desc {
+      font-size: 11px;
+      color: #888;
+      margin-top: 3px;
+    }
+    #ranking {
+      text-align: left;
+      min-width: 280px;
+      margin: 15px 0;
+      padding: 15px;
+      border: 3px solid #ff69b4;
+      border-radius: 15px;
+      background: rgba(255,240,245,0.9);
+      box-shadow: 0 0 20px rgba(255,105,180,0.3), inset 0 0 10px rgba(255,200,220,0.3);
+    }
+    #ranking h3 {
+      color: #ff1493;
+      margin-bottom: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #ff69b4;
+    }
+    #ranking-list {
+      font-size: 13px;
+      color: #666;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    #ranking-list .rank-item {
+      padding: 5px 0;
+      border-bottom: 1px solid #ffe0ec;
+    }
+    #ranking-list .rank-item:last-child {
+      border-bottom: none;
+    }
+    #ranking-list .rank-first {
+      font-size: 16px;
+      font-weight: bold;
+      color: #ff1493;
+      text-shadow: 0 1px 0 #ffb6d9, 0 2px 0 #ff69b4;
+    }
+    .help-btn {
+      position: fixed;
+      right: 10px;
+      top: 20px;
+      padding: 10px 20px;
+      border: 2px solid #ff69b4;
+      border-radius: 20px;
+      background: #fff0f5;
+      color: #ff1493;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select: none;
+      box-shadow: 0 4px 15px rgba(255,105,180,0.4);
+      z-index: 250;
+    }
+    .help-btn:hover {
+      background: #ffe0ec;
+      transform: scale(1.05);
+    }
+      transform: scale(1.05);
+    }
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+    }
+    .modal.hidden {
+      display: none !important;
+    }
+    .modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff0f5;
+      padding: 25px;
+      border-radius: 20px;
+      max-width: 320px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(255, 105, 180, 0.4);
+      z-index: 301;
+    }
+    .modal-content h2 {
+      color: #ff1493;
+      margin-bottom: 15px;
+    }
+    .modal-content .control-group {
+      text-align: left;
+      margin: 10px 0;
+    }
+    .modal-content .control-group h3 {
+      color: #ff1493;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .modal-content .control-group p {
+      margin: 5px 0;
+      font-size: 13px;
+      color: #333;
+    }
+    .help-close {
+      margin-top: 15px;
+      padding: 10px 30px;
+      border: none;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #ff69b4, #ff1493);
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .help-close:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="candy-bg"></canvas>
+  <div id="game-container">
+    <div id="ui">
+      <div id="score">スコア: <span>0</span></div>
+      <div id="chain">最大連続消し: <span>0</span></div>
+      <button id="mute-btn" style="background:none;border:none;cursor:pointer;font-size:20px;padding:0 5px;" title="ミュート切替 (M)">🔊</button>
+      <button id="theme-btn" style="background:none;border:none;cursor:pointer;font-size:20px;padding:0 5px;" title="テーマ切替">🌙</button>
+    </div>
+    <div id="game-area">
+      <canvas id="board"></canvas>
+      <div id="next-container">
+        <div>次のブロック</div>
+        <canvas id="next" width="80" height="80"></canvas>
+      </div>
+    </div>
+    <div id="overlay">
+      <h1>Candy Drops <span id="title-theme">🌙</span></h1>
+      <div id="difficulty-select">
+        <button class="diff-btn selected" data-diff="easy">
+          ふつう
+          <div class="diff-desc">はじめての人</div>
+        </button>
+        <button class="diff-btn" data-diff="hard">
+          むずかしい
+          <div class="diff-desc">だんだんスピードアップする</div>
+        </button>
+        <button class="diff-btn" data-diff="extreme">
+          めちゃムズ
+          <div class="diff-desc">おジャマブロック登場</div>
+        </button>
+      </div>
+      <button id="start-btn" class="start-btn">▶ ゲームスタート</button>
+      <div id="ranking">
+        <h3>ランキング</h3>
+        <div id="ranking-list"></div>
+      </div>
+    </div>
+    <button id="help-btn" class="help-btn" onclick="document.getElementById('help-modal').classList.remove('hidden')">動かし方</button>
+    <!-- 操作説明モーダル -->
+    <div id="help-modal" class="modal hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+      <div class="modal-content">
+        <h2>動かし方</h2>
+        <div class="control-group">
+          <h3>iPad操作</h3>
+          <p>スワイプ左右: 移動</p>
+          <p>スワイプ下: ハードドロップ（慣性可変）</p>
+          <p>タップ: 回転</p>
+        </div>
+        <div class="control-group">
+          <h3>キーボード操作</h3>
+          <p><span class="key">←</span> <span class="key">→</span> 左右移動</p>
+          <p><span class="key">↓</span> ソフトドロップ</p>
+          <p><span class="key">Space</span> ハードドロップ（慣性可変）</p>
+          <p><span class="key">.</span> <span class="key">/</span> 回転</p>
+          <p><span class="key">P</span> 一時停止</p>
+          <p><span class="key">M</span> ミュート</p>
+        </div>
+        <button id="help-close" class="help-close" onclick="document.getElementById('help-modal').classList.add('hidden')">閉じる</button>
+      </div>
+    </div>
+    <!-- Game Over Restart Button -->
+    <button id="restart-btn" class="restart-btn">もう一度あそぶ</button>
+    <button id="title-btn" class="title-btn">タイトルにもどる</button>
+    <!-- iPad Touch Controls -->
+    <div id="touch-controls">
+      <div class="control-row">
+        <button id="btn-rotate" class="touch-btn" aria-label="回転">↻</button>
+      </div>
+      <div class="control-row">
+        <button id="btn-left" class="touch-btn" aria-label="左">←</button>
+        <button id="btn-down" class="touch-btn" aria-label="下">↓</button>
+        <button id="btn-right" class="touch-btn" aria-label="右">→</button>
+      </div>
+      <div class="control-row">
+        <button id="btn-drop" class="touch-btn drop-btn" aria-label="ドロップ">⬇</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== AUDIO SYSTEM =====
+    class AudioManager {
+      constructor() {
+        this.ctx = null;
+        this.masterGain = null;
+        this.bgmGain = null;
+        this.muted = false;
+      }
+
+      init() {
+        if (this.ctx) return;
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        this.masterGain = this.ctx.createGain();
+        this.masterGain.connect(this.ctx.destination);
+        // Separate BGM gain for volume control
+        this.bgmGain = this.ctx.createGain();
+        this.bgmGain.gain.value = 0.15;
+        this.bgmGain.connect(this.masterGain);
+        this.loadMuteState();
+      }
+
+      getCtx() {
+        if (!this.ctx) this.init();
+        return this.ctx;
+      }
+
+      getMaster() {
+        if (!this.masterGain) this.init();
+        return this.masterGain;
+      }
+
+      getBgmNode() {
+        if (!this.bgmGain) this.init();
+        return this.bgmGain;
+      }
+
+      setMuted(muted) {
+        this.muted = muted;
+        if (this.masterGain) {
+          this.masterGain.gain.value = muted ? 0 : 1;
+        }
+        // Also update BGM gain based on mute state
+        if (this.bgmGain) {
+          this.bgmGain.gain.value = muted ? 0 : (paused ? 0 : 0.15);
+        }
+        localStorage.setItem('candyDrops_muted', muted ? '1' : '0');
+      }
+
+      toggleMute() {
+        this.setMuted(!this.muted);
+      }
+
+      loadMuteState() {
+        const saved = localStorage.getItem('candyDrops_muted');
+        if (saved === '1') this.setMuted(true);
+      }
+    }
+
+    const audioManager = new AudioManager();
+
+    // Audio utility functions
+    function playTone(freq, type, duration, gain = 0.3, filterFreq = 4000) {
+      const ctx = audioManager.getCtx();
+      const now = ctx.currentTime;
+
+      const osc = ctx.createOscillator();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now);
+
+      const gainNode = ctx.createGain();
+      gainNode.gain.setValueAtTime(gain, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(filterFreq, now);
+
+      osc.connect(filter).connect(gainNode).connect(audioManager.getMaster());
+      osc.start(now);
+      osc.stop(now + duration);
+    }
+
+    function playNotes(notes, type, noteDuration, gap, gain = 0.3, filterFreq = 4000) {
+      const ctx = audioManager.getCtx();
+      const now = ctx.currentTime;
+
+      notes.forEach((freq, i) => {
+        const start = now + i * gap;
+        const osc = ctx.createOscillator();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, start);
+
+        const gainNode = ctx.createGain();
+        gainNode.gain.setValueAtTime(gain, start);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, start + noteDuration);
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(filterFreq, start);
+
+        osc.connect(filter).connect(gainNode).connect(audioManager.getMaster());
+        osc.start(start);
+        osc.stop(start + noteDuration);
+      });
+    }
+
+    function playNoise(duration, gain = 0.2, lpfFreq = 4000, hpfFreq = 0) {
+      const ctx = audioManager.getCtx();
+      const now = ctx.currentTime;
+      const bufferSize = ctx.sampleRate * duration;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+
+      const gainNode = ctx.createGain();
+      gainNode.gain.setValueAtTime(gain, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+      const lpf = ctx.createBiquadFilter();
+      lpf.type = 'lowpass';
+      lpf.frequency.setValueAtTime(lpfFreq, now);
+
+      let chain = source.connect(lpf).connect(gainNode);
+
+      if (hpfFreq > 0) {
+        const hpf = ctx.createBiquadFilter();
+        hpf.type = 'highpass';
+        hpf.frequency.setValueAtTime(hpfFreq, now);
+        source.disconnect();
+        chain = source.connect(hpf).connect(lpf).connect(gainNode);
+      }
+
+      chain.connect(audioManager.getMaster());
+      source.start(now);
+      source.stop(now + duration);
+    }
+
+    // ===== GAME SFX =====
+    // Note: C4=261.63, D4=293.66, E4=329.63, F4=349.23, G4=392.00, A4=440.00, B4=493.88, C5=523.25, E5=659.25, B5=987.77
+
+    function moveSfx() {
+      playTone(440, 'sine', 0.05, 0.15, 3000);
+    }
+
+    function rotateSfx() {
+      playTone(523.25, 'square', 0.08, 0.2, 4000);
+    }
+
+    function landSfx() {
+      playTone(196, 'triangle', 0.15, 0.25, 1500);
+    }
+
+    function chainSfx(level) {
+      const chainLevel = Math.min(level, 5);
+      const ctx = audioManager.getCtx();
+      const now = ctx.currentTime;
+
+      // Base frequency rises with chain level (C5=523 to G5=784)
+      const baseFreq = 523.25 + chainLevel * 52;
+
+      // Master gain for this chain
+      const masterGain = ctx.createGain();
+      masterGain.gain.setValueAtTime(0.25 + chainLevel * 0.03, now);
+      masterGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+      masterGain.connect(audioManager.getMaster());
+
+      // Rising arpeggio - feel of building up
+      const numNotes = 3 + chainLevel;
+      for (let i = 0; i < numNotes; i++) {
+        const startTime = now + i * 0.05;
+        const freq = baseFreq * (1 + i * 0.25); // Rising frequencies
+
+        const osc = ctx.createOscillator();
+        osc.type = i % 2 === 0 ? 'square' : 'triangle';
+        osc.frequency.setValueAtTime(freq, startTime);
+
+        const g = ctx.createGain();
+        g.gain.setValueAtTime(0.15, startTime);
+        g.gain.exponentialRampToValueAtTime(0.001, startTime + 0.2);
+
+        const f = ctx.createBiquadFilter();
+        f.type = 'lowpass';
+        f.frequency.setValueAtTime(2500 + chainLevel * 300, startTime);
+
+        osc.connect(f).connect(g).connect(masterGain);
+        osc.start(startTime);
+        osc.stop(startTime + 0.2);
+      }
+
+      // Final chord hit for chains >= 3
+      if (chainLevel >= 3) {
+        const chordFreqs = [baseFreq, baseFreq * 1.25, baseFreq * 1.5, baseFreq * 2];
+        chordFreqs.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + 0.15 + i * 0.02);
+          const g = ctx.createGain();
+          g.gain.setValueAtTime(0.12, now + 0.15 + i * 0.02);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+          osc.connect(g).connect(masterGain);
+          osc.start(now + 0.15 + i * 0.02);
+          osc.stop(now + 0.5);
+        });
+      }
+
+      // Sparkle burst for chains >= 4
+      if (chainLevel >= 4) {
+        for (let i = 0; i < 5; i++) {
+          const osc = ctx.createOscillator();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(baseFreq * (3 + i * 0.5), now + 0.1 + i * 0.03);
+          const g = ctx.createGain();
+          g.gain.setValueAtTime(0.05, now + 0.1 + i * 0.03);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          const f = ctx.createBiquadFilter();
+          f.type = 'lowpass';
+          f.frequency.setValueAtTime(5000, now);
+          osc.connect(f).connect(g).connect(masterGain);
+          osc.start(now + 0.1 + i * 0.03);
+          osc.stop(now + 0.25);
+        }
+      }
+    }
+
+    function gameOverSfx() {
+      playNotes([392, 329.63, 261.63, 220, 174.61], 'square', 0.25, 0.12, 0.3, 2500);
+    }
+
+    function clickSfx() {
+      playTone(523.25, 'sine', 0.06, 0.15, 5000);
+    }
+
+    // ===== BGM SYSTEM (pop & bright) =====
+    const NOTES = {
+      C3: 130.81, D3: 146.83, E3: 164.81, F3: 174.61, G3: 196.00, A3: 220.00,
+      C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00, B4: 493.88,
+      C5: 523.25, D5: 587.33, E5: 659.25, G5: 783.99, A5: 880.00
+    };
+
+    // Parse pattern string to note array
+    function parsePattern(str, type = 'square', gain = 0.12, lpf = 3000) {
+      return str.split(' ').map(n => {
+        if (n === 'R' || n === '~') return { freq: 0 };
+        return { freq: NOTES[n] || 0, type, gain, lpf };
+      });
+    }
+
+    // Multi-phrase melodies for anti-repetition (4 variations = ~11 seconds per cycle)
+    const melodies = [
+      // Melody 1 - bright ascending
+      parsePattern('E5 R D5 R C5 R D5 R E5 R D5 R C5 R D5 R', 'square', 0.08, 3500),
+      // Melody 2 - playful
+      parsePattern('G5 R A5 R G5 R E5 R D5 R C5 R D5 R E5 R', 'square', 0.08, 3500),
+      // Melody 3 - happy bounce
+      parsePattern('C5 R D5 R E5 R G5 R E5 R D5 R C5 R D5 R', 'square', 0.08, 3500),
+      // Melody 4 - resolution
+      parsePattern('E5 R G5 R A5 R G5 R E5 R D5 R C5 R E5 R', 'square', 0.08, 3500),
+    ];
+
+    // Bass pattern (8 steps, 2 bars)
+    const bassPattern = parsePattern('C3 R G3 R A3 R F3 R C3 R G3 R A3 R', 'triangle', 0.1, 600);
+
+    // Arpeggio pattern for brightness
+    const arpeggioPattern = parsePattern('C5 R E5 R G5 R E5 R C5 R D5 R F5 R A5 R F5 R', 'square', 0.03, 4000);
+
+    // Hi-hat on beats
+    const hihatPattern = parsePattern('R 8000 R R R 8000 R R R 8000 R 8000 R R', 'sine', 0.03, 8000);
+
+    // Sequencer state
+    let bgmTimerId = null;
+    let bgmStep = 0;
+    let bgmPhrase = 0;
+    const BPM = 130;
+    const STEP_TIME = 60000 / BPM / 2; // 8th notes
+
+    function startBGM() {
+      stopBGM();
+      const ctx = audioManager.getCtx();
+      const dest = audioManager.getBgmNode();
+
+      const playStep = () => {
+        const now = ctx.currentTime;
+        const phraseLen = melodies[0].length; // 16 steps
+        const melodyStep = bgmStep % phraseLen;
+
+        // Change phrase every 16 steps (about 3.7 seconds)
+        if (melodyStep === 0 && bgmStep > 0) {
+          bgmPhrase = (bgmPhrase + 1) % melodies.length;
+        }
+
+        // Melody
+        const note = melodies[bgmPhrase][melodyStep];
+        if (note.freq > 0) {
+          const osc = ctx.createOscillator();
+          osc.type = note.type;
+          osc.frequency.value = note.freq;
+          const g = ctx.createGain();
+          g.gain.setValueAtTime(note.gain, now);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+          const f = ctx.createBiquadFilter();
+          f.type = 'lowpass';
+          f.frequency.value = note.lpf;
+          osc.connect(f).connect(g).connect(dest);
+          osc.start(now);
+          osc.stop(now + 0.15);
+        }
+
+        // Bass
+        const bassNote = bassPattern[bgmStep % bassPattern.length];
+        if (bassNote.freq > 0) {
+          const osc = ctx.createOscillator();
+          osc.type = bassNote.type;
+          osc.frequency.value = bassNote.freq;
+          const g = ctx.createGain();
+          g.gain.setValueAtTime(bassNote.gain, now);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+          osc.connect(g).connect(dest);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        }
+
+        // Arpeggio
+        const arpNote = arpeggioPattern[bgmStep % arpeggioPattern.length];
+        if (arpNote.freq > 0) {
+          const osc = ctx.createOscillator();
+          osc.type = arpNote.type;
+          osc.frequency.value = arpNote.freq;
+          const g = ctx.createGain();
+          g.gain.setValueAtTime(arpNote.gain, now);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          const f = ctx.createBiquadFilter();
+          f.type = 'lowpass';
+          f.frequency.value = arpNote.lpf;
+          osc.connect(f).connect(g).connect(dest);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        }
+
+        // Hi-hat
+        const hihat = hihatPattern[bgmStep % hihatPattern.length];
+        if (hihat.freq > 0) {
+          const bufSize = ctx.sampleRate * 0.02;
+          const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+          const data = buf.getChannelData(0);
+          for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+          const noise = ctx.createBufferSource();
+          noise.buffer = buf;
+          const g = ctx.createGain();
+          g.gain.setValueAtTime(0.035, now);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+          const f = ctx.createBiquadFilter();
+          f.type = 'highpass';
+          f.frequency.value = 8000;
+          noise.connect(f).connect(g).connect(dest);
+          noise.start(now);
+        }
+
+        bgmStep++;
+        bgmTimerId = setTimeout(playStep, STEP_TIME);
+      };
+      playStep();
+    }
+
+    function stopBGM() {
+      if (bgmTimerId) {
+        clearTimeout(bgmTimerId);
+        bgmTimerId = null;
+      }
+      bgmStep = 0;
+      bgmPhrase = 0;
+    }
+
+    // ===== CONSTANTS =====
+    const SCALE = 1.68;
+    const COLS = 6;
+    const ROWS = 12;
+    const CELL = Math.floor(32 * SCALE);
+    const COLORS = ['#ff3377', '#33ff88', '#3388ff', '#ffee00', '#ff6633', '#8833ff'];
+    const OJAMA = '#888888';
+
+    const ROT_OFFSETS = [[0, 1], [1, 0], [0, -1], [-1, 0]];
+
+    // Buffer zone for rotation - allows blocks to be drawn outside normal bounds
+    const BUFFER_CELLS = 1;
+    const BUFFER_SIZE = BUFFER_CELLS * CELL;
+    const GRID_OFFSET_X = BUFFER_SIZE;
+    const GRID_OFFSET_Y = BUFFER_SIZE;
+
+    const canvas = document.getElementById('board');
+    const ctx = canvas.getContext('2d');
+    canvas.width = COLS * CELL + BUFFER_SIZE * 2;
+    canvas.height = ROWS * CELL + BUFFER_SIZE * 2;
+
+    const nextCanvas = document.getElementById('next');
+    const nextCtx = nextCanvas.getContext('2d');
+
+    // ===== CANDY BACKGROUND ANIMATION =====
+    (function initCandyBackground() {
+      const bgCanvas = document.getElementById('candy-bg');
+      const bgCtx = bgCanvas.getContext('2d');
+
+      const PASTEL_COLORS = [
+        '#ffb6c1', // light pink
+        '#ffc0cb', // pink
+        '#ffd1dc', // pastel pink
+        '#ffe4e1', // misty rose
+        '#e0bbE4', // lavender
+        '#c3b1e1', // purple
+        '#b4d4e7', // powder blue
+        '#aec6cf', // past blue
+        '#b2e2f2', // light azure
+        '#98d8c8', // mint
+        '#b5e7a0', // tea green
+        '#f0e68c', // khaki
+        '#fff0b3', // custard
+        '#ffd700', // gold (light)
+        '#ffdfba', // peach
+        '#ffb347', // pastel orange
+      ];
+
+      const candies = [];
+      const CANDY_COUNT = 45;
+
+      function resize() {
+        bgCanvas.width = window.innerWidth * 2;
+        bgCanvas.height = window.innerHeight * 2;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      // Create candy shapes
+      for (let i = 0; i < CANDY_COUNT; i++) {
+        candies.push(createCandy());
+      }
+
+      function createCandy() {
+        return {
+          x: Math.random() * bgCanvas.width,
+          y: Math.random() * bgCanvas.height,
+          size: 20 + Math.random() * 60,
+          color: PASTEL_COLORS[Math.floor(Math.random() * PASTEL_COLORS.length)],
+          type: Math.floor(Math.random() * 3), // 0: circle, 1: wrapped candy, 2: star
+          rotation: Math.random() * Math.PI * 2,
+          rotSpeed: (Math.random() - 0.5) * 0.01,
+          // Diagonal drift direction (all move same general direction)
+          vx: 0.8 + Math.random() * 0.5,  // positive x (rightward)
+          vy: 0.5 + Math.random() * 0.3,  // positive y (downward)
+          alpha: 0.15 + Math.random() * 0.25,
+          phase: Math.random() * Math.PI * 2,
+        };
+      }
+
+      function drawWrappedCandy(x, y, size, color, rotation) {
+        const cx = x;
+        const cy = y;
+        bgCtx.save();
+        bgCtx.translate(cx, cy);
+        bgCtx.rotate(rotation);
+        bgCtx.globalAlpha = bgCtx.globalAlpha;
+
+        // Wrapper body
+        const bodyW = size * 0.5;
+        const bodyH = size * 0.35;
+        const bodyGrad = bgCtx.createRadialGradient(-bodyW * 0.2, -bodyH * 0.2, 0, 0, 0, bodyW * 0.7);
+        bodyGrad.addColorStop(0, lightenColor(color, 40));
+        bodyGrad.addColorStop(0.5, color);
+        bodyGrad.addColorStop(1, darkenColor(color, 20));
+        bgCtx.fillStyle = bodyGrad;
+
+        // Rounded body
+        bgCtx.beginPath();
+        bgCtx.ellipse(0, 0, bodyW, bodyH, 0, 0, Math.PI * 2);
+        bgCtx.fill();
+
+        // Twisted ends
+        bgCtx.fillStyle = darkenColor(color, 15);
+        bgCtx.beginPath();
+        bgCtx.moveTo(-bodyW, 0);
+        bgCtx.lineTo(-bodyW - size * 0.25, -size * 0.12);
+        bgCtx.lineTo(-bodyW - size * 0.25, size * 0.12);
+        bgCtx.closePath();
+        bgCtx.fill();
+
+        bgCtx.beginPath();
+        bgCtx.moveTo(bodyW, 0);
+        bgCtx.lineTo(bodyW + size * 0.25, -size * 0.12);
+        bgCtx.lineTo(bodyW + size * 0.25, size * 0.12);
+        bgCtx.closePath();
+        bgCtx.fill();
+
+        bgCtx.restore();
+      }
+
+      function lightenColor(hex, percent) {
+        const num = parseInt(hex.slice(1), 16);
+        const r = Math.min(255, (num >> 16) + Math.floor(255 * percent / 100));
+        const g = Math.min(255, ((num >> 8) & 0xff) + Math.floor(255 * percent / 100));
+        const b = Math.min(255, (num & 0xff) + Math.floor(255 * percent / 100));
+        return `rgb(${r},${g},${b})`;
+      }
+
+      function darkenColor(hex, percent) {
+        const num = parseInt(hex.slice(1), 16);
+        const r = Math.max(0, (num >> 16) - Math.floor(255 * percent / 100));
+        const g = Math.max(0, ((num >> 8) & 0xff) - Math.floor(255 * percent / 100));
+        const b = Math.max(0, (num & 0xff) - Math.floor(255 * percent / 100));
+        return `rgb(${r},${g},${b})`;
+      }
+
+      function drawStar(x, y, size, color, rotation) {
+        bgCtx.save();
+        bgCtx.translate(x, y);
+        bgCtx.rotate(rotation);
+        bgCtx.globalAlpha = bgCtx.globalAlpha;
+        bgCtx.fillStyle = color;
+        bgCtx.beginPath();
+        for (let i = 0; i < 5; i++) {
+          const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+          const r = i === 0 ? size : size;
+          if (i === 0) bgCtx.moveTo(Math.cos(angle) * r, Math.sin(angle) * r);
+          else bgCtx.lineTo(Math.cos(angle) * r, Math.sin(angle) * r);
+          const innerAngle = angle + (2 * Math.PI) / 10;
+          bgCtx.lineTo(Math.cos(innerAngle) * size * 0.4, Math.sin(innerAngle) * size * 0.4);
+        }
+        bgCtx.closePath();
+        bgCtx.fill();
+        bgCtx.restore();
+      }
+
+      function drawCircle(x, y, size, color, rotation) {
+        bgCtx.save();
+        bgCtx.translate(x, y);
+        bgCtx.rotate(rotation);
+        bgCtx.globalAlpha = bgCtx.globalAlpha;
+        const grad = bgCtx.createRadialGradient(-size * 0.15, -size * 0.15, 0, 0, 0, size * 0.6);
+        grad.addColorStop(0, lightenColor(color, 50));
+        grad.addColorStop(0.5, color);
+        grad.addColorStop(1, darkenColor(color, 15));
+        bgCtx.fillStyle = grad;
+        bgCtx.beginPath();
+        bgCtx.arc(0, 0, size * 0.5, 0, Math.PI * 2);
+        bgCtx.fill();
+        bgCtx.restore();
+      }
+
+      function animate() {
+        bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+        candies.forEach(c => {
+          // Update position (diagonal drift)
+          c.x += c.vx;
+          c.y += c.vy;
+          c.rotation += c.rotSpeed;
+
+          // Wrap around edges diagonally
+          if (c.x > bgCanvas.width + c.size) c.x = -c.size;
+          if (c.y > bgCanvas.height + c.size) c.y = -c.size;
+
+          // Pulsing alpha
+          const pulseAlpha = c.alpha + Math.sin(Date.now() * 0.002 + c.phase) * 0.05;
+          bgCtx.globalAlpha = Math.max(0.08, Math.min(0.45, pulseAlpha));
+
+          // Draw candy shape
+          if (c.type === 0) {
+            drawCircle(c.x, c.y, c.size, c.color, c.rotation);
+          } else if (c.type === 1) {
+            drawWrappedCandy(c.x, c.y, c.size, c.color, c.rotation);
+          } else {
+            drawStar(c.x, c.y, c.size, c.color, c.rotation);
+          }
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    })();
+
+    let board = [];
+    let current = null;
+    let nextPuyo = null;
+    let score = 0;
+    let chain = 0;
+    let gameOver = false;
+    let paused = false;
+    let started = false;
+    let fallTimer = 0;
+    let fallInterval = 800;
+    const BASE_FALL_INTERVAL = 800;
+    let lastTime = 0;
+    let softDrop = false;
+    let fastDrop = false; // Fast drop animation in progress
+    let fastDropTargetY = 0; // Target Y position for fast drop
+    let fastDropFrameSkip = 0; // Frame skip counter for fast drop animation
+    const FAST_DROP_FRAME_SKIP = 2; // Skip every 2nd frame for lower FPS
+
+    // Difficulty system
+    let difficulty = 'easy'; // 'easy', 'hard', 'extreme'
+    let totalDrops = 0; // Total hard drops for speed calculation
+    let obstacleDrops = 0; // Drops for obstacle timing (extreme mode)
+    let obstaclePhase = false; // True when obstacle block is falling
+    let obstacleBlocks = []; // Array of obstacle transparent blocks
+    let obstacleTimer = 0;
+    const OBSTACLE_PHASE_DURATION = 1500; // 1.5 seconds
+    let pendingObstacle = false; // Flag to start obstacle phase after current flow completes
+
+    // Burst animation state
+    let burstingCells = [];
+    let burstTimer = 0;
+    const BURST_DURATION = 900;
+
+    // Flash effect state
+    let flashIntensity = 0;
+    let flashColor = '#ffffff';
+    let flashRadius = 0;
+
+    // Instant flash (at moment of disappearance)
+    let instantFlash = 0;
+    let instantFlashColor = '#ffffff';
+
+    // Freeze effect state
+    let freezeTimer = 0;
+    const FREEZE_DURATION = 1000; // 1.0 seconds
+
+    // Screen shake state
+    let shakeIntensity = 0;
+    let shakeOffsetX = 0;
+    let shakeOffsetY = 0;
+
+    // Cascade chain counter (tracks consecutive matches after gravity)
+    let cascadeChain = 0;
+
+    // Rotation state - satellite block can pass through during rotation
+    let isRotating = false;
+    let rotationTimer = 0;
+    const ROTATION_DURATION = 100; // ms
+
+    // Post-rotation ground delay (200ms grace period before ground check)
+    let rotationCompleteTimer = 0;
+    const ROTATION_COMPLETE_DELAY = 200; // ms
+
+    // Chain level for draw function access
+    let chainLevel = 0;
+    const rainbowColors = ['#ff0088', '#ff0000', '#ff8800', '#ffff00', '#00ff00', '#0088ff'];
+
+    // Chain popup text state
+    let popupText = '';
+    let popupColor = '#ffffff';
+    let popupAlpha = 0;
+    let popupScale = 1.0;
+
+    // Shockwave effects
+    let shockwaves = [];
+
+    // Center glow pulse
+    let centerGlow = 0;
+
+    // Freeze pulse
+    let freezePulse = 0;
+
+    const overlay = document.getElementById('overlay');
+    const scoreEl = document.querySelector('#score span');
+    const chainEl = document.querySelector('#chain span');
+
+    function init() {
+      board = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+      score = 0;
+      chain = 0;
+      gameOver = false;
+      paused = false;
+      burstingCells = [];
+      burstTimer = 0;
+      flashIntensity = 0;
+      instantFlash = 0;
+      shakeIntensity = 0;
+      cascadeChain = 0;
+      chainLevel = 0;
+      popupText = '';
+      popupAlpha = 0;
+      shockwaves = [];
+      centerGlow = 0;
+      freezePulse = 0;
+      freezeTimer = 0;
+      isRotating = false;
+      rotationTimer = 0;
+      rotationCompleteTimer = 0;
+      totalDrops = 0;
+      obstacleDrops = 0;
+      obstaclePhase = false;
+      obstacleBlocks = [];
+      obstacleTimer = 0;
+      pendingObstacle = false;
+      fastDrop = false;
+      // Calculate initial fall interval based on difficulty
+      updateFallInterval();
+      updateUI();
+      // Hide restart and title buttons
+      const restartBtn = document.getElementById('restart-btn');
+      if (restartBtn) restartBtn.style.display = 'none';
+      const titleBtn = document.getElementById('title-btn');
+      if (titleBtn) titleBtn.style.display = 'none';
+    }
+
+    function updateFallInterval() {
+      if (difficulty === 'easy') {
+        fallInterval = BASE_FALL_INTERVAL;
+      } else {
+        // hard or extreme: 1% faster every 10 drops
+        const speedMultiplier = Math.pow(1.01, Math.floor(totalDrops / 10));
+        fallInterval = BASE_FALL_INTERVAL / speedMultiplier;
+      }
+    }
+
+    function updateUI() {
+      scoreEl.textContent = score;
+      chainEl.textContent = chain;
+    }
+
+    // Trigger pop animation when score increases
+    function triggerScorePop() {
+      scoreEl.classList.remove('pop-anim');
+      void scoreEl.offsetWidth; // Force reflow to restart animation
+      scoreEl.classList.add('pop-anim');
+    }
+
+    // Trigger pop animation when chain increases
+    function triggerChainPop() {
+      chainEl.classList.remove('pop-anim');
+      void chainEl.offsetWidth; // Force reflow to restart animation
+      chainEl.classList.add('pop-anim');
+    }
+
+    // Update all visual effects (runs even during freeze)
+    function updateVisualEffects(delta) {
+      // Update screen shake
+      if (shakeIntensity > 0) {
+        shakeOffsetX = (Math.random() - 0.5) * shakeIntensity;
+        shakeOffsetY = (Math.random() - 0.5) * shakeIntensity;
+        shakeIntensity *= 0.9;
+        if (shakeIntensity < 0.5) {
+          shakeIntensity = 0;
+          shakeOffsetX = 0;
+          shakeOffsetY = 0;
+        }
+      }
+
+      // Update flash effects
+      if (instantFlash > 0) {
+        instantFlash *= 0.75;
+        if (instantFlash < 0.03) instantFlash = 0;
+      }
+      if (flashIntensity > 0) {
+        flashIntensity *= 0.88;
+        if (flashIntensity < 0.02) flashIntensity = 0;
+      }
+    }
+
+    function createPuyo() {
+      return {
+        x: 3, // 右から3列目（col 3）
+        y: -2, // 画面外から落下
+        colors: [
+          COLORS[Math.floor(Math.random() * COLORS.length)],
+          COLORS[Math.floor(Math.random() * COLORS.length)]
+        ],
+        rot: 0
+      };
+    }
+
+    function getSatellitePos(puyo) {
+      const [ox, oy] = ROT_OFFSETS[puyo.rot];
+      return { x: puyo.x + ox, y: puyo.y + oy };
+    }
+
+    function canPlaceCell(x, y) {
+      if (x < 0 || x >= COLS) return false;
+      if (y >= ROWS) return false;
+      if (y < 0) return true; // Above visible area is always passable (falling from above)
+      return board[y][x] === null;
+    }
+
+    function canPlacePuyo(x, y, rot) {
+      if (!canPlaceCell(x, y)) return false;
+      const [ox, oy] = ROT_OFFSETS[rot];
+      if (!canPlaceCell(x + ox, y + oy)) return false;
+      return true;
+    }
+
+    // For rotation - only main block collision matters, satellite can pass through
+    function canPlacePuyoForRotation(x, y, rot) {
+      if (!canPlaceCell(x, y)) return false;
+      // Satellite block can overlap during rotation - don't check it
+      return true;
+    }
+
+    // Check satellite collision during rotation and return push direction (dx, dy) to avoid overlap
+    // Returns null if no collision, or { dx, dy, valid } where valid means the push would actually work
+    function getSatelliteCollisionPush(x, y, rot) {
+      const [ox, oy] = ROT_OFFSETS[rot];
+      const sx = x + ox;
+      const sy = y + oy;
+      // Check if satellite would be in a blocked cell
+      if (sx >= 0 && sx < COLS && sy >= 0 && sy < ROWS) {
+        if (board[sy][sx] !== null) {
+          // Satellite would collide - determine push direction
+          // Push away from the obstacle (toward main block)
+          let pushX = 0, pushY = 0;
+          if (ox !== 0) pushX = -Math.sign(ox); // Push opposite to satellite offset
+          if (oy !== 0) pushY = -Math.sign(oy); // Push opposite to satellite offset
+          // If push direction is zero (edge case), use perpendicular push
+          if (pushX === 0 && pushY === 0) {
+            // For vertical satellite (ox=0), push horizontally
+            pushX = (oy > 0) ? -1 : 1;
+          }
+          // Check if pushed position is valid for main block AND satellite doesn't collide there
+          const pushedSX = x + pushX + ox;
+          const pushedSY = y + pushY + oy;
+          const mainValid = canPlaceCell(x + pushX, y + pushY);
+          const satValid = (pushedSX < 0 || pushedSX >= COLS || pushedSY < 0 || pushedSY >= ROWS || board[pushedSY][pushedSX] === null);
+          if (mainValid && satValid) {
+            return { dx: pushX, dy: pushY };
+          }
+          // Try alternative push directions
+          const alternatives = [];
+          if (pushX !== 0) alternatives.push({ dx: 0, dy: pushY || 1 }, { dx: 0, dy: pushY || -1 });
+          if (pushY !== 0) alternatives.push({ dx: pushX || 1, dy: 0 }, { dx: pushX || -1, dy: 0 });
+          for (const alt of alternatives) {
+            const altSX = x + alt.dx + ox;
+            const altSY = y + alt.dy + oy;
+            const altMainValid = canPlaceCell(x + alt.dx, y + alt.dy);
+            const altSatValid = (altSX < 0 || altSX >= COLS || altSY < 0 || altSY >= ROWS || board[altSY][altSX] === null);
+            if (altMainValid && altSatValid) {
+              return alt;
+            }
+          }
+        }
+      }
+      return null; // No collision or push not possible
+    }
+
+    // Check if rotation would leave satellite embedded and uncorrectable
+    function canRotateWithCorrection(x, y, rot) {
+      const [ox, oy] = ROT_OFFSETS[rot];
+      const spX = x + ox;
+      const spY = y + oy;
+
+      // Check if satellite would be inside a block
+      if (spX >= 0 && spX < COLS && spY >= 0 && spY < ROWS) {
+        if (board[spY][spX] !== null) {
+          // Satellite would be embedded - check if we can correct it
+
+          // Special case: if satellite is below main (oy > 0) and there's space below main,
+          // allow rotation - this enables "position swap" rotation
+          if (oy > 0 && canPlaceCell(x, y + 1)) {
+            return true; // Space below main block - allow rotation
+          }
+
+          let pushX = 0, pushY = 0;
+          if (ox !== 0) pushX = -Math.sign(ox);
+          if (oy !== 0) pushY = -Math.sign(oy);
+          if (pushX === 0 && pushY === 0) pushX = 1;
+
+          const attempts = [
+            { dx: pushX, dy: pushY },
+            { dx: pushX, dy: 0 },
+            { dx: 0, dy: pushY },
+            { dx: -pushX, dy: pushY },
+            { dx: pushX, dy: -pushY },
+            { dx: 0, dy: 1 },
+            { dx: 0, dy: -pushY },
+            { dx: 1, dy: 0 },
+            { dx: -1, dy: 0 },
+          ];
+
+          for (const attempt of attempts) {
+            const newX = x + attempt.dx;
+            const newY = y + attempt.dy;
+            const newSp = { x: newX + ox, y: newY + oy };
+
+            if (!canPlaceCell(newX, newY)) continue;
+            if (newSp.x >= 0 && newSp.x < COLS && newSp.y >= 0 && newSp.y < ROWS) {
+              if (board[newSp.y][newSp.x] !== null) continue;
+            }
+            // Correction possible
+            return true;
+          }
+          // No correction possible - rotation would leave satellite embedded
+          return false;
+        }
+      }
+      return true; // No collision
+    }
+
+    function canSpawnPuyo(x, y, rot) {
+      // Stricter check for initial spawn position
+      if (!canPlaceCell(x, y)) return false;
+      const [ox, oy] = ROT_OFFSETS[rot];
+      if (!canPlaceCell(x + ox, y + oy)) return false;
+      return true;
+    }
+
+    function spawn() {
+      current = nextPuyo || createPuyo();
+      nextPuyo = createPuyo();
+      fallTimer = 0;
+      softDrop = false;
+      cascadeChain = 0; // Reset cascade chain when new puyo spawns
+      drawNext();
+
+      const spawnCol = 3; // 右から3列目
+
+      // Check if spawn column top cell (row 0) is blocked - need to spawn from side
+      const topCellBlocked = board[0]?.[spawnCol] !== null;
+
+      if (!canSpawnPuyo(current.x, current.y, current.rot) || topCellBlocked) {
+        // Find nearest column to spawnCol with empty row 0 cell
+        let bestX = -1;
+        let bestDist = Infinity;
+
+        for (let x = 0; x < COLS; x++) {
+          if (x === spawnCol) continue; // Skip original spawn column
+          if (board[0]?.[x] === null) {
+            const dist = Math.abs(x - spawnCol);
+            if (dist < bestDist) {
+              bestDist = dist;
+              bestX = x;
+            }
+          }
+        }
+
+        if (bestX >= 0) {
+          current.x = bestX;
+        } else {
+          // No empty column found - game over
+          gameOver = true;
+          stopBGM();
+          const restartBtn = document.getElementById('restart-btn');
+          if (restartBtn) restartBtn.style.display = 'block';
+          const titleBtn = document.getElementById('title-btn');
+          if (titleBtn) titleBtn.style.display = 'block';
+        }
+      }
+    }
+
+    function placePuyo(puyo) {
+      const x = Math.round(puyo.x);
+      const y = Math.floor(puyo.y);
+      const sp = getSatellitePos({ x, y, rot: puyo.rot });
+
+      // Place on board
+      if (y >= 0 && y < ROWS && x >= 0 && x < COLS) board[y][x] = puyo.colors[0];
+      if (sp.y >= 0 && sp.y < ROWS && sp.x >= 0 && sp.x < COLS) board[sp.y][sp.x] = puyo.colors[1];
+      landSfx();
+
+      // Game over check: if ALL columns in row 0 are filled (一段目が埋まったら)
+      let row0Filled = true;
+      for (let cx = 0; cx < COLS; cx++) {
+        if (board[0][cx] === null) {
+          row0Filled = false;
+          break;
+        }
+      }
+      if (row0Filled) {
+        gameOver = true;
+        gameOverSfx();
+        stopBGM();
+        const restartBtn = document.getElementById('restart-btn');
+        if (restartBtn) restartBtn.style.display = 'block';
+        const titleBtn = document.getElementById('title-btn');
+        if (titleBtn) titleBtn.style.display = 'block';
+      }
+    }
+
+    // Check if a specific cell is part of a match (4+ connected same color)
+    function checkIfCellMatches(x, y) {
+      if (x < 0 || x >= COLS || y < 0 || y >= ROWS) return false;
+      const color = board[y][x];
+      if (!color || color === 'obstacle') return false;
+      // Count connected cells of same color
+      const visited = new Set();
+      const count = countConnected(x, y, color, visited);
+      return count >= 4;
+    }
+
+    function countConnected(x, y, color, visited) {
+      const key = `${x},${y}`;
+      if (x < 0 || x >= COLS || y < 0 || y >= ROWS) return 0;
+      if (visited.has(key)) return 0;
+      if (board[y][x] !== color) return 0;
+      visited.add(key);
+      let count = 1;
+      count += countConnected(x + 1, y, color, visited);
+      count += countConnected(x - 1, y, color, visited);
+      count += countConnected(x, y + 1, color, visited);
+      count += countConnected(x, y - 1, color, visited);
+      return count;
+    }
+
+    function isOnGround(puyo) {
+      // During rotation, main block still detects ground but satellite is allowed to pass through
+      const x = Math.round(puyo.x);
+      const y = Math.floor(puyo.y);
+      // Check main block - always check even during rotation
+      if (!canPlaceCell(x, y + 1)) return true;
+      // Check satellite block - skip if satellite is outside game area or during rotation
+      if (!isRotating && rotationCompleteTimer <= 0) {
+        const sp = getSatellitePos(puyo);
+        if (sp.x >= 0 && sp.x < COLS && sp.y >= 0 && sp.y < ROWS) {
+          if (!canPlaceCell(sp.x, sp.y + 1)) return true;
+        }
+      }
+      return false;
+    }
+
+    // Correct satellite position if it's outside the game area after rotation
+    function correctSatellitePosition() {
+      if (!current) return;
+      const sp = getSatellitePos(current);
+      let dx = 0, dy = 0;
+
+      // Push satellite back into game area
+      if (sp.x < 0) dx = -sp.x;           // Push right if satellite is too far left
+      if (sp.x >= COLS) dx = COLS - 1 - sp.x; // Push left if satellite is too far right
+      if (sp.y < 0) dy = -sp.y;           // Push down if satellite is too far up
+      if (sp.y >= ROWS) dy = ROWS - 1 - sp.y; // Push up if satellite is too far down
+
+      if (dx !== 0 || dy !== 0) {
+        current.x += dx;
+        current.y += dy;
+        return;
+      }
+
+      // Check if satellite is overlapping with a block inside the game area
+      if (sp.x >= 0 && sp.x < COLS && sp.y >= 0 && sp.y < ROWS) {
+        if (board[sp.y][sp.x] !== null) {
+          // Satellite is overlapping - try to push main block away from obstacle
+          // Get the current rotation offset
+          const [ox, oy] = ROT_OFFSETS[current.rot];
+
+          // Special case: if satellite is below main (oy > 0) and there's space below main,
+          // move main block down - this enables "position swap" rotation
+          if (oy > 0 && canPlaceCell(current.x, current.y + 1)) {
+            current.y += 1;
+            return;
+          }
+
+          // Push direction is opposite to satellite offset (toward main block)
+          let pushX = 0, pushY = 0;
+          if (ox !== 0) pushX = -Math.sign(ox);
+          if (oy !== 0) pushY = -Math.sign(oy);
+          // Fallback for edge case
+          if (pushX === 0 && pushY === 0) pushX = 1;
+
+          // Try multiple push directions in order of preference
+          const attempts = [
+            { dx: pushX, dy: pushY },
+            { dx: pushX, dy: 0 },
+            { dx: 0, dy: pushY },
+            { dx: -pushX, dy: pushY },
+            { dx: pushX, dy: -pushY },
+            { dx: 0, dy: 1 },
+            { dx: 0, dy: -1 },
+            { dx: 1, dy: 0 },
+            { dx: -1, dy: 0 },
+          ];
+
+          for (const attempt of attempts) {
+            const newX = current.x + attempt.dx;
+            const newY = current.y + attempt.dy;
+            const newSp = { x: newX + ox, y: newY + oy };
+
+            // Check if new main position is valid
+            if (!canPlaceCell(newX, newY)) continue;
+            // Check if new satellite position is valid (empty or out of bounds)
+            if (newSp.x >= 0 && newSp.x < COLS && newSp.y >= 0 && newSp.y < ROWS) {
+              if (board[newSp.y][newSp.x] !== null) continue;
+            }
+            // Valid position found
+            current.x = newX;
+            current.y = newY;
+            return;
+          }
+        }
+      }
+    }
+
+    function tryMove(dx) {
+      if (!current || gameOver || paused) return;
+      const nx = current.x + dx;
+      // During rotation or grace period, only check main block (satellite can be outside)
+      if (isRotating || rotationCompleteTimer > 0) {
+        if (canPlacePuyoForRotation(nx, current.y, current.rot)) {
+          current.x = nx;
+          moveSfx();
+        }
+      } else {
+        if (canPlacePuyo(nx, current.y, current.rot)) {
+          current.x = nx;
+          moveSfx();
+        }
+      }
+    }
+
+    function tryRotate(dir) {
+      if (!current || gameOver || paused) return;
+
+      const mx = Math.round(current.x);
+      const my = Math.floor(current.y);
+
+      // Check if surrounded by blocks on both left AND right
+      const leftBlocked = mx > 0 && my >= 0 && my < ROWS && board[my][mx - 1] !== null;
+      const rightBlocked = mx + 1 < COLS && my >= 0 && my < ROWS && board[my][mx + 1] !== null;
+      const surrounded = leftBlocked && rightBlocked;
+
+      // If surrounded by blocks on both sides AND main has space below, perform 180-swap
+      if (surrounded && canPlaceCell(mx, my + 1)) {
+        const [ox, oy] = ROT_OFFSETS[current.rot];
+        const mainColor = current.colors[0];
+        const satColor = current.colors[1];
+
+        // Swap: main moves to satellite's position, satellite moves to main's old position
+        current.x = mx + ox;
+        current.y = my + oy;
+        current.colors[0] = satColor;
+        current.colors[1] = mainColor;
+
+        isRotating = true;
+        rotationTimer = ROTATION_DURATION;
+        rotateSfx();
+        return;
+      }
+
+      // Normal 90-degree rotation (only if not surrounded on both sides)
+      const newRot = (current.rot + dir + 4) % 4;
+      const newX = current.x;
+      const newY = current.y;
+
+      const push = getSatelliteCollisionPush(newX, newY, newRot);
+      if (push) {
+        const pushedX = newX + push.dx;
+        const pushedY = newY + push.dy;
+        if (canPlacePuyoForRotation(pushedX, pushedY, newRot)) {
+          current.x = pushedX;
+          current.y = pushedY;
+          current.rot = newRot;
+          isRotating = true;
+          rotationTimer = ROTATION_DURATION;
+          rotateSfx();
+          return;
+        }
+      }
+
+      if (canPlacePuyoForRotation(newX, newY, newRot)) {
+        current.rot = newRot;
+        isRotating = true;
+        rotationTimer = ROTATION_DURATION;
+        rotateSfx();
+        return;
+      }
+
+      const kicks = dir === 1 ? [1, -1, 2] : [-1, 1, -2];
+      for (const kick of kicks) {
+        const kx = newX + kick;
+        const kPush = getSatelliteCollisionPush(kx, newY, newRot);
+        if (kPush) {
+          const pushedKX = kx + kPush.dx;
+          const pushedKY = newY + kPush.dy;
+          if (canPlacePuyoForRotation(pushedKX, pushedKY, newRot)) {
+            current.x = pushedKX;
+            current.y = pushedKY;
+            current.rot = newRot;
+            isRotating = true;
+            rotationTimer = ROTATION_DURATION;
+            rotateSfx();
+            return;
+          }
+        }
+        if (canPlacePuyoForRotation(kx, newY, newRot)) {
+          current.x = kx;
+          current.rot = newRot;
+          isRotating = true;
+          rotationTimer = ROTATION_DURATION;
+          rotateSfx();
+          return;
+        }
+      }
+    }
+
+    function drop() {
+      if (!current || gameOver || paused) return;
+      softDrop = true;
+    }
+
+    function hardDrop(distance = -1) {
+      if (!current || gameOver || paused || fastDrop) return;
+      // Temporarily move current down to find landing position (respecting satellite collision via isOnGround)
+      const origY = current.y;
+      let dropped = 0;
+      while (dropped !== distance && !isOnGround(current)) {
+        current.y++;
+        dropped++;
+      }
+      fastDropTargetY = current.y;
+      current.y = origY; // Restore original position for animation
+      fastDrop = true;
+      fastDropFrameSkip = 0; // Reset frame skip
+    }
+
+    function startObstaclePhase(numObstacles) {
+      obstaclePhase = true;
+      obstacleTimer = OBSTACLE_PHASE_DURATION;
+      // Create numObstacles obstacle blocks at random x positions, above visible area
+      obstacleBlocks = [];
+      console.log(`[DEBUG] startObstaclePhase called with numObstacles: ${numObstacles}`);
+      for (let i = 0; i < numObstacles; i++) {
+        obstacleBlocks.push({
+          x: Math.floor(Math.random() * COLS),
+          y: -1 - i, // Stagger starting positions above
+          alpha: 0.25
+        });
+      }
+    }
+
+    function updateObstaclePhase(delta) {
+      if (!obstaclePhase) return;
+
+      console.log(`[DEBUG] updateObstaclePhase: obstacleBlocks.length = ${obstacleBlocks.length}`);
+
+      // Guard: if no obstacles but obstaclePhase is still true, force end
+      if (obstacleBlocks.length === 0) {
+        obstaclePhase = false;
+        // obstacleDrops should NOT be reset here - we keep accumulating
+        return;
+      }
+
+      // Move all obstacles down faster than normal
+      for (let i = obstacleBlocks.length - 1; i >= 0; i--) {
+        const obs = obstacleBlocks[i];
+        const prevY = obs.y;
+        obs.y += delta / 200; // ~200ms per cell
+
+        const nextY = Math.floor(obs.y) + 1;
+        const landY = Math.min(Math.floor(obs.y), ROWS - 1);
+
+        // Check if obstacle has landed (at bottom row OR cell below is occupied)
+        if (nextY >= ROWS || (nextY >= 0 && board[nextY]?.[obs.x] !== null)) {
+          // Land at original x position
+          if (landY >= 0) {
+            board[landY][obs.x] = 'obstacle';
+          }
+          obstacleBlocks.splice(i, 1);
+        }
+      }
+
+      // End obstacle phase after duration even if not landed yet
+      if (obstacleTimer <= 0) {
+        for (const obs of obstacleBlocks) {
+          const landY = Math.min(Math.floor(obs.y), ROWS - 1);
+          if (landY >= 0) {
+            board[landY][obs.x] = 'obstacle';
+          }
+        }
+        obstacleBlocks = [];
+        obstaclePhase = false;
+      }
+
+      // End obstacle phase when all obstacles have landed
+      if (obstacleBlocks.length === 0 && obstaclePhase) {
+        obstaclePhase = false;
+        // obstacleDrops should NOT be reset - we keep accumulating for difficulty progression
+      }
+    }
+
+    function applyGravity() {
+      let moved = false;
+      for (let x = 0; x < COLS; x++) {
+        for (let y = ROWS - 2; y >= 0; y--) {
+          if (board[y][x] !== null && board[y + 1][x] === null) {
+            board[y + 1][x] = board[y][x];
+            board[y][x] = null;
+            moved = true;
+          }
+        }
+      }
+      return moved;
+    }
+
+    function floodFill(x, y, color, visited) {
+      if (x < 0 || x >= COLS || y < 0 || y >= ROWS) return [];
+      const key = `${x},${y}`;
+      if (visited.has(key)) return [];
+      if (board[y][x] !== color) return [];
+      visited.add(key);
+      let cells = [[x, y]];
+      cells = cells.concat(floodFill(x + 1, y, color, visited));
+      cells = cells.concat(floodFill(x - 1, y, color, visited));
+      cells = cells.concat(floodFill(x, y + 1, color, visited));
+      cells = cells.concat(floodFill(x, y - 1, color, visited));
+      return cells;
+    }
+
+    function checkMatches() {
+      const visited = new Set();
+      let totalCleared = 0;
+      let chains = 0;
+      let clearedCells = [];
+
+      for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+          if (board[y][x] !== null && !visited.has(`${x},${y}`)) {
+            const cells = floodFill(x, y, board[y][x], visited);
+            if (cells.length >= 4) {
+              chains++;
+              const color = board[y][x];
+              cells.forEach(([cx, cy]) => {
+                clearedCells.push([cx, cy, color]);
+                board[cy][cx] = null;
+              });
+              totalCleared += cells.length;
+              score += cells.length * 10 * chains;
+              triggerScorePop();
+            }
+          }
+        }
+      }
+
+      // Remove adjacent obstacle blocks (obstacles are cleared when adjacent blocks are cleared)
+      if (totalCleared > 0) {
+        const toRemove = new Set();
+        clearedCells.forEach(([cx, cy]) => {
+          // Check 4 adjacent cells
+          const adj = [[cx-1, cy], [cx+1, cy], [cx, cy-1], [cx, cy+1]];
+          adj.forEach(([ax, ay]) => {
+            if (ax >= 0 && ax < COLS && ay >= 0 && ay < ROWS) {
+              if (board[ay][ax] === 'obstacle') {
+                toRemove.add(`${ax},${ay}`);
+              }
+            }
+          });
+        });
+        toRemove.forEach(key => {
+          const [ox, oy] = key.split(',').map(Number);
+          clearedCells.push([ox, oy, '#aaaaaa']);
+          board[oy][ox] = null;
+        });
+      }
+
+      if (totalCleared > 0) {
+        chain = chains;
+        updateUI();
+        triggerChainPop();
+        return clearedCells;
+      }
+      return null;
+    }
+
+    function update(delta) {
+      if (!started || gameOver || paused) return;
+
+      // Update rotation timer and complete delay
+      if (isRotating) {
+        rotationTimer -= delta;
+        if (rotationTimer <= 0) {
+          rotationTimer = 0;
+          isRotating = false;
+          // Push satellite into game area if it's outside
+          correctSatellitePosition();
+          rotationCompleteTimer = ROTATION_COMPLETE_DELAY;
+        }
+      }
+      if (rotationCompleteTimer > 0) {
+        rotationCompleteTimer -= delta;
+        if (rotationCompleteTimer < 0) rotationCompleteTimer = 0;
+      }
+
+      // Burst animation - ALWAYS updates, even during freeze
+      if (burstingCells.length > 0) {
+        burstTimer += delta;
+        if (burstTimer >= BURST_DURATION) {
+          // Animation finished
+          burstingCells = [];
+          burstTimer = 0;
+          // Apply gravity then check for chain
+          applyGravity();
+        }
+        // Burst animation continues even during freeze
+      }
+
+      // Freeze effect - only blocks game logic, not animations
+      if (freezeTimer > 0) {
+        freezeTimer -= delta;
+        if (freezeTimer <= 0) {
+          freezeTimer = 0;
+        }
+        return; // Skip game logic update during freeze (but burst animation already updated above)
+      }
+
+      // Obstacle phase update (extreme mode)
+      if (obstaclePhase) {
+        updateObstaclePhase(delta);
+        // During obstacle phase, don't spawn new blocks or allow normal falling
+        return;
+      }
+
+      // Stage 2: Gravity settling (blocks falling after clear)
+      let gravityMoved = applyGravity();
+      if (gravityMoved) {
+        // Wait for gravity to finish
+        return;
+      }
+
+      // Stage 3: Check for chain reactions after gravity
+      const chainCleared = checkMatches();
+      if (chainCleared) {
+        burstingCells = chainCleared;
+        burstTimer = 0;
+
+        // Increment cascade chain counter
+        cascadeChain++;
+        chain = cascadeChain; // Sync display counter
+        updateUI(); // Update chain display immediately
+        triggerChainPop(); // Trigger pop animation
+
+        // Play chain sound
+        chainSfx(cascadeChain);
+
+        // Trigger freeze - first chain sets initial freeze, subsequent chains extend it
+        if (cascadeChain === 1) {
+          freezeTimer = FREEZE_DURATION;
+        } else {
+          // Extend freeze for chain continuation (cap at 2000ms to prevent infinite freeze)
+          freezeTimer = Math.min(freezeTimer + BURST_DURATION, 2000);
+        }
+        chainLevel = Math.min(cascadeChain, 5);
+
+        // Flash effect - 2連鎖から段階的に増幅
+        flashIntensity = 0.4 + chainLevel * 0.15;
+        flashColor = rainbowColors[chainLevel - 1] || '#ffffff';
+        flashRadius = 0;
+
+        // Instant flash - 段階的増幅
+        instantFlash = 0.3 + chainLevel * 0.12;
+
+        // Screen shake - 段階的増幅
+        shakeIntensity = 2 + chainLevel * 2;
+
+        // Chain popup text
+        if (cascadeChain >= 2) {
+          const chainTexts = ['', '', '2連続!!', '3連続!!!', '4連続!!!!', '5連続!!!!!'];
+          const chainColors = ['#ffffff', '#ffffff', '#ff3366', '#ff69b4', '#ff1493', '#ff1493'];
+          popupText = chainTexts[chainLevel] || '';
+          popupColor = chainColors[chainLevel] || '#ffffff';
+          popupAlpha = 1.0;
+          popupScale = 0.9 + chainLevel * 0.25;
+        }
+
+        // Shockwaves from burst cells - 段階的増幅
+        burstingCells.forEach(([cx, cy]) => {
+          shockwaves.push({
+            x: cx * CELL + CELL / 2 + GRID_OFFSET_X,
+            y: cy * CELL + CELL / 2 + GRID_OFFSET_Y,
+            radius: 0,
+            maxRadius: CELL * (2 + chainLevel * 1.0),
+            alpha: 0.7 + chainLevel * 0.06
+          });
+        });
+
+        // Center glow - 段階的増幅
+        centerGlow = 0.2 + chainLevel * 0.2;
+
+        // Freeze pulse - 段階的増幅
+        freezePulse = 0.2 + chainLevel * 0.15;
+
+        return;
+      }
+
+      // Check if we should start pending obstacle phase (after all chain/gravity settling complete)
+      if (pendingObstacle && !obstaclePhase) {
+        // Calculate number of obstacles to drop: ROUND(TRUNCATE(1.25^(obstacleDrops/10) * 10) / 10)
+        const numObstacles = Math.round(Math.floor(Math.pow(1.2, obstacleDrops / 10) * 10) / 10);
+        console.log(`[DEBUG] obstacleDrops: ${obstacleDrops}, numObstacles: ${numObstacles}`);
+        startObstaclePhase(numObstacles);
+        pendingObstacle = false;
+        return; // Don't spawn new block during obstacle phase
+      }
+
+      // Stage 4: Spawn new puyo if none exists
+      if (current === null) {
+        spawn();
+      }
+
+      // Fast drop animation (high-speed fall with lower FPS)
+      if (fastDrop && current) {
+        fastDropFrameSkip++;
+        if (fastDropFrameSkip > FAST_DROP_FRAME_SKIP) {
+          fastDropFrameSkip = 0;
+        }
+        if (fastDropFrameSkip === 0) {
+          const fastFallSpeed = fallInterval / 150; // 10x faster than soft drop
+          current.y += delta / fastFallSpeed;
+        }
+        if (current.y >= fastDropTargetY) {
+          current.y = fastDropTargetY;
+          placePuyo(current);
+          current = null;
+          fastDrop = false;
+          totalDrops++;
+          obstacleDrops++;
+          updateFallInterval();
+          // Check if we should trigger obstacle phase in extreme mode (every 10 drops)
+          if (difficulty === 'extreme' && obstacleDrops % 10 === 0 && obstacleDrops > 0 && !obstaclePhase && !pendingObstacle) {
+            pendingObstacle = true; // Will start after current flow completes
+          }
+        }
+      }
+
+      // Stage 5: Normal falling
+      if (current && !fastDrop) {
+        fallTimer += delta;
+        const interval = softDrop ? fallInterval / 15 : fallInterval;
+
+        if (fallTimer >= interval) {
+          fallTimer = 0;
+
+          if (isOnGround(current)) {
+            placePuyo(current);
+            current = null;
+            totalDrops++;
+            obstacleDrops++;
+            updateFallInterval();
+            // Check if we should trigger obstacle phase in extreme mode (every 10 drops)
+            if (difficulty === 'extreme' && obstacleDrops % 10 === 0 && obstacleDrops > 0 && !obstaclePhase && !pendingObstacle) {
+              pendingObstacle = true; // Will start after current flow completes
+            }
+          } else {
+            current.y++;
+            softDrop = false;
+          }
+        }
+      }
+    }
+
+    // Cached wrapped candy rotations for consistent per-cell rotation
+    const candyRotations = new Map();
+    function getCandyRotation(x, y) {
+      const key = `${x},${y}`;
+      if (!candyRotations.has(key)) {
+        candyRotations.set(key, (Math.random() - 0.5) * 0.4);
+      }
+      return candyRotations.get(key);
+    }
+
+    function drawWrappedCandy(ctx, x, y, color, size = CELL, alpha = 1, rotation = 0, isObstacle = false) {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+
+      const padding = 3;
+      const candyWidth = size - padding * 2;
+      const candyHeight = size - padding * 2;
+      const cx = x + size / 2;
+      const cy = y + size / 2;
+
+      // Apply rotation around center
+      ctx.translate(cx, cy);
+      ctx.rotate(rotation);
+      ctx.translate(-cx, -cy);
+
+      // Shadow - lighter for obstacle
+      ctx.shadowColor = isObstacle ? 'rgba(200,200,200,0.3)' : 'rgba(0,0,0,0.2)';
+      ctx.shadowBlur = isObstacle ? 8 : 5;
+      ctx.shadowOffsetY = isObstacle ? 3 : 2;
+
+      // ===== CANDY BODY (plump rounded rectangle) =====
+      const bodyWidth = candyWidth * 0.55;
+      const bodyHeight = candyHeight * 0.7;
+      const bodyX = cx - bodyWidth / 2;
+      const bodyY = cy - bodyHeight / 2;
+
+      // Body with inner glow gradient (metallic sheen) - darker for obstacle
+      const bodyGrad = ctx.createRadialGradient(
+        cx - bodyWidth * 0.2, cy - bodyHeight * 0.2, 0,
+        cx, cy, bodyWidth * 0.8
+      );
+      if (isObstacle) {
+        bodyGrad.addColorStop(0, '#ffffff');
+        bodyGrad.addColorStop(0.4, '#dddddd');
+        bodyGrad.addColorStop(0.7, '#bbbbbb');
+        bodyGrad.addColorStop(1, '#999999');
+      } else {
+        bodyGrad.addColorStop(0, lightenColor(color, 60));
+        bodyGrad.addColorStop(0.4, color);
+        bodyGrad.addColorStop(0.7, shadeColor(color, 15));
+        bodyGrad.addColorStop(1, shadeColor(color, 35));
+      }
+      ctx.fillStyle = bodyGrad;
+
+      // Rounded body shape
+      const radius = bodyHeight * 0.35;
+      ctx.beginPath();
+      ctx.moveTo(bodyX + radius, bodyY);
+      ctx.lineTo(bodyX + bodyWidth - radius, bodyY);
+      ctx.quadraticCurveTo(bodyX + bodyWidth, bodyY, bodyX + bodyWidth, bodyY + radius);
+      ctx.lineTo(bodyX + bodyWidth, bodyY + bodyHeight - radius);
+      ctx.quadraticCurveTo(bodyX + bodyWidth, bodyY + bodyHeight, bodyX + bodyWidth - radius, bodyY + bodyHeight);
+      ctx.lineTo(bodyX + radius, bodyY + bodyHeight);
+      ctx.quadraticCurveTo(bodyX, bodyY + bodyHeight, bodyX, bodyY + bodyHeight - radius);
+      ctx.lineTo(bodyX, bodyY + radius);
+      ctx.quadraticCurveTo(bodyX, bodyY, bodyX + radius, bodyY);
+      ctx.closePath();
+      ctx.fill();
+
+      // Draw light border for obstacle
+      if (isObstacle) {
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      }
+
+      // ===== TWISTED WRAPPER LEFT =====
+      ctx.shadowBlur = 0;
+      const twistLength = candyWidth * 0.3;
+      const twistWidth = candyHeight * 0.28;
+      const leftTwistX = bodyX - twistLength;
+
+      // Left wrapper gradient (metallic paper) - lighter for obstacle
+      const leftGrad = ctx.createLinearGradient(leftTwistX, cy - twistWidth, leftTwistX + twistLength, cy);
+      if (isObstacle) {
+        leftGrad.addColorStop(0, '#cccccc');
+        leftGrad.addColorStop(0.3, '#cccccc');
+        leftGrad.addColorStop(0.6, '#bbbbbb');
+        leftGrad.addColorStop(1, '#aaaaaa');
+      } else {
+        leftGrad.addColorStop(0, shadeColor(color, 45));
+        leftGrad.addColorStop(0.3, shadeColor(color, 20));
+        leftGrad.addColorStop(0.6, lightenColor(color, 25));
+        leftGrad.addColorStop(1, color);
+      }
+      ctx.fillStyle = leftGrad;
+
+      // Left twisted end (gathered paper effect)
+      ctx.beginPath();
+      ctx.moveTo(bodyX, cy - bodyHeight * 0.28);
+      ctx.lineTo(leftTwistX + twistLength * 0.15, cy - twistWidth * 0.9);
+      ctx.lineTo(leftTwistX, cy - twistWidth * 0.5);
+      ctx.lineTo(leftTwistX, cy + twistWidth * 0.5);
+      ctx.lineTo(leftTwistX, cy + twistWidth * 0.5);
+      ctx.lineTo(leftTwistX, cy - twistWidth * 0.5);
+      ctx.lineTo(leftTwistX, cy - twistWidth * 0.5);
+      ctx.lineTo(leftTwistX, cy - twistWidth * 0.5);
+      ctx.moveTo(leftTwistX, cy - twistWidth * 0.5);
+      ctx.lineTo(leftTwistX + twistLength * 0.15, cy + twistWidth * 0.9);
+      ctx.lineTo(bodyX, cy + bodyHeight * 0.28);
+      ctx.closePath();
+      ctx.fill();
+
+      // Left twist radial lines (paper gathering detail) - darker for obstacle
+      ctx.strokeStyle = isObstacle ? '#888888' : shadeColor(color, 30);
+      ctx.lineWidth = isObstacle ? 1.5 : 0.8;
+      for (let i = 0; i < 5; i++) {
+        const angle = (i - 2) * 0.15;
+        const innerR = bodyHeight * 0.28;
+        const outerR = twistWidth * 0.85;
+        ctx.beginPath();
+        ctx.moveTo(bodyX - 2, cy + Math.sin(angle) * innerR);
+        ctx.lineTo(leftTwistX + twistLength * 0.1, cy + Math.sin(angle) * outerR);
+        ctx.stroke();
+      }
+
+      // ===== TWISTED WRAPPER RIGHT =====
+      const rightTwistX = bodyX + bodyWidth;
+
+      // Right wrapper gradient - lighter for obstacle
+      const rightGrad = ctx.createLinearGradient(rightTwistX, cy, rightTwistX + twistLength, cy);
+      if (isObstacle) {
+        rightGrad.addColorStop(0, '#aaaaaa');
+        rightGrad.addColorStop(0.4, '#bbbbbb');
+        rightGrad.addColorStop(0.7, '#cccccc');
+        rightGrad.addColorStop(1, '#cccccc');
+      } else {
+        rightGrad.addColorStop(0, color);
+        rightGrad.addColorStop(0.4, lightenColor(color, 25));
+        rightGrad.addColorStop(0.7, shadeColor(color, 20));
+        rightGrad.addColorStop(1, shadeColor(color, 45));
+      }
+      ctx.fillStyle = rightGrad;
+
+      // Right twisted end
+      ctx.beginPath();
+      ctx.moveTo(bodyX + bodyWidth, cy - bodyHeight * 0.28);
+      ctx.lineTo(rightTwistX + twistLength * 0.85, cy - twistWidth * 0.9);
+      ctx.lineTo(rightTwistX + twistLength, cy - twistWidth * 0.5);
+      ctx.lineTo(rightTwistX + twistLength, cy + twistWidth * 0.5);
+      ctx.lineTo(rightTwistX + twistLength * 0.85, cy + twistWidth * 0.9);
+      ctx.lineTo(bodyX + bodyWidth, cy + bodyHeight * 0.28);
+      ctx.closePath();
+      ctx.fill();
+
+      // Right twist radial lines - darker for obstacle
+      ctx.strokeStyle = isObstacle ? '#888888' : shadeColor(color, 30);
+      ctx.lineWidth = isObstacle ? 1.5 : 0.8;
+      for (let i = 0; i < 5; i++) {
+        const angle = (i - 2) * 0.15;
+        const innerR = bodyHeight * 0.28;
+        const outerR = twistWidth * 0.85;
+        ctx.beginPath();
+        ctx.moveTo(bodyX + bodyWidth + 2, cy + Math.sin(angle) * innerR);
+        ctx.lineTo(rightTwistX + twistLength * 0.9, cy + Math.sin(angle) * outerR);
+        ctx.stroke();
+      }
+
+      // ===== BODY HIGHLIGHT (inner luminescence) - reduced for obstacle =====
+      ctx.shadowBlur = 0;
+      const hlGrad = ctx.createRadialGradient(
+        cx - bodyWidth * 0.15, cy - bodyHeight * 0.2, 0,
+        cx, cy, bodyWidth * 0.5
+      );
+      if (isObstacle) {
+        hlGrad.addColorStop(0, 'rgba(255,255,255,0.15)');
+        hlGrad.addColorStop(0.5, 'rgba(255,255,255,0.05)');
+        hlGrad.addColorStop(1, 'rgba(255,255,255,0)');
+      } else {
+        hlGrad.addColorStop(0, 'rgba(255,255,255,0.55)');
+        hlGrad.addColorStop(0.5, 'rgba(255,255,255,0.15)');
+        hlGrad.addColorStop(1, 'rgba(255,255,255,0)');
+      }
+      ctx.fillStyle = hlGrad;
+      ctx.beginPath();
+      ctx.ellipse(cx - bodyWidth * 0.08, cy - bodyHeight * 0.15, bodyWidth * 0.28, bodyHeight * 0.2, -0.3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Specular dot - brighter for obstacle
+      ctx.fillStyle = isObstacle ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.9)';
+      ctx.beginPath();
+      ctx.arc(cx + bodyWidth * 0.18, cy - bodyHeight * 0.18, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    // Wrapper for backward compatibility
+    function drawPuyo(ctx, x, y, color, size = CELL, alpha = 1) {
+      const rotation = getCandyRotation(
+        Math.round((x - GRID_OFFSET_X) / CELL),
+        Math.round((y - GRID_OFFSET_Y) / CELL)
+      );
+      drawWrappedCandy(ctx, x, y, color, size, alpha, rotation);
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+    }
+
+    function lightenColor(color, percent) {
+      const num = parseInt(color.slice(1), 16);
+      const r = Math.min(255, Math.max(0, (num >> 16) + percent));
+      const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + percent));
+      const b = Math.min(255, Math.max(0, (num & 0x0000FF) + percent));
+      return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
+    }
+
+    function drawBurstParticle(ctx, x, y, color, progress) {
+      // Simple lightweight burst effect - no loops, no save/restore
+      const cx = x + CELL / 2;
+      const cy = y + CELL / 2;
+      const alpha = 1 - progress;
+      const radius = CELL * (0.5 + progress * 2);
+
+      // Simple radial gradient glow
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+      grad.addColorStop(0, `rgba(255,255,255,${alpha * 0.8})`);
+      grad.addColorStop(0.3, hexToRgba(color, alpha * 0.5));
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function hexToRgba(hex, alpha) {
+      const num = parseInt(hex.slice(1), 16);
+      const r = (num >> 16) & 255;
+      const g = (num >> 8) & 255;
+      const b = num & 255;
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    function drawStar(ctx, cx, cy, outerR, innerR) {
+      const points = 4;
+      ctx.beginPath();
+      for (let i = 0; i < points * 2; i++) {
+        const r = i % 2 === 0 ? outerR : innerR;
+        const angle = (i * Math.PI) / points - Math.PI / 2;
+        const x = cx + Math.cos(angle) * r;
+        const y = cy + Math.sin(angle) * r;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+    }
+
+    function drawHeart(ctx, cx, cy, size) {
+      const x = cx - size / 2;
+      const y = cy - size / 2;
+      const width = size;
+      const height = size * 0.9;
+
+      ctx.beginPath();
+      ctx.moveTo(width / 2, height * 0.3);
+      ctx.bezierCurveTo(width / 2, height * 0.1, width * 0.2, 0, 0, height * 0.3);
+      ctx.bezierCurveTo(-width * 0.3, height * 0.6, width / 2, height, width / 2, height);
+      ctx.bezierCurveTo(width / 2, height, width * 1.3, height * 0.6, width, height * 0.3);
+      ctx.bezierCurveTo(width * 0.8, 0, width / 2, height * 0.1, width / 2, height * 0.3);
+      ctx.closePath();
+    }
+
+    function hexToRgb(hex) {
+      const num = parseInt(hex.slice(1), 16);
+      return {
+        r: (num >> 16) & 255,
+        g: (num >> 8) & 255,
+        b: num & 255
+      };
+    }
+
+    function shadeColor(color, percent) {
+      const num = parseInt(color.slice(1), 16);
+      const r = Math.min(255, Math.max(0, (num >> 16) + percent));
+      const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + percent));
+      const b = Math.min(255, Math.max(0, (num & 0x0000FF) + percent));
+      return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
+    }
+
+    function draw() {
+      // INSTANT FLASH - rainbow wave spreading
+      if (instantFlash > 0 && burstingCells.length > 0) {
+        const ifc = hexToRgb(instantFlashColor);
+        burstingCells.forEach(([x, y, color]) => {
+          const cx = x * CELL + CELL / 2 + GRID_OFFSET_X;
+          const cy = y * CELL + CELL / 2 + GRID_OFFSET_Y;
+          const maxRadius = Math.max(canvas.width, canvas.height) * 2;
+
+          // Rainbow expanding circle
+          const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxRadius * instantFlash);
+          grad.addColorStop(0, `rgba(${ifc.r},${ifc.g},${ifc.b},${instantFlash * 0.3})`);
+          grad.addColorStop(0.3, `rgba(${ifc.r},${ifc.g},${ifc.b},${instantFlash * 0.15})`);
+          grad.addColorStop(0.6, `rgba(${ifc.r},${ifc.g},${ifc.b},${instantFlash * 0.05})`);
+          grad.addColorStop(1, 'transparent');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        });
+
+        instantFlash *= 0.75;
+        if (instantFlash < 0.03) instantFlash = 0;
+      }
+
+      // Subtle transparent overlay so candy background shows through
+      const time = lastTime;
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      if (isDarkMode) {
+        bgGrad.addColorStop(0, 'rgba(10, 10, 30, 0.3)');
+        bgGrad.addColorStop(0.5, 'rgba(15, 15, 35, 0.25)');
+        bgGrad.addColorStop(1, 'rgba(10, 10, 30, 0.3)');
+      } else {
+        bgGrad.addColorStop(0, 'rgba(255, 240, 245, 0.25)');
+        bgGrad.addColorStop(0.5, 'rgba(255, 230, 240, 0.2)');
+        bgGrad.addColorStop(1, 'rgba(255, 220, 235, 0.25)');
+      }
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // MASSIVE Flash effect - rainbow wave spreading with sparkles
+      if (flashIntensity > 0 && burstingCells.length > 0) {
+        const fc = hexToRgb(flashColor);
+        burstingCells.forEach(([x, y, color]) => {
+          const cx = x * CELL + CELL / 2 + GRID_OFFSET_X;
+          const cy = y * CELL + CELL / 2 + GRID_OFFSET_Y;
+
+          // Rainbow expanding wave
+          const maxRadius = Math.max(canvas.width, canvas.height) * 2;
+          const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxRadius * flashIntensity);
+          grad.addColorStop(0, `rgba(${fc.r},${fc.g},${fc.b},${flashIntensity * 0.3})`);
+          grad.addColorStop(0.3, `rgba(${fc.r},${fc.g},${fc.b},${flashIntensity * 0.15})`);
+          grad.addColorStop(0.6, `rgba(${fc.r},${fc.g},${fc.b},${flashIntensity * 0.05})`);
+          grad.addColorStop(1, 'transparent');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        });
+
+        // Decay flash
+        flashIntensity *= 0.82;
+        if (flashIntensity < 0.02) flashIntensity = 0;
+      }
+
+      // Apply screen shake to ALL elements (effects + game)
+      ctx.save();
+      ctx.translate(shakeOffsetX, shakeOffsetY);
+
+      // Draw shockwaves
+      shockwaves.forEach(sw => {
+        ctx.save();
+        ctx.globalAlpha = sw.alpha;
+        ctx.strokeStyle = rainbowColors[chainLevel - 1] || '#ffffff';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+        // Update shockwave
+        sw.radius += 8 + sw.maxRadius * 0.05;
+        sw.alpha *= 0.92;
+      });
+      // Remove finished shockwaves
+      shockwaves = shockwaves.filter(sw => sw.alpha > 0.02 && sw.radius < sw.maxRadius);
+
+      // Draw center glow
+      if (centerGlow > 0) {
+        const cx = GRID_OFFSET_X + (COLS * CELL) / 2;
+        const cy = GRID_OFFSET_Y + (ROWS * CELL) / 2;
+        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, CELL * 6);
+        const glowColor = rainbowColors[chainLevel - 1] || '#ffffff';
+        grad.addColorStop(0, glowColor);
+        grad.addColorStop(0.5, `${glowColor}88`);
+        grad.addColorStop(1, 'transparent');
+        ctx.save();
+        ctx.globalAlpha = centerGlow;
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
+        centerGlow *= 0.94;
+        if (centerGlow < 0.02) centerGlow = 0;
+      }
+
+      // Draw freeze pulse (screen tint during freeze)
+      if (freezePulse > 0 && freezeTimer > 0) {
+        ctx.save();
+        ctx.globalAlpha = freezePulse * 0.3;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
+        freezePulse *= 0.95;
+      }
+
+      // Draw grid lines (subtle pink)
+      ctx.strokeStyle = 'rgba(255, 182, 193, 0.4)';
+      ctx.lineWidth = 1;
+      for (let y = 0; y <= ROWS; y++) {
+        ctx.beginPath();
+        ctx.moveTo(GRID_OFFSET_X, y * CELL + GRID_OFFSET_Y);
+        ctx.lineTo(GRID_OFFSET_X + COLS * CELL, y * CELL + GRID_OFFSET_Y);
+        ctx.stroke();
+      }
+      for (let x = 0; x <= COLS; x++) {
+        ctx.beginPath();
+        ctx.moveTo(x * CELL + GRID_OFFSET_X, GRID_OFFSET_Y);
+        ctx.lineTo(x * CELL + GRID_OFFSET_X, GRID_OFFSET_Y + ROWS * CELL);
+        ctx.stroke();
+      }
+
+      // Draw outer border (aligned with grid lines)
+      ctx.strokeStyle = 'rgba(255, 105, 180, 0.8)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(GRID_OFFSET_X, GRID_OFFSET_Y, COLS * CELL, ROWS * CELL);
+
+      // Draw burst particles
+      if (burstingCells.length > 0) {
+        const progress = Math.min(burstTimer / BURST_DURATION, 1);
+        burstingCells.forEach(([x, y, color]) => {
+          drawBurstParticle(ctx, x * CELL + GRID_OFFSET_X, y * CELL + GRID_OFFSET_Y, color, progress);
+        });
+      }
+
+      for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+          if (board[y] && board[y][x]) {
+            if (board[y][x] === 'obstacle') {
+              // Draw obstacle block with dark borders (isObstacle=true)
+              drawWrappedCandy(ctx, x * CELL + GRID_OFFSET_X, y * CELL + GRID_OFFSET_Y, '#888888', CELL, 0.7, 0, true);
+            } else {
+              drawPuyo(ctx, x * CELL + GRID_OFFSET_X, y * CELL + GRID_OFFSET_Y, board[y][x]);
+            }
+          }
+        }
+      }
+
+      // Draw falling obstacle blocks
+      for (const obs of obstacleBlocks) {
+        drawWrappedCandy(ctx, obs.x * CELL + GRID_OFFSET_X, obs.y * CELL + GRID_OFFSET_Y, '#888888', CELL, 0.7, 0, true);
+      }
+
+      if (current) {
+        const px = Math.round(current.x) * CELL + GRID_OFFSET_X;
+        const py = Math.floor(current.y) * CELL + GRID_OFFSET_Y;
+        drawPuyo(ctx, px, py, current.colors[0]);
+        const sp = getSatellitePos(current);
+        drawPuyo(ctx, Math.round(sp.x) * CELL + GRID_OFFSET_X, Math.floor(sp.y) * CELL + GRID_OFFSET_Y, current.colors[1]);
+      }
+
+      if (paused && started && !gameOver) {
+        ctx.fillStyle = 'rgba(255,200,220,0.7)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#ff1493';
+        ctx.font = 'bold 24px Courier New';
+        ctx.textAlign = 'center';
+        ctx.fillText('一時停止', canvas.width / 2, canvas.height / 2);
+      }
+
+      if (gameOver) {
+        if (isDarkMode) {
+          ctx.fillStyle = 'rgba(20,20,50,0.88)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#ff69b4';
+          ctx.font = 'bold 28px Courier New';
+          ctx.textAlign = 'center';
+          ctx.fillText('ゲームオーバー', canvas.width / 2, canvas.height / 2);
+          ctx.fillStyle = '#c0c0d0';
+          ctx.font = '14px Courier New';
+          ctx.fillText(`スコア: ${score}`, canvas.width / 2, canvas.height / 2 + 25);
+        } else {
+          ctx.fillStyle = 'rgba(255,200,220,0.85)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#ff1493';
+          ctx.font = 'bold 28px Courier New';
+          ctx.textAlign = 'center';
+          ctx.fillText('ゲームオーバー', canvas.width / 2, canvas.height / 2);
+          ctx.fillStyle = '#333';
+          ctx.font = '14px Courier New';
+          ctx.fillText(`スコア: ${score}`, canvas.width / 2, canvas.height / 2 + 25);
+        }
+        // Restart button is shown via HTML button element
+      }
+
+      ctx.restore(); // End shake offset
+
+      // Draw chain popup text
+      if (popupAlpha > 0) {
+        ctx.save();
+        ctx.globalAlpha = popupAlpha;
+        ctx.fillStyle = popupColor;
+        ctx.shadowColor = '#fff';
+        ctx.shadowBlur = 30;
+        ctx.font = `bold ${Math.floor(48 * popupScale)}px Courier New`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        // Draw stroke for emphasis
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 4;
+        ctx.strokeText(popupText, canvas.width / 2, canvas.height / 2 - 30);
+        ctx.fillText(popupText, canvas.width / 2, canvas.height / 2 - 30);
+        ctx.restore();
+        popupAlpha -= 0.012;
+      }
+    }
+
+    function drawNext() {
+      const nextSize = Math.floor(28 * SCALE);
+      const bgGrad = nextCtx.createLinearGradient(0, 0, 80, 80);
+      bgGrad.addColorStop(0, '#ffd6e7');
+      bgGrad.addColorStop(0.5, '#ffc8dd');
+      bgGrad.addColorStop(1, '#ffe0f0');
+      nextCtx.fillStyle = bgGrad;
+      nextCtx.fillRect(0, 0, 80, 80);
+      if (nextPuyo) {
+        drawPuyo(nextCtx, 20, 8, nextPuyo.colors[0], nextSize);
+        drawPuyo(nextCtx, 20, 40, nextPuyo.colors[1], nextSize);
+      }
+    }
+
+    function gameLoop(time) {
+      // Cap delta to prevent huge jumps on tab switch / background resume
+      let delta = time - lastTime;
+      if (delta > 200) delta = 16; // Treat >200ms gaps as a single frame
+      lastTime = time;
+
+      // Update all visual effects (runs even during freeze)
+      updateVisualEffects(delta);
+
+      update(delta);
+      draw();
+      saveRankingIfNeeded();
+      requestAnimationFrame(gameLoop);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      // Initialize audio on first interaction (browser autoplay policy)
+      audioManager.init();
+
+      if (!started) {
+        return;
+      }
+
+      if (gameOver) {
+        if (e.code === 'KeyR') {
+          started = true;
+          overlay.classList.add('hidden');
+          init();
+          spawn();
+          clickSfx();
+          startBGM();
+        }
+        return;
+      }
+
+      switch (e.code) {
+        case 'ArrowLeft': tryMove(-1); break;
+        case 'ArrowRight': tryMove(1); break;
+        case 'ArrowDown': drop(); break;
+        case 'Space': hardDrop(); break;
+        case 'Period': tryRotate(1); break;
+        case 'Slash': tryRotate(-1); break;
+        case 'PageUp': tryRotate(1); break;
+        case 'PageDown': tryRotate(-1); break;
+        case 'KeyP':
+          paused = !paused;
+          // Mute/unmute BGM on pause (only if not globally muted)
+          if (audioManager.bgmGain) {
+            audioManager.bgmGain.gain.value = (paused || audioManager.muted) ? 0 : 0.15;
+          }
+          break;
+        case 'KeyM': audioManager.toggleMute(); break;
+      }
+
+      // Update mute button icon
+      const muteBtn = document.getElementById('mute-btn');
+      if (muteBtn) {
+        muteBtn.textContent = audioManager.muted ? '🔇' : '🔊';
+      }
+    });
+
+    // Mute button click handler
+    document.getElementById('mute-btn').addEventListener('click', () => {
+      audioManager.init(); // Ensure audio is initialized
+      audioManager.toggleMute();
+      const muteBtn = document.getElementById('mute-btn');
+      muteBtn.textContent = audioManager.muted ? '🔇' : '🔊';
+    });
+
+    // Theme toggle with localStorage persistence
+    function setTheme(dark) {
+      localStorage.setItem('candyTheme', dark ? 'dark' : 'light');
+    }
+    function getTheme() {
+      return localStorage.getItem('candyTheme');
+    }
+    let isDarkMode = getTheme() === 'dark';
+    // Apply initial theme
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode');
+      document.getElementById('theme-btn').textContent = '☀️';
+      const titleTheme = document.getElementById('title-theme');
+      if (titleTheme) titleTheme.textContent = '☀️';
+    }
+    document.getElementById('theme-btn').addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent overlay click handler from firing
+      isDarkMode = !isDarkMode;
+      document.getElementById('theme-btn').textContent = isDarkMode ? '☀️' : '🌙';
+      const titleTheme = document.getElementById('title-theme');
+      if (titleTheme) titleTheme.textContent = isDarkMode ? '☀️' : '🌙';
+      if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+      setTheme(isDarkMode);
+    });
+
+    // ===== iPad Touch Gesture Support =====
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    const SWIPE_THRESHOLD = 30;
+    const TAP_THRESHOLD = 10;
+
+    canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      audioManager.init();
+      const t = e.touches[0];
+      touchStartX = t.clientX;
+      touchStartY = t.clientY;
+      touchStartTime = Date.now();
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+      e.preventDefault();
+
+      if (gameOver) {
+        started = true;
+        overlay.classList.add('hidden');
+        init();
+        spawn();
+        clickSfx();
+        startBGM();
+        return;
+      }
+
+      const t = e.changedTouches[0];
+      const dx = t.clientX - touchStartX;
+      const dy = t.clientY - touchStartY;
+      const dt = Date.now() - touchStartTime;
+      const absDx = Math.abs(dx);
+      const absDy = Math.abs(dy);
+
+      // Tap detection (minimal movement, quick touch)
+      if (absDx < TAP_THRESHOLD && absDy < TAP_THRESHOLD && dt < 300) {
+        // Tap = rotate
+        tryRotate(1);
+        clickSfx();
+        return;
+      }
+
+      // Swipe detection
+      if (absDx > absDy) {
+        // Horizontal swipe
+        if (absDx > SWIPE_THRESHOLD) {
+          if (dx > 0) {
+            tryMove(1); // Swipe right = move right
+          } else {
+            tryMove(-1); // Swipe left = move left
+          }
+        }
+      } else {
+        // Vertical swipe
+        if (dy > SWIPE_THRESHOLD) {
+          // Swipe down = hard drop with velocity-based distance
+          const velocity = absDy / dt; // pixels per ms
+          let dropDistance = -1; // default: drop all the way
+          if (velocity < 0.5) {
+            dropDistance = 1;
+          } else if (velocity < 1.0) {
+            dropDistance = 3;
+          } else if (velocity < 2.0) {
+            dropDistance = 6;
+          } else {
+            dropDistance = 9; // max
+          }
+          hardDrop(dropDistance);
+        } else if (dy < -SWIPE_THRESHOLD) {
+          tryRotate(1); // Swipe up = rotate
+        }
+      }
+    }, { passive: false });
+
+    // Prevent default touch behaviors (scrolling, zooming)
+    canvas.addEventListener('gesturestart', (e) => e.preventDefault());
+    canvas.addEventListener('gesturechange', (e) => e.preventDefault());
+    canvas.addEventListener('gestureend', (e) => e.preventDefault());
+
+    // ===== iPad Touch Button Controls =====
+    function setupTouchButton(id, action) {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      btn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        audioManager.init();
+        if (gameOver || !started) return;
+        action();
+      }, { passive: false });
+      btn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        audioManager.init();
+        if (gameOver || !started) return;
+        action();
+      });
+    }
+
+    setupTouchButton('btn-left', () => tryMove(-1));
+    setupTouchButton('btn-right', () => tryMove(1));
+    setupTouchButton('btn-down', () => drop());
+    setupTouchButton('btn-drop', () => hardDrop());
+    setupTouchButton('btn-rotate', () => tryRotate(1));
+
+    // Long press for continuous move
+    let moveInterval = null;
+    function startContinuousMove(action) {
+      action();
+      moveInterval = setInterval(() => {
+        if (!gameOver && started && !paused) action();
+      }, 100);
+    }
+    function stopContinuousMove() {
+      if (moveInterval) {
+        clearInterval(moveInterval);
+        moveInterval = null;
+      }
+    }
+
+    ['btn-left', 'btn-right', 'btn-down'].forEach((id, i) => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      const actions = [() => tryMove(-1), () => tryMove(1), () => drop()];
+      btn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        audioManager.init();
+        if (!started || gameOver || paused) return;
+        actions[i]();
+        startContinuousMove(actions[i]);
+      }, { passive: false });
+      btn.addEventListener('touchend', stopContinuousMove);
+      btn.addEventListener('touchcancel', stopContinuousMove);
+    });
+
+    // Safety: document-level touchend/touchcancel to catch lost events on iOS
+    document.addEventListener('touchend', stopContinuousMove);
+    document.addEventListener('touchcancel', stopContinuousMove);
+
+    // ===== Difficulty Selection =====
+    const diffButtons = document.querySelectorAll('.diff-btn');
+    diffButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Remove selected from all
+        diffButtons.forEach(b => b.classList.remove('selected'));
+        // Add selected to clicked
+        btn.classList.add('selected');
+        // Set difficulty
+        difficulty = btn.dataset.diff;
+        updateFallInterval();
+      });
+    });
+
+    // ===== Overlay Click to Start (theme toggle only) =====
+    overlay.addEventListener('click', (e) => {
+      // Toggle dark mode when clicking on title area (h1 or title-theme)
+      if (e.target.tagName === 'H1' || e.target.id === 'title-theme') {
+        isDarkMode = !isDarkMode;
+        document.getElementById('theme-btn').textContent = isDarkMode ? '☀️' : '🌙';
+        const titleTheme = document.getElementById('title-theme');
+        if (titleTheme) titleTheme.textContent = isDarkMode ? '☀️' : '🌙';
+        if (isDarkMode) {
+          document.body.classList.add('dark-mode');
+        } else {
+          document.body.classList.remove('dark-mode');
+        }
+        setTheme(isDarkMode);
+      }
+      // No game start on overlay click - only start button starts the game
+    });
+
+    // ===== Start Button Click =====
+    const startBtn = document.getElementById('start-btn');
+    if (startBtn) {
+      startBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!started) {
+          started = true;
+          overlay.classList.add('hidden');
+          init();
+          spawn();
+          clickSfx();
+          startBGM();
+        }
+      });
+    }
+
+    // Restart button handler
+    const restartBtn = document.getElementById('restart-btn');
+    if (restartBtn) {
+      restartBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        restartBtn.style.display = 'none';
+        const titleBtn = document.getElementById('title-btn');
+        if (titleBtn) titleBtn.style.display = 'none';
+        init();
+        spawn();
+        clickSfx();
+      });
+    }
+
+    // Title button handler
+    const titleBtn = document.getElementById('title-btn');
+    if (titleBtn) {
+      titleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        restartBtn.style.display = 'none';
+        titleBtn.style.display = 'none';
+        started = false;
+        gameOver = false;
+        overlay.classList.remove('hidden');
+        clickSfx();
+      });
+    }
+
+    // ===== 操作説明 Modal =====
+    const helpBtn = document.getElementById('help-btn');
+    const helpModal = document.getElementById('help-modal');
+    const helpClose = document.getElementById('help-close');
+    if (helpBtn && helpModal && helpClose) {
+      helpBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        helpModal.classList.remove('hidden');
+      });
+      helpClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        helpModal.classList.add('hidden');
+      });
+      helpModal.addEventListener('click', (e) => {
+        if (e.target === helpModal) {
+          helpModal.classList.add('hidden');
+        }
+      });
+    }
+
+    // ===== Ranking System =====
+    const RANKING_KEY = 'candyDrops_ranking';
+    const MAX_RANKING = 5;
+    function getRanking() {
+      try {
+        const data = localStorage.getItem(RANKING_KEY);
+        return data ? JSON.parse(data) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+    function saveRanking(score, maxChain) {
+      const ranking = getRanking();
+      const now = new Date();
+      const date = now.toLocaleDateString('ja-JP') + ' ' + now.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+      ranking.push({ score, maxChain, date });
+      ranking.sort((a, b) => b.score - a.score);
+      if (ranking.length > MAX_RANKING) {
+        ranking.length = MAX_RANKING;
+      }
+      localStorage.setItem(RANKING_KEY, JSON.stringify(ranking));
+      return ranking;
+    }
+    function displayRanking() {
+      const rankingList = document.getElementById('ranking-list');
+      if (!rankingList) return;
+      const ranking = getRanking();
+      const medals = ['🥇', '🥈', '🥉'];
+      if (ranking.length === 0) {
+        rankingList.innerHTML = '<div class="rank-item">まだ記録がありません</div>';
+        return;
+      }
+      rankingList.innerHTML = ranking.slice(0, 3).map((r, i) =>
+        `<div class="rank-item ${i === 0 ? 'rank-first' : ''}">${medals[i]} ${r.score.toLocaleString()}点 / ${r.maxChain}連鎖 / ${r.date}</div>`
+      ).join('');
+    }
+    displayRanking();
+
+    // ゲームオーバー時にランキングを保存（重複保存防止フラグ）
+    let rankingSaved = false;
+    function saveRankingIfNeeded() {
+      if (gameOver && started && !rankingSaved) {
+        rankingSaved = true;
+        const maxChainDisplay = parseInt(document.querySelector('#chain span')?.textContent || '0', 10);
+        saveRanking(score, maxChainDisplay);
+        displayRanking();
+      }
+    }
+
+    // リセット時にフラグもリセット
+    const originalInit = init;
+    init = function() {
+      rankingSaved = false;
+      originalInit.apply(this, arguments);
+    };
+
+    requestAnimationFrame(gameLoop);
+  </script>
+</body>
+</html>
