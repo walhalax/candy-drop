@@ -1,0 +1,26 @@
+{
+  "name": "Candy-Drops",
+  "short_name": "CandyDrop",
+  "description": "かわいいキャンディーを落とすパズルゲーム",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffd6e7",
+  "theme_color": "#ff69b4",
+  "icons": [
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "entertainment"],
+  "lang": "ja"
+}

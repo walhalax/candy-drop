@@ -11,6 +11,14 @@
   <!-- iOS Touch Optimization -->
   <meta name="format-detection" content="telephone=no">
   <meta name="mobile-web-app-capable" content="yes">
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <!-- iOS App Icons -->
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="icons/icon-167.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="icons/icon-120.png">
   <title>[Game]Candy-Drops</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -412,6 +420,129 @@
         display: none;
       }
     }
+    /* PWA Install Banner */
+    #install-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 12px 16px;
+      padding-top: calc(12px + env(safe-area-inset-top));
+      background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      z-index: 300;
+      transform: translateY(-100%);
+      transition: transform 0.3s ease;
+      box-shadow: 0 4px 20px rgba(255, 105, 180, 0.4);
+    }
+    #install-banner.show {
+      transform: translateY(0);
+    }
+    #install-banner span {
+      display: inline-block;
+      margin-right: 12px;
+      vertical-align: middle;
+    }
+    #install-banner .install-btn {
+      display: inline-block;
+      background: #fff;
+      color: #ff1493;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      vertical-align: middle;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    #install-banner .close-btn {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.3);
+      border: none;
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    /* Icon Generator Button */
+    #icon-generator-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(60, 60, 100, 0.9);
+      color: #e0e0ff;
+      border: 1px solid rgba(100, 100, 150, 0.4);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      z-index: 100;
+      display: none;
+    }
+    #icon-generator-btn.show {
+      display: block;
+    }
+    /* Icon Generator Modal */
+    #icon-gen-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 400;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    #icon-gen-modal.show {
+      display: flex;
+    }
+    #icon-gen-modal .modal-content {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+    #icon-gen-modal h3 {
+      color: #ff1493;
+      margin: 0 0 16px 0;
+    }
+    #icon-gen-modal canvas {
+      border: 2px solid #ff69b4;
+      border-radius: 8px;
+      max-width: 100%;
+    }
+    #icon-gen-modal .btn-row {
+      margin-top: 16px;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    #icon-gen-modal button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    #icon-gen-modal .gen-btn {
+      background: #ff69b4;
+      color: #fff;
+    }
+    #icon-gen-modal .close-moda-btn {
+      background: #eee;
+      color: #666;
+    }
     #overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -713,6 +844,25 @@
 </head>
 <body>
   <canvas id="candy-bg"></canvas>
+  <!-- PWA Install Banner -->
+  <div id="install-banner">
+    <span>📱 ホーム画面に追加して遊ぼう！</span>
+    <span class="install-btn" id="do-install-btn">追加する</span>
+    <button class="close-btn" id="close-install-btn">×</button>
+  </div>
+  <!-- Icon Generator Button (Debug) -->
+  <button id="icon-generator-btn">🎨 アイコン生成</button>
+  <!-- Icon Generator Modal -->
+  <div id="icon-gen-modal">
+    <div class="modal-content">
+      <h3>アプリアイコン生成</h3>
+      <canvas id="icon-preview" width="512" height="512"></canvas>
+      <div class="btn-row">
+        <button class="gen-btn" id="gen-all-icons-btn">全サイズ生成＆DL</button>
+        <button class="close-moda-btn" id="close-icon-modal-btn">閉じる</button>
+      </div>
+    </div>
+  </div>
   <div id="game-container">
     <div id="ui">
       <div id="score">スコア: <span>0</span></div>
@@ -945,6 +1095,10 @@
 
     function landSfx() {
       playTone(196, 'triangle', 0.15, 0.25, 1500);
+    }
+
+    function obstacleLandSfx() {
+      playTone(330, 'sine', 0.1, 0.3, 800);
     }
 
     function chainSfx(level) {
@@ -2006,13 +2160,24 @@
     function startObstaclePhase(numObstacles) {
       obstaclePhase = true;
       obstacleTimer = OBSTACLE_PHASE_DURATION;
-      // Create numObstacles obstacle blocks at random x positions, above visible area
+      // Create numObstacles obstacle blocks distributed across columns, above visible area
       obstacleBlocks = [];
       console.log(`[DEBUG] startObstaclePhase called with numObstacles: ${numObstacles}`);
+
+      // Create a shuffled array of column positions to distribute obstacles
+      const columns = [];
+      for (let c = 0; c < COLS; c++) columns.push(c);
+      // Shuffle columns
+      for (let i = columns.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [columns[i], columns[j]] = [columns[j], columns[i]];
+      }
+
       for (let i = 0; i < numObstacles; i++) {
+        // Use pre-shuffled column, with larger vertical spacing (3 cells apart)
         obstacleBlocks.push({
-          x: Math.floor(Math.random() * COLS),
-          y: -1 - i, // Stagger starting positions above
+          x: columns[i % COLS],
+          y: -1 - i * 3, // 3 cells apart vertically for better distribution
           alpha: 0.25
         });
       }
@@ -2045,6 +2210,7 @@
           if (landY >= 0) {
             board[landY][obs.x] = 'obstacle';
           }
+          obstacleLandSfx();
           obstacleBlocks.splice(i, 1);
         }
       }
@@ -2056,6 +2222,9 @@
           if (landY >= 0) {
             board[landY][obs.x] = 'obstacle';
           }
+        }
+        if (obstacleBlocks.length > 0) {
+          obstacleLandSfx();
         }
         obstacleBlocks = [];
         obstaclePhase = false;
@@ -2119,27 +2288,6 @@
             }
           }
         }
-      }
-
-      // Remove adjacent obstacle blocks (obstacles are cleared when adjacent blocks are cleared)
-      if (totalCleared > 0) {
-        const toRemove = new Set();
-        clearedCells.forEach(([cx, cy]) => {
-          // Check 4 adjacent cells
-          const adj = [[cx-1, cy], [cx+1, cy], [cx, cy-1], [cx, cy+1]];
-          adj.forEach(([ax, ay]) => {
-            if (ax >= 0 && ax < COLS && ay >= 0 && ay < ROWS) {
-              if (board[ay][ax] === 'obstacle') {
-                toRemove.add(`${ax},${ay}`);
-              }
-            }
-          });
-        });
-        toRemove.forEach(key => {
-          const [ox, oy] = key.split(',').map(Number);
-          clearedCells.push([ox, oy, '#aaaaaa']);
-          board[oy][ox] = null;
-        });
       }
 
       if (totalCleared > 0) {
@@ -3260,6 +3408,253 @@
       rankingSaved = false;
       originalInit.apply(this, arguments);
     };
+
+    // ===== PWA Service Worker Registration =====
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((registration) => {
+            console.log('[SW] Registered:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('[SW] Registration failed:', error);
+          });
+      });
+    }
+
+    // ===== PWA Install Banner (iOS workaround - no beforeinstallprompt) =====
+    let deferredPrompt = null;
+    const installBanner = document.getElementById('install-banner');
+    const doInstallBtn = document.getElementById('do-install-btn');
+    const closeInstallBtn = document.getElementById('close-install-btn');
+    const INSTALL_BANNER_KEY = 'candyDrop_installBanner_closed';
+    const INSTALL_BANNER_DELAY = 3000; // 3秒後に表示
+
+    function canShowInstallBanner() {
+      // iOS Safari以外では стандартный PWA install prompt可以使用
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (!isIOS && 'beforeinstallprompt' in window) {
+        return false; // 標準プロンプトが使える場合は独自バナーは不要
+      }
+      // 24時間以内に閉じた場合は再表示しない
+      const lastClosed = localStorage.getItem(INSTALL_BANNER_KEY);
+      if (lastClosed) {
+        const elapsed = Date.now() - parseInt(lastClosed, 10);
+        if (elapsed < 24 * 60 * 60 * 1000) return false;
+      }
+      // すでにインストール済みなら不要
+      if (window.matchMedia('(display-mode: standalone)').matches) return false;
+      return true;
+    }
+
+    function showInstallBanner() {
+      if (installBanner && canShowInstallBanner()) {
+        setTimeout(() => {
+          installBanner.classList.add('show');
+        }, INSTALL_BANNER_DELAY);
+      }
+    }
+
+    if (closeInstallBtn) {
+      closeInstallBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        installBanner.classList.remove('show');
+        localStorage.setItem(INSTALL_BANNER_KEY, Date.now().toString());
+      });
+    }
+
+    if (doInstallBtn) {
+      doInstallBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // iOS Safari: 案内メッセージ表示
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (isIOS) {
+          alert('ホーム画面に追加するには、\n1. 下のシェアボタン tap\n2. 「ホーム画面に追加」tap');
+        } else if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('[PWA] User accepted install');
+            }
+            deferredPrompt = null;
+            installBanner.classList.remove('show');
+          });
+        }
+      });
+    }
+
+    // beforeinstallpromptイベント（NOn-iOS用）
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      showInstallBanner();
+    });
+
+    // 初回起動時にバナー表示判定
+    showInstallBanner();
+
+    // ===== Icon Generator =====
+    const iconGenBtn = document.getElementById('icon-generator-btn');
+    const iconGenModal = document.getElementById('icon-gen-modal');
+    const iconPreview = document.getElementById('icon-preview');
+    const genAllIconsBtn = document.getElementById('gen-all-icons-btn');
+    const closeIconModalBtn = document.getElementById('close-icon-modal-btn');
+
+    // Debug mode: URL parameter ?debug=1 でアイコン生成ボタンを表示
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('debug') === '1' && iconGenBtn) {
+      iconGenBtn.classList.add('show');
+    }
+
+    // キャンディ颜色（ゲーム内と同じ）
+    const CANDY_COLORS = [
+      { name: 'red', color: '#ff4d6d', shadow: '#cc0033' },
+      { name: 'blue', color: '#4dabf7', shadow: '#1971c2' },
+      { name: 'green', color: '#69db7c', shadow: '#2f9e44' },
+      { name: 'yellow', color: '#ffd43b', shadow: '#f08c00' }
+    ];
+
+    function drawCandyIcon(ctx, size) {
+      const padding = size * 0.08;
+      const candySize = (size - padding * 2) * 0.35;
+      const centerX = size / 2;
+      const centerY = size / 2;
+
+      // 背景グラデーション
+      const bgGrad = ctx.createLinearGradient(0, 0, size, size);
+      bgGrad.addColorStop(0, '#ffd6e7');
+      bgGrad.addColorStop(0.5, '#ffc8dd');
+      bgGrad.addColorStop(1, '#ffb6d9');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, size, size);
+
+      // 右上と左下の角丸オーバーレイ
+      ctx.fillStyle = 'rgba(255, 105, 180, 0.1)';
+      ctx.beginPath();
+      ctx.arc(size - padding, padding, size * 0.3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(padding, size - padding, size * 0.25, 0, Math.PI * 2);
+      ctx.fill();
+
+      // キャンディ4色を配置
+      const positions = [
+        { x: -candySize * 0.8, y: -candySize * 0.6 },
+        { x: candySize * 0.8, y: -candySize * 0.6 },
+        { x: -candySize * 0.8, y: candySize * 0.6 },
+        { x: candySize * 0.8, y: candySize * 0.6 }
+      ];
+
+      CANDY_COLORS.forEach((candy, i) => {
+        const pos = positions[i];
+        const cx = centerX + pos.x;
+        const cy = centerY + pos.y;
+
+        // ドロップシャドウ
+        ctx.beginPath();
+        ctx.arc(cx + 4, cy + 6, candySize / 2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0,0,0,0.15)';
+        ctx.fill();
+
+        // メインの丸
+        ctx.beginPath();
+        ctx.arc(cx, cy, candySize / 2, 0, Math.PI * 2);
+        const grad = ctx.createRadialGradient(
+          cx - candySize * 0.2, cy - candySize * 0.2, 0,
+          cx, cy, candySize / 2
+        );
+        grad.addColorStop(0, '#fff');
+        grad.addColorStop(0.3, candy.color);
+        grad.addColorStop(1, candy.shadow);
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // 高光
+        ctx.beginPath();
+        ctx.arc(cx - candySize * 0.15, cy - candySize * 0.15, candySize * 0.15, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.7)';
+        ctx.fill();
+      });
+
+      // タイトルテキスト
+      ctx.fillStyle = '#ff1493';
+      ctx.font = `bold ${size * 0.1}px 'Nunito', sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('CandyDrop', centerX, size - padding);
+
+      // サブタイトル
+      ctx.fillStyle = '#ff69b4';
+      ctx.font = `${size * 0.06}px 'Nunito', sans-serif`;
+      ctx.fillText('Puzzle Game', centerX, size - padding - size * 0.12);
+    }
+
+    function generateIconBlob(size, callback) {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      drawCandyIcon(ctx, size);
+      canvas.toBlob(callback, 'image/png');
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    if (iconGenBtn && iconGenModal) {
+      iconGenBtn.addEventListener('click', () => {
+        iconGenModal.classList.add('show');
+        const ctx = iconPreview.getContext('2d');
+        iconPreview.width = 512;
+        iconPreview.height = 512;
+        drawCandyIcon(ctx, 512);
+      });
+
+      closeIconModalBtn.addEventListener('click', () => {
+        iconGenModal.classList.remove('show');
+      });
+
+      iconGenModal.addEventListener('click', (e) => {
+        if (e.target === iconGenModal) {
+          iconGenModal.classList.remove('show');
+        }
+      });
+
+      if (genAllIconsBtn) {
+        genAllIconsBtn.addEventListener('click', () => {
+          const sizes = [
+            { size: 1024, name: 'icon-1024.png' },
+            { size: 512, name: 'icon-512.png' },
+            { size: 180, name: 'icon-180.png' },
+            { size: 167, name: 'icon-167.png' },
+            { size: 152, name: 'icon-152.png' },
+            { size: 120, name: 'icon-120.png' }
+          ];
+          let index = 0;
+          function nextIcon() {
+            if (index < sizes.length) {
+              const { size, name } = sizes[index];
+              generateIconBlob(size, (blob) => {
+                downloadBlob(blob, name);
+                index++;
+                setTimeout(nextIcon, 300);
+              });
+            }
+          }
+          nextIcon();
+        });
+      }
+    }
 
     requestAnimationFrame(gameLoop);
   </script>
