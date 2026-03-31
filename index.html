@@ -187,6 +187,13 @@
     body.dark-mode .modal-content .control-group p {
       color: #c0c0d0;
     }
+    body.dark-mode #extreme-warning-popup .modal-content {
+      background: #2a2a3a;
+      color: #e0e0ff;
+    }
+    body.dark-mode #extreme-warning-popup .popup-checkbox {
+      color: #e0e0ff;
+    }
     body.dark-mode .help-btn {
       background: #3a3a4a;
       border-color: #ff69b4;
@@ -3665,9 +3672,9 @@
       ctx.globalAlpha = 1;
 
       // ===== Rainbow Gradient Text: "Candy" =====
-      const candyFontSize = size * 0.22;
-      const dropsFontSize = size * 0.1;
-      const textY = centerY + size * 0.05;
+      const candyFontSize = size * 0.30;
+      const dropsFontSize = size * 0.13;
+      const textY = centerY + size * 0.02;
 
       ctx.font = `900 ${candyFontSize}px 'Nunito', sans-serif`;
       ctx.textAlign = 'center';
@@ -3716,7 +3723,7 @@
       ctx.fillText('Drops', centerX, textY + candyFontSize * 0.65);
 
       // ===== 上下のキャンディ装飾 =====
-      const decorCandySize = size * 0.06;
+      const decorCandySize = size * 0.10;
       const decorCandys = [
         { x: centerX - candyWidth * 0.4, y: textY - candyFontSize * 0.7, color: '#ff4d6d' },
         { x: centerX + candyWidth * 0.4, y: textY - candyFontSize * 0.7, color: '#4dabf7' },
@@ -3752,7 +3759,7 @@
       });
 
       // ===== 下部の"Puzzle Game" =====
-      ctx.font = `600 ${size * 0.045}px 'Nunito', sans-serif`;
+      ctx.font = `600 ${size * 0.055}px 'Nunito', sans-serif`;
       ctx.fillStyle = '#ff69b4';
       ctx.shadowColor = 'transparent';
       ctx.shadowBlur = 0;
