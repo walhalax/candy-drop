@@ -3862,12 +3862,13 @@
       const titleBgX = centerX - titleBgWidth / 2;
       const titleBgY = textY - candyFontSize * 0.5 - titlePadding * 0.5;
 
-      // 背景用円（タイトル周囲）
+      // 背景用円（タイトル周囲）- 境界線のみ
       ctx.save();
-      ctx.fillStyle = 'rgba(255, 245, 250, 0.92)';
+      ctx.strokeStyle = 'rgba(255, 105, 180, 0.6)';
+      ctx.lineWidth = size * 0.015;
       ctx.beginPath();
       ctx.roundRect(titleBgX, titleBgY, titleBgWidth, titleBgHeight, size * 0.04);
-      ctx.fill();
+      ctx.stroke();
       ctx.restore();
 
       // 虹色グラデーション（タイトルh1と同じ）
