@@ -3855,6 +3855,21 @@
       const candyText = 'Candy';
       const candyWidth = ctx.measureText(candyText).width;
 
+      // ===== タイトル背景（視認性確保） =====
+      const titlePadding = size * 0.06;
+      const titleBgWidth = candyWidth + titlePadding * 2;
+      const titleBgHeight = candyFontSize * 1.4 + titlePadding;
+      const titleBgX = centerX - titleBgWidth / 2;
+      const titleBgY = textY - candyFontSize * 0.5 - titlePadding * 0.5;
+
+      // 背景用円（タイトル周囲）
+      ctx.save();
+      ctx.fillStyle = 'rgba(255, 245, 250, 0.92)';
+      ctx.beginPath();
+      ctx.roundRect(titleBgX, titleBgY, titleBgWidth, titleBgHeight, size * 0.04);
+      ctx.fill();
+      ctx.restore();
+
       // 虹色グラデーション（タイトルh1と同じ）
       const rainbowGrad = ctx.createLinearGradient(
         centerX - candyWidth, 0,
