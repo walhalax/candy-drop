@@ -142,6 +142,14 @@
         0 2px 0 rgba(100, 100, 200, 0.4),
         0 3px 6px rgba(80, 80, 180, 0.3);
     }
+    body.dark-mode #magic-btn.active {
+      border-color: rgba(150, 150, 255, 0.7);
+      box-shadow: 0 0 20px rgba(100, 100, 200, 0.5);
+    }
+    body.dark-mode #magic-ok-overlay {
+      color: #fff;
+      text-shadow: 0 0 10px rgba(150, 150, 255, 0.8), 0 0 20px rgba(100, 100, 200, 0.6);
+    }
     body.dark-mode #controls {
       color: #e0e0ff;
       text-shadow: 0 1px 0 rgba(150, 150, 255, 0.5), 0 1px 3px rgba(80, 80, 180, 0.2);
@@ -207,6 +215,14 @@
     body.dark-mode #normal-warning-popup .popup-desc {
       color: #c0c0d0;
     }
+    body.dark-mode #time-popup .modal-content {
+      background: #2a2a3a;
+      color: #e0e0ff;
+    }
+    body.dark-mode #time-popup .popup-btn {
+      background: linear-gradient(145deg, #ff69b4, #ff1493);
+      color: #fff;
+    }
     body.dark-mode .help-btn {
       background: #3a3a4a;
       border-color: #ff69b4;
@@ -216,6 +232,15 @@
     body.dark-mode .help-btn:hover {
       background: #4a4a5a;
       transform: scale(1.05);
+    }
+    body.dark-mode .left-btn {
+      background: #2a2a3a;
+      border-color: #ff69b4;
+      color: #ff69b4;
+      box-shadow: 0 3px 10px rgba(100,100,200,0.3);
+    }
+    body.dark-mode .left-btn:hover {
+      background: #3a3a4a;
     }
     body.dark-mode #ranking h3 {
       color: #ff69b4;
@@ -354,6 +379,66 @@
     #next-container canvas {
       border: 2px solid #ff69b4;
       box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
+    }
+    #magic-container {
+      position: relative;
+      margin-top: 4px;
+    }
+    #magic-btn {
+      border: 2px solid #888;
+      border-radius: 50%;
+      background: rgba(100, 100, 100, 0.3);
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+      transition: all 0.3s ease;
+    }
+    #magic-btn.active {
+      border-color: #ff69b4;
+      background: rgba(255, 105, 180, 0.2);
+      opacity: 1;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+      animation: magicPulse 1s ease-in-out infinite;
+    }
+    #magic-btn.active:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(255, 105, 180, 0.7);
+    }
+    #magic-ok-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 28px;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff1493;
+      pointer-events: none;
+      display: none;
+    }
+    #magic-btn.active + #magic-ok-overlay {
+      display: block;
+      animation: okBlink 0.6s ease-in-out infinite;
+    }
+    @keyframes magicPulse {
+      0%, 100% { box-shadow: 0 0 15px rgba(255, 105, 180, 0.4); }
+      50% { box-shadow: 0 0 25px rgba(255, 105, 180, 0.8); }
+    }
+    @keyframes okBlink {
+      0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); }
+    }
+    /* スターシャワオーバーレイ */
+    #star-shower-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 500;
+      display: none;
     }
     #controls {
       width: 100%;
@@ -772,30 +857,41 @@
       color: #ff1493;
       text-shadow: 0 1px 0 #ffb6d9, 0 2px 0 #ff69b4;
     }
-    .help-btn {
+    /* 左サイドボタンコンテナ（フィールド外左側） */
+    #left-side-buttons {
       position: fixed;
-      right: 10px;
-      top: 20px;
-      padding: 10px 20px;
+      left: 5px;
+      top: 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 250;
+      display: none;
+    }
+    #left-side-buttons.visible {
+      display: flex;
+    }
+    .left-btn {
+      padding: 8px 12px;
       border: 2px solid #ff69b4;
-      border-radius: 20px;
+      border-radius: 16px;
       background: #fff0f5;
       color: #ff1493;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.2s ease;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
       user-select: none;
-      box-shadow: 0 4px 15px rgba(255,105,180,0.4);
-      z-index: 250;
+      box-shadow: 0 3px 10px rgba(255,105,180,0.3);
     }
-    .help-btn:hover {
+    .left-btn:hover {
       background: #ffe0ec;
       transform: scale(1.05);
     }
-      transform: scale(1.05);
+    #help-btn {
+      position: static;
     }
     /* Modal */
     .modal {
@@ -975,6 +1071,29 @@
       background: linear-gradient(145deg, #aaaaaa, #888888);
       color: #fff;
     }
+    /* タイム中ポップアップ */
+    #time-popup .popup-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 15px;
+    }
+    #time-popup .popup-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    #time-popup .popup-btn:active {
+      transform: scale(0.98);
+    }
+    #time-popup .popup-btn.start {
+      background: linear-gradient(145deg, #ff69b4, #ff1493);
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -1005,11 +1124,17 @@
       <button id="mute-btn" style="background:none;border:none;cursor:pointer;font-size:20px;padding:0 5px;" title="ミュート切替 (M)">🔊</button>
       <button id="theme-btn" style="background:none;border:none;cursor:pointer;font-size:20px;padding:0 5px;" title="テーマ切替">🌙</button>
     </div>
+    <!-- スターシャワオーバーレイ -->
+    <canvas id="star-shower-overlay"></canvas>
     <div id="game-area">
       <canvas id="board"></canvas>
       <div id="next-container">
         <div>次のブロック</div>
         <canvas id="next" width="80" height="80"></canvas>
+        <div id="magic-container">
+          <canvas id="magic-btn" width="80" height="80"></canvas>
+          <span id="magic-ok-overlay">OK</span>
+        </div>
       </div>
     </div>
     <div id="overlay">
@@ -1034,7 +1159,12 @@
         <div id="ranking-list"></div>
       </div>
     </div>
-    <button id="help-btn" class="help-btn" onclick="document.getElementById('help-modal').classList.remove('hidden')">動かし方</button>
+    <!-- 左サイドボタン（フィールド外左側） -->
+    <div id="left-side-buttons">
+      <button id="help-btn" class="left-btn" onclick="document.getElementById('help-modal').classList.remove('hidden')">動かし方</button>
+      <button id="menu-btn" class="left-btn">メインメニュー</button>
+      <button id="time-btn" class="left-btn">タイム</button>
+    </div>
     <!-- 操作説明モーダル -->
     <div id="help-modal" class="modal hidden" onclick="if(event.target===this)this.classList.add('hidden')">
       <div class="modal-content">
@@ -1086,6 +1216,15 @@
         <div class="popup-buttons">
           <button id="normal-start-btn" class="popup-btn start">はじめる</button>
           <button id="normal-back-btn" class="popup-btn back">もどる</button>
+        </div>
+      </div>
+    </div>
+    <!-- タイム中ポップアップ -->
+    <div id="time-popup" class="modal hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+      <div class="modal-content" style="text-align: center;">
+        <h2>タイム中</h2>
+        <div class="popup-buttons">
+          <button id="time-continue-btn" class="popup-btn start">つづける</button>
         </div>
       </div>
     </div>
@@ -1266,6 +1405,145 @@
 
     function obstacleLandSfx() {
       playTone(330, 'sine', 0.1, 0.3, 800);
+    }
+
+    function thunderSfx() {
+      audioManager.init();
+      const ctx = audioManager.getCtx();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      // Thunder crack - sharp attack with long rumble
+      // Layer 1: Initial crack (high intensity burst)
+      const crackBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.15, ctx.sampleRate);
+      const crackData = crackBuffer.getChannelData(0);
+      for (let i = 0; i < crackData.length; i++) {
+        crackData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.02));
+      }
+      const crackSource = ctx.createBufferSource();
+      crackSource.buffer = crackBuffer;
+
+      const crackGain = ctx.createGain();
+      crackGain.gain.setValueAtTime(0.6, now);
+      crackGain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+      const crackLpf = ctx.createBiquadFilter();
+      crackLpf.type = 'lowpass';
+      crackLpf.frequency.setValueAtTime(2000, now);
+      crackLpf.frequency.exponentialRampToValueAtTime(200, now + 0.15);
+
+      crackSource.connect(crackLpf).connect(crackGain).connect(audioManager.getMaster());
+      crackSource.start(now);
+
+      // Layer 2: Rumble (long low frequency noise)
+      const rumbleBuffer = ctx.createBuffer(1, ctx.sampleRate * 2.5, ctx.sampleRate);
+      const rumbleData = rumbleBuffer.getChannelData(0);
+      for (let i = 0; i < rumbleData.length; i++) {
+        rumbleData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 1.5));
+      }
+      const rumbleSource = ctx.createBufferSource();
+      rumbleSource.buffer = rumbleBuffer;
+
+      const rumbleGain = ctx.createGain();
+      rumbleGain.gain.setValueAtTime(0.5, now + 0.05);
+      rumbleGain.gain.exponentialRampToValueAtTime(0.001, now + 2.5);
+
+      const rumbleLpf = ctx.createBiquadFilter();
+      rumbleLpf.type = 'lowpass';
+      rumbleLpf.frequency.setValueAtTime(150, now + 0.05);
+
+      rumbleSource.connect(rumbleLpf).connect(rumbleGain).connect(audioManager.getMaster());
+      rumbleSource.start(now + 0.05);
+
+      // Layer 3: High crack overlay
+      const highBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.08, ctx.sampleRate);
+      const highData = highBuffer.getChannelData(0);
+      for (let i = 0; i < highData.length; i++) {
+        highData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.01));
+      }
+      const highSource = ctx.createBufferSource();
+      highSource.buffer = highBuffer;
+
+      const highGain = ctx.createGain();
+      highGain.gain.setValueAtTime(0.3, now);
+      highGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+      const highHpf = ctx.createBiquadFilter();
+      highHpf.type = 'highpass';
+      highHpf.frequency.setValueAtTime(3000, now);
+
+      highSource.connect(highHpf).connect(highGain).connect(audioManager.getMaster());
+      highSource.start(now);
+    }
+
+    // Metallic kinKon sound for magic activation
+    function playKinKon(ctx, startTime) {
+      // High frequency metallic ping with harmonics
+      const freq = 2500 + Math.random() * 500;
+
+      // Main tone
+      const osc1 = ctx.createOscillator();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(freq, startTime);
+
+      // Metallic harmonic
+      const osc2 = ctx.createOscillator();
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(freq * 2.5, startTime);
+
+      // Third metallic tone
+      const osc3 = ctx.createOscillator();
+      osc3.type = 'square';
+      osc3.frequency.setValueAtTime(freq * 4, startTime);
+
+      const gain1 = ctx.createGain();
+      gain1.gain.setValueAtTime(0.08, startTime);
+      gain1.gain.exponentialRampToValueAtTime(0.001, startTime + 0.4);
+
+      const gain2 = ctx.createGain();
+      gain2.gain.setValueAtTime(0.03, startTime);
+      gain2.gain.exponentialRampToValueAtTime(0.001, startTime + 0.2);
+
+      const gain3 = ctx.createGain();
+      gain3.gain.setValueAtTime(0.015, startTime);
+      gain3.gain.exponentialRampToValueAtTime(0.001, startTime + 0.15);
+
+      // Highpass for metallic quality
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.setValueAtTime(1500, startTime);
+
+      osc1.connect(gain1).connect(filter);
+      osc2.connect(gain2).connect(filter);
+      osc3.connect(gain3).connect(filter);
+      filter.connect(audioManager.getMaster());
+
+      osc1.start(startTime);
+      osc1.stop(startTime + 0.4);
+      osc2.start(startTime);
+      osc2.stop(startTime + 0.2);
+      osc3.start(startTime);
+      osc3.stop(startTime + 0.15);
+    }
+
+    function startMagicSparkleLoop() {
+      stopMagicSparkleLoop();
+      audioManager.init();
+      const ctx = audioManager.getCtx();
+      if (!ctx) return;
+
+      // Play metallic kinKon sounds every 150ms
+      magicSparkleInterval = setInterval(() => {
+        if (!ctx || ctx.state === 'closed') return;
+        playKinKon(ctx, ctx.currentTime);
+      }, 150);
+    }
+
+    function stopMagicSparkleLoop() {
+      if (magicSparkleInterval) {
+        clearInterval(magicSparkleInterval);
+        magicSparkleInterval = null;
+      }
     }
 
     function chainSfx(level) {
@@ -1512,6 +1790,415 @@
     const nextCanvas = document.getElementById('next');
     const nextCtx = nextCanvas.getContext('2d');
 
+    // ===== MAGIC BUTTON =====
+    const magicCanvas = document.getElementById('magic-btn');
+    const magicCtx = magicCanvas.getContext('2d');
+    const starShowerCanvas = document.getElementById('star-shower-overlay');
+    const starShowerCtx = starShowerCanvas.getContext('2d');
+
+    function updateMagicButton() {
+      if (!magicCanvas) return;
+      magicCtx.clearRect(0, 0, 80, 80);
+      if (magicActive && !magicUsed) {
+        // Active state - draw witch hat with glow (background mostly transparent)
+        const blinkIntensity = (Math.sin(magicBlinkPhase) + 1) / 2;
+        const grad = magicCtx.createRadialGradient(40, 40, 0, 40, 40, 38);
+        grad.addColorStop(0, `rgba(255, 200, 100, ${0.2 + blinkIntensity * 0.2})`);
+        grad.addColorStop(0.7, `rgba(255, 150, 200, ${0.15 + blinkIntensity * 0.15})`);
+        grad.addColorStop(1, `rgba(200, 100, 255, ${0.1 + blinkIntensity * 0.1})`);
+        magicCtx.fillStyle = grad;
+        magicCtx.beginPath();
+        magicCtx.arc(40, 40, 36, 0, Math.PI * 2);
+        magicCtx.fill();
+        // Draw witch hat with glow
+        magicCtx.shadowColor = '#ff69b4';
+        magicCtx.shadowBlur = 10 + blinkIntensity * 15;
+        drawWitchHat(magicCtx, 40, 40, 52, '#2a2a4a');
+        magicCtx.shadowBlur = 0;
+        magicCanvas.classList.add('active');
+      } else {
+        // Inactive state - Layer 1: background circle
+        const grad = magicCtx.createRadialGradient(40, 40, 0, 40, 40, 38);
+        grad.addColorStop(0, 'rgba(180, 180, 200, 0.2)');
+        grad.addColorStop(1, 'rgba(100, 100, 120, 0.12)');
+        magicCtx.fillStyle = grad;
+        magicCtx.beginPath();
+        magicCtx.arc(40, 40, 36, 0, Math.PI * 2);
+        magicCtx.fill();
+
+        // Layer 2: witch hat (transparent in inactive state)
+        drawWitchHat(magicCtx, 40, 40, 52, '#333344', 0.5);
+
+        // Layer 3: meter bars (solid fill, filling entire circle interior)
+        const divisions = 30;
+        const barHeight = 2.6; // Height per bar (even larger)
+        const barGap = 0;      // No gap - bars touch each other
+        const divWidth = 78;   // Bars wider than circle to ensure full coverage
+        const startX = 1;      // Start further left to extend beyond circle edge
+        const startY = 2;      // Move up to extend beyond circle top
+        const blinkIntensity = (Math.sin(magicBlinkPhase) + 1) / 2;
+        const chargeRatio = magicCharge / MAGIC_THRESHOLD;
+        for (let i = 0; i < divisions; i++) {
+          const y = startY + (divisions - 1 - i) * (barHeight + barGap);
+          const isFilled = i < magicCharge;
+          if (isFilled) {
+            // Filled bar: solid vivid orange with glow
+            magicCtx.fillStyle = `rgb(255, 85, 0)`;
+            magicCtx.shadowColor = '#ff6600';
+            magicCtx.shadowBlur = 3 + blinkIntensity * 6;
+            magicCtx.fillRect(startX, y, divWidth, barHeight);
+          } else {
+            // Empty bar: solid dark gray (fully opaque)
+            magicCtx.fillStyle = 'rgb(60, 60, 75)';
+            magicCtx.shadowBlur = 0;
+            magicCtx.fillRect(startX, y, divWidth, barHeight);
+          }
+        }
+        magicCtx.shadowBlur = 0;
+
+        // Layer 4: circular frame (front)
+        magicCtx.strokeStyle = 'rgba(140, 140, 160, 0.75)';
+        magicCtx.lineWidth = 2.5;
+        magicCtx.beginPath();
+        magicCtx.arc(40, 40, 36, 0, Math.PI * 2);
+        magicCtx.stroke();
+
+        magicCanvas.classList.remove('active');
+      }
+    }
+
+    function createLightningBolt(x, y, targetY) {
+      const segments = [];
+      const numBranches = 3 + Math.floor(Math.random() * 3);
+      for (let b = 0; b < numBranches; b++) {
+        const branch = [];
+        let cx = x + (Math.random() - 0.5) * 100;
+        let cy = y;
+        const endY = targetY + Math.random() * 50;
+        const segmentLength = 30 + Math.random() * 40;
+        while (cy < endY) {
+          const nx = cx + (Math.random() - 0.5) * 60;
+          const ny = cy + segmentLength;
+          branch.push({ x1: cx, y1: cy, x2: nx, y2: ny });
+          cx = nx;
+          cy = ny;
+          // Branching
+          if (Math.random() < 0.3 && branch.length > 2) {
+            const branchEndY = cy + 30 + Math.random() * 50;
+            let bx = cx + (Math.random() - 0.5) * 40;
+            let by = cy;
+            while (by < branchEndY) {
+              const bnx = bx + (Math.random() - 0.5) * 40;
+              const bny = by + 20 + Math.random() * 20;
+              branch.push({ x1: bx, y1: by, x2: bnx, y2: bny, isBranch: true });
+              bx = bnx;
+              by = bny;
+            }
+          }
+        }
+        segments.push(branch);
+      }
+      return {
+        x,
+        segments,
+        life: 1.0,
+        width: 2 + Math.random() * 3
+      };
+    }
+
+    function triggerLightning() {
+      const canvas = document.getElementById('board');
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      const GRID_OFFSET_X = (window.innerWidth - COLS * CELL) / 2;
+      const GRID_OFFSET_Y = 50;
+      // Create multiple lightning bolts across the board
+      for (let i = 0; i < 5; i++) {
+        const lx = GRID_OFFSET_X + Math.random() * COLS * CELL;
+        const ly = GRID_OFFSET_Y - 20;
+        const targetY = GRID_OFFSET_Y + ROWS * CELL + 20;
+        lightningBolts.push(createLightningBolt(lx, ly, targetY));
+      }
+      lightningTimer = 0;
+    }
+
+    function drawLightningBolts(ctx) {
+      if (lightningBolts.length === 0) return;
+      for (const bolt of lightningBolts) {
+        ctx.save();
+        ctx.globalAlpha = bolt.life;
+        ctx.strokeStyle = '#ffffff';
+        ctx.shadowColor = '#88ccff';
+        ctx.shadowBlur = 20 * bolt.life;
+        ctx.lineWidth = bolt.width;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        for (const branch of bolt.segments) {
+          ctx.beginPath();
+          for (const seg of branch) {
+            ctx.moveTo(seg.x1, seg.y1);
+            ctx.lineTo(seg.x2, seg.y2);
+          }
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+    }
+
+    function updateLightning(delta) {
+      if (lightningBolts.length === 0) return;
+      lightningTimer += delta;
+      // Fade out quickly
+      for (let i = lightningBolts.length - 1; i >= 0; i--) {
+        lightningBolts[i].life -= delta * 0.005;
+        if (lightningBolts[i].life <= 0) {
+          lightningBolts.splice(i, 1);
+        }
+      }
+    }
+
+    function drawStars(ctx, cx, cy, radius) {
+      const starColors = ['#ffff00', '#ff69b4', '#ffffff', '#ffcc00', '#ff1493'];
+      for (let i = 0; i < 8; i++) {
+        const angle = (i / 8) * Math.PI * 2;
+        const dist = radius * (0.4 + Math.random() * 0.3);
+        const x = cx + Math.cos(angle) * dist;
+        const y = cy + Math.sin(angle) * dist;
+        const size = 3 + Math.random() * 3;
+        ctx.fillStyle = starColors[Math.floor(Math.random() * starColors.length)];
+        drawStar(ctx, x, y, size);
+      }
+    }
+
+    function drawStar(ctx, cx, cy, size) {
+      ctx.beginPath();
+      for (let i = 0; i < 5; i++) {
+        const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+        const x = cx + Math.cos(angle) * size;
+        const y = cy + Math.sin(angle) * size;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // Draw witch hat on magic button
+    function drawWitchHat(ctx, cx, cy, size, color = '#222222', alpha = 1.0) {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      const hatColor = color || '#222222';
+      const bandColor = '#ff69b4'; // Pink band
+      const buckleColor = '#ffd700'; // Gold buckle
+
+      // Hat body (cone shape) - slightly bent
+      ctx.fillStyle = hatColor;
+      ctx.beginPath();
+      ctx.moveTo(cx - size * 0.5, cy + size * 0.3); // Left base
+      ctx.quadraticCurveTo(cx - size * 0.2, cy - size * 0.3, cx + size * 0.3, cy - size * 0.8); // Bent top
+      ctx.quadraticCurveTo(cx + size * 0.1, cy - size * 0.2, cx + size * 0.5, cy + size * 0.3); // Right base
+      ctx.closePath();
+      ctx.fill();
+
+      // Hat brim (ellipse at bottom)
+      ctx.fillStyle = hatColor;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + size * 0.35, size * 0.7, size * 0.15, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Hat band (pink stripe)
+      ctx.fillStyle = bandColor;
+      ctx.beginPath();
+      ctx.moveTo(cx - size * 0.45, cy + size * 0.1);
+      ctx.quadraticCurveTo(cx - size * 0.15, cy + size * 0.05, cx + size * 0.35, cy - size * 0.15);
+      ctx.lineTo(cx + size * 0.38, cy - size * 0.05);
+      ctx.quadraticCurveTo(cx - size * 0.1, cy + size * 0.15, cx - size * 0.48, cy + size * 0.18);
+      ctx.closePath();
+      ctx.fill();
+
+      // Buckle (gold rectangle)
+      ctx.fillStyle = buckleColor;
+      ctx.fillRect(cx - size * 0.08, cy - size * 0.02, size * 0.16, size * 0.12);
+      ctx.fillStyle = hatColor;
+      ctx.fillRect(cx - size * 0.05, cy + size * 0.02, size * 0.1, size * 0.06);
+
+      // Stars decoration on hat
+      ctx.fillStyle = '#ffd700';
+      drawStar(ctx, cx - size * 0.15, cy - size * 0.35, size * 0.08);
+      ctx.fillStyle = '#ff69b4';
+      drawStar(ctx, cx + size * 0.1, cy - size * 0.5, size * 0.06);
+
+      ctx.restore();
+    }
+
+    // Magic button click handler
+    if (magicCanvas) {
+      magicCanvas.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!magicActive || magicUsed || !started || gameOver) return;
+        activateMagic();
+      });
+    }
+
+    function activateMagic() {
+      if (magicUsed || !magicActive) return;
+      magicUsed = true;
+      magicActive = false;
+      magicPaused = true;
+      updateMagicButton();
+      // Initial dramatic flash and shake (short burst)
+      flashIntensity = 3.0;
+      flashColor = '#ffffff';
+      shakeIntensity = 60;
+      // Start continuous sparkling sound immediately
+      startMagicSparkleLoop();
+      // Start star shower
+      initStarShower();
+      magicStarShowerActive = true;
+      // After 2 seconds, trigger block clear
+      setTimeout(() => {
+        clearRandomColor();
+      }, 2000);
+    }
+
+    function initStarShower() {
+      starShowerCanvas.width = window.innerWidth;
+      starShowerCanvas.height = window.innerHeight;
+      starParticles = [];
+      // Massive initial star shower
+      for (let i = 0; i < 300; i++) {
+        starParticles.push(createStarParticle());
+      }
+      starShowerCanvas.style.display = 'block';
+      starShowerCanvas.style.zIndex = '500';
+    }
+
+    function createStarParticle() {
+      return {
+        x: Math.random() * starShowerCanvas.width,
+        y: -50 - Math.random() * 200,
+        speed: 6 + Math.random() * 12,
+        size: 6 + Math.random() * 14,
+        color: ['#ffff00', '#ff69b4', '#ffffff', '#ffcc00', '#ff1493', '#00ffff', '#ff6600', '#ff00ff'][Math.floor(Math.random() * 8)],
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.4
+      };
+    }
+
+    function updateStarShower(delta) {
+      if (starParticles.length === 0 && !magicStarShowerActive) return;
+      starShowerCtx.clearRect(0, 0, starShowerCanvas.width, starShowerCanvas.height);
+
+      // Continuously add new particles during magic shower
+      if (magicStarShowerActive) {
+        for (let i = 0; i < 5; i++) {
+          starParticles.push(createStarParticle());
+        }
+        // Keep shake going during star shower
+        if (shakeIntensity < 20) {
+          shakeIntensity = 20 + Math.random() * 10;
+        }
+      }
+
+      let activeCount = 0;
+      for (const p of starParticles) {
+        p.y += p.speed;
+        p.rotation += p.rotationSpeed;
+        if (p.y < starShowerCanvas.height + 50) {
+          activeCount++;
+          starShowerCtx.save();
+          starShowerCtx.translate(p.x, p.y);
+          starShowerCtx.rotate(p.rotation);
+          // Add strong glow effect
+          starShowerCtx.shadowColor = p.color;
+          starShowerCtx.shadowBlur = 25;
+          starShowerCtx.fillStyle = p.color;
+          drawStar(starShowerCtx, 0, 0, p.size);
+          // Extra sparkle overlay
+          starShowerCtx.globalAlpha = 0.5;
+          starShowerCtx.fillStyle = '#ffffff';
+          drawStar(starShowerCtx, 0, 0, p.size * 0.5);
+          starShowerCtx.restore();
+        }
+      }
+
+      // Only clear when not in magic mode
+      if (activeCount === 0 && !magicStarShowerActive) {
+        starParticles = [];
+        starShowerCanvas.style.display = 'none';
+      }
+    }
+
+    function clearRandomColor() {
+      // Pick a random non-null, non-obstacle color from board
+      const colorCounts = {};
+      for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+          const cell = board[y][x];
+          if (cell && cell !== 'obstacle') {
+            colorCounts[cell] = (colorCounts[cell] || 0) + 1;
+          }
+        }
+      }
+      const colors = Object.keys(colorCounts);
+      if (colors.length === 0) {
+        finishMagic();
+        return;
+      }
+      const targetColor = colors[Math.floor(Math.random() * colors.length)];
+      // Find all cells with target color for effect
+      const cellsToRemove = [];
+      for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+          if (board[y][x] === targetColor) {
+            cellsToRemove.push([x, y]);
+          }
+        }
+      }
+      // Dramatic flash and shake when clearing
+      flashIntensity = 3.0;
+      flashColor = targetColor;
+      shakeIntensity = 50;
+      // Set burst animation for effect
+      burstingCells = cellsToRemove.map(([x, y]) => [x, y, targetColor]);
+      burstTimer = 0;
+      magicClearingInProgress = true;
+      magicJustCleared = true; // Don't count this clear as a chain
+      // Clear after burst duration using setTimeout
+      setTimeout(() => {
+        cellsToRemove.forEach(([x, y]) => {
+          board[y][x] = null;
+        });
+        // Extra flash when cleared
+        flashIntensity = 2.0;
+        flashColor = '#ffffff';
+        shakeIntensity = 30;
+        finishMagic();
+      }, 900);
+    }
+
+    function finishMagic() {
+      magicUsed = false;
+      magicCharge = 0;
+      magicJustFinished = true;
+      updateMagicButton();
+      magicPaused = false;
+      magicStarShowerActive = false;
+      // Stop sparkle sound
+      stopMagicSparkleLoop();
+      // Clear star shower
+      starParticles = [];
+      starShowerCanvas.style.display = 'none';
+      // Set clearing in progress flag to prevent meter charge during gravity/chain settlement
+      magicClearingInProgress = true;
+      // Apply gravity after clearing
+      applyGravity();
+      // Clear flag after gravity/chain settles (500ms should cover chain reactions)
+      setTimeout(() => {
+        magicClearingInProgress = false;
+      }, 500);
+    }
+
     // ===== CANDY BACKGROUND ANIMATION =====
     (function initCandyBackground() {
       const bgCanvas = document.getElementById('candy-bg');
@@ -1699,6 +2386,7 @@
     let nextPuyo = null;
     let score = 0;
     let chain = 0;
+    let maxChain = 0; // Track maximum chain achieved during gameplay
     let gameOver = false;
     let paused = false;
     let started = false;
@@ -1727,6 +2415,22 @@
     let burstTimer = 0;
     const BURST_DURATION = 900;
 
+    // Magic button state
+    let magicCharge = 0; // Count of blocks cleared toward magic
+    const MAGIC_THRESHOLD = 30; // Blocks needed to activate magic
+    let magicActive = false; // Is magic ready to use
+    let magicUsed = false; // Magic is currently being used (animating)
+    let magicClearingInProgress = false; // Magic clear is in progress (uses setTimeout, not game loop burst)
+    let magicJustCleared = false; // Magic just cleared blocks, don't count as chain this cycle
+    let magicJustFinished = false; // Magic just finished, skip next applyGravity to avoid double-gravity
+    let magicPaused = false; // Magic pause in effect (no "一時停止" display)
+    let magicFlashInterval = null; // Interval for periodic flashes during magic
+    let magicStarShowerActive = false; // Star shower is actively running for magic
+    let magicSparkleInterval = null; // Continuous sparkle sound interval
+    let magicChargeDisplay = 0; // For animation
+    let magicBlinkPhase = 0; // For blinking effect on charge
+    let starParticles = []; // For star shower effect
+
     // Flash effect state
     let flashIntensity = 0;
     let flashColor = '#ffffff';
@@ -1744,6 +2448,10 @@
     let shakeIntensity = 0;
     let shakeOffsetX = 0;
     let shakeOffsetY = 0;
+
+    // Lightning bolt state (for magic effect)
+    let lightningBolts = []; // Array of {x, y, segments, life, width}
+    let lightningTimer = 0;
 
     // Cascade chain counter (tracks consecutive matches after gravity)
     let cascadeChain = 0;
@@ -1792,6 +2500,7 @@
       instantFlash = 0;
       shakeIntensity = 0;
       cascadeChain = 0;
+      maxChain = 0; // Reset max chain on new game
       chainLevel = 0;
       popupText = '';
       popupAlpha = 0;
@@ -1809,6 +2518,18 @@
       obstacleTimer = 0;
       pendingObstacle = false;
       fastDrop = false;
+      magicCharge = 0;
+      magicActive = false;
+      magicUsed = false;
+      magicClearingInProgress = false;
+      magicJustCleared = false;
+      magicJustFinished = false;
+      magicPaused = false;
+      magicBlinkPhase = 0;
+      magicChargeDisplay = 0;
+      starParticles = [];
+      lightningBolts = [];
+      magicStarShowerActive = false;
       // Calculate initial fall interval based on difficulty
       updateFallInterval();
       updateUI();
@@ -1817,6 +2538,8 @@
       if (restartBtn) restartBtn.style.display = 'none';
       const titleBtn = document.getElementById('title-btn');
       if (titleBtn) titleBtn.style.display = 'none';
+      // Update magic button display
+      updateMagicButton();
     }
 
     function updateFallInterval() {
@@ -1871,6 +2594,26 @@
         flashIntensity *= 0.88;
         if (flashIntensity < 0.02) flashIntensity = 0;
       }
+
+      // Update magic button blink phase (faster as charge increases)
+      if (magicCharge > 0 && !magicActive && !magicUsed) {
+        const speedMultiplier = 1 + (magicCharge / MAGIC_THRESHOLD) * 3;
+        magicBlinkPhase += delta * 0.01 * speedMultiplier;
+      } else {
+        magicBlinkPhase = 0;
+      }
+
+      // Burst animation - updates even during magic pause for visual continuity
+      if (burstingCells.length > 0) {
+        burstTimer += delta;
+        if (burstTimer >= BURST_DURATION) {
+          burstingCells = [];
+          burstTimer = 0;
+        }
+      }
+
+      // Update lightning bolts
+      updateLightning(delta);
     }
 
     function createPuyo() {
@@ -2457,7 +3200,8 @@
         }
       }
 
-      // Remove adjacent obstacle blocks (obstacles are cleared when adjacent blocks are cleared)
+      // Remove adjacent obstacle blocks ONLY when adjacent colored blocks are cleared
+      // Transparent blocks NEVER disappear on their own, even when 4+ connected
       if (totalCleared > 0) {
         const toRemove = new Set();
         clearedCells.forEach(([cx, cy]) => {
@@ -2479,16 +3223,32 @@
       }
 
       if (totalCleared > 0) {
-        chain = chains;
-        updateUI();
-        triggerChainPop();
+        // Don't count magic's own clear as a chain
+        if (magicJustCleared) {
+          chain = 0;
+          magicJustCleared = false; // Reset for next clear
+        } else {
+          chain = chains;
+          updateUI();
+          triggerChainPop();
+        }
+        // Charge magic: chains * 2 (each chain = distinct color group = 2 charges)
+        // Don't charge during magic clearing or right after magic
+        if (!magicUsed && !magicActive && !magicClearingInProgress) {
+          magicCharge += chains * 2;
+          if (magicCharge >= MAGIC_THRESHOLD) {
+            magicCharge = MAGIC_THRESHOLD;
+            magicActive = true;
+          }
+          updateMagicButton();
+        }
         return clearedCells;
       }
       return null;
     }
 
     function update(delta) {
-      if (!started || gameOver || paused) return;
+      if (!started || gameOver || paused || magicPaused) return;
 
       // Update rotation timer and complete delay
       if (isRotating) {
@@ -2506,17 +3266,16 @@
         if (rotationCompleteTimer < 0) rotationCompleteTimer = 0;
       }
 
-      // Burst animation - ALWAYS updates, even during freeze
-      if (burstingCells.length > 0) {
+      // Burst animation - ONLY update visual timer during magic pause (setTimeout handles completion)
+      // During magic pause, updateVisualEffects handles the visual only
+      // During normal gameplay, this block handles burst completion
+      if (burstingCells.length > 0 && !magicClearingInProgress) {
         burstTimer += delta;
         if (burstTimer >= BURST_DURATION) {
-          // Animation finished
           burstingCells = [];
           burstTimer = 0;
-          // Apply gravity then check for chain
           applyGravity();
         }
-        // Burst animation continues even during freeze
       }
 
       // Freeze effect - only blocks game logic, not animations
@@ -2536,10 +3295,15 @@
       }
 
       // Stage 2: Gravity settling (blocks falling after clear)
-      let gravityMoved = applyGravity();
-      if (gravityMoved) {
-        // Wait for gravity to finish
-        return;
+      // Skip if magic just finished (finishMagic already called applyGravity)
+      if (magicJustFinished) {
+        magicJustFinished = false;
+      } else {
+        let gravityMoved = applyGravity();
+        if (gravityMoved) {
+          // Wait for gravity to finish
+          return;
+        }
       }
 
       // Stage 3: Check for chain reactions after gravity
@@ -2550,6 +3314,10 @@
 
         // Increment cascade chain counter
         cascadeChain++;
+        if (cascadeChain > maxChain) {
+          maxChain = cascadeChain; // Track max chain
+          console.log('[Chain] cascadeChain=' + cascadeChain + ', maxChain=' + maxChain);
+        }
         chain = cascadeChain; // Sync display counter
         updateUI(); // Update chain display immediately
         triggerChainPop(); // Trigger pop animation
@@ -2584,7 +3352,7 @@
           popupText = chainTexts[chainLevel] || '';
           popupColor = chainColors[chainLevel] || '#ffffff';
           popupAlpha = 1.0;
-          popupScale = 0.9 + chainLevel * 0.25;
+          popupScale = 1.0 + chainLevel * 0.2;
         }
 
         // Shockwaves from burst cells - 段階的増幅
@@ -2609,8 +3377,8 @@
 
       // Check if we should start pending obstacle phase (after all chain/gravity settling complete)
       if (pendingObstacle && !obstaclePhase) {
-        // Calculate number of obstacles to drop: ROUND(TRUNCATE(1.25^(obstacleDrops/10) * 10) / 10)
-        const numObstacles = Math.round(Math.floor(Math.pow(1.2, obstacleDrops / 10) * 10) / 10);
+        // Calculate number of obstacles to drop: ROUND(TRUNCATE(1.1^(obstacleDrops/10) * 10) / 10)
+        const numObstacles = Math.round(Math.floor(Math.pow(1.1, obstacleDrops / 10) * 10) / 10);
         console.log(`[DEBUG] obstacleDrops: ${obstacleDrops}, numObstacles: ${numObstacles}`);
         startObstaclePhase(numObstacles);
         pendingObstacle = false;
@@ -2899,22 +3667,42 @@
       return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
     }
 
-    function drawBurstParticle(ctx, x, y, color, progress) {
+    function drawBurstParticle(ctx, x, y, color, progress, isMagic = false) {
       // Simple lightweight burst effect - no loops, no save/restore
       const cx = x + CELL / 2;
       const cy = y + CELL / 2;
       const alpha = 1 - progress;
-      const radius = CELL * (0.5 + progress * 2);
+      // Magic bursts are larger and more dramatic
+      const radiusMultiplier = isMagic ? 3 : 2;
+      const radius = CELL * (0.5 + progress * radiusMultiplier);
 
-      // Simple radial gradient glow
+      // Glow effect - stronger for magic
+      if (isMagic) {
+        ctx.save();
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 30;
+      }
+
+      // Simple radial gradient glow - brighter for magic
       const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-      grad.addColorStop(0, `rgba(255,255,255,${alpha * 0.8})`);
-      grad.addColorStop(0.3, hexToRgba(color, alpha * 0.5));
+      grad.addColorStop(0, `rgba(255,255,255,${alpha})`);
+      grad.addColorStop(0.2, hexToRgba(color, alpha * 0.8));
+      grad.addColorStop(0.5, hexToRgba(color, alpha * 0.4));
       grad.addColorStop(1, 'transparent');
       ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       ctx.fill();
+
+      // Extra ring for magic effect
+      if (isMagic) {
+        ctx.strokeStyle = `rgba(255,255,255,${alpha * 0.5})`;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius * 0.8, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
     }
 
     function hexToRgba(hex, alpha) {
@@ -3102,17 +3890,17 @@
       ctx.lineWidth = 2;
       ctx.strokeRect(GRID_OFFSET_X, GRID_OFFSET_Y, COLS * CELL, ROWS * CELL);
 
-      // Draw burst particles
-      if (burstingCells.length > 0) {
-        const progress = Math.min(burstTimer / BURST_DURATION, 1);
-        burstingCells.forEach(([x, y, color]) => {
-          drawBurstParticle(ctx, x * CELL + GRID_OFFSET_X, y * CELL + GRID_OFFSET_Y, color, progress);
-        });
-      }
+      // Draw lightning bolts (magic effect)
+      drawLightningBolts(ctx);
 
       for (let y = 0; y < ROWS; y++) {
         for (let x = 0; x < COLS; x++) {
           if (board[y] && board[y][x]) {
+            // Skip drawing blocks that are being cleared by magic
+            if (magicClearingInProgress) {
+              const isBeingCleared = burstingCells.some(([bx, by]) => bx === x && by === y);
+              if (isBeingCleared) continue;
+            }
             if (board[y][x] === 'obstacle') {
               // Draw obstacle block with dark borders (isObstacle=true)
               drawWrappedCandy(ctx, x * CELL + GRID_OFFSET_X, y * CELL + GRID_OFFSET_Y, '#888888', CELL, 0.7, 0, true);
@@ -3136,7 +3924,17 @@
         drawPuyo(ctx, Math.round(sp.x) * CELL + GRID_OFFSET_X, Math.floor(sp.y) * CELL + GRID_OFFSET_Y, current.colors[1]);
       }
 
-      if (paused && started && !gameOver) {
+      // Draw burst particles ON TOP of everything (for both normal and magic)
+      if (burstingCells.length > 0) {
+        const progress = Math.min(burstTimer / BURST_DURATION, 1);
+        burstingCells.forEach(([x, y, color]) => {
+          // Enhanced burst for magic (larger, more intense)
+          const isMagic = magicClearingInProgress;
+          drawBurstParticle(ctx, x * CELL + GRID_OFFSET_X, y * CELL + GRID_OFFSET_Y, color, progress, isMagic);
+        });
+      }
+
+      if (paused && started && !gameOver && !magicPaused) {
         ctx.fillStyle = 'rgba(255,200,220,0.7)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#ff1493';
@@ -3172,21 +3970,53 @@
 
       ctx.restore(); // End shake offset
 
-      // Draw chain popup text
+      // Draw chain popup text (left-aligned)
       if (popupAlpha > 0) {
         ctx.save();
         ctx.globalAlpha = popupAlpha;
-        ctx.fillStyle = popupColor;
         ctx.shadowColor = '#fff';
         ctx.shadowBlur = 30;
-        ctx.font = `bold ${Math.floor(48 * popupScale)}px Courier New`;
-        ctx.textAlign = 'center';
+        ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
-        // Draw stroke for emphasis
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 4;
-        ctx.strokeText(popupText, canvas.width / 2, canvas.height / 2 - 30);
-        ctx.fillText(popupText, canvas.width / 2, canvas.height / 2 - 30);
+        // Split number and suffix (e.g., "2連続!!" -> "2" + "連続!!")
+        const match = popupText.match(/^(\d)(.*)$/);
+        if (match) {
+          const numStr = match[1];
+          const suffixStr = match[2];
+          const numFontSize = Math.floor(72 * popupScale);
+          const suffixFontSize = Math.floor(36 * popupScale);
+          const suffixSpacing = 40; // Space between number and suffix
+          // Measure text for center alignment
+          ctx.font = `bold ${numFontSize}px Courier New`;
+          const numWidth = ctx.measureText(numStr).width;
+          ctx.font = `bold ${suffixFontSize}px Courier New`;
+          const suffixWidth = ctx.measureText(suffixStr).width;
+          const totalWidth = numWidth + suffixSpacing + suffixWidth;
+          const centerX = canvas.width / 2;
+          const startX = centerX - totalWidth / 2;
+          // Draw number (larger)
+          ctx.fillStyle = popupColor;
+          ctx.font = `bold ${numFontSize}px Courier New`;
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 4;
+          ctx.textAlign = 'left';
+          ctx.strokeText(numStr, startX, canvas.height / 2 - 30);
+          ctx.fillText(numStr, startX, canvas.height / 2 - 30);
+          // Draw suffix (smaller) with spacing after number
+          ctx.font = `bold ${suffixFontSize}px Courier New`;
+          const suffixX = startX + numWidth + suffixSpacing;
+          ctx.strokeText(suffixStr, suffixX, canvas.height / 2 - 30);
+          ctx.fillText(suffixStr, suffixX, canvas.height / 2 - 30);
+        } else {
+          // Fallback: draw as single text (centered)
+          ctx.fillStyle = popupColor;
+          ctx.font = `bold ${Math.floor(48 * popupScale)}px Courier New`;
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 4;
+          ctx.textAlign = 'center';
+          ctx.strokeText(popupText, canvas.width / 2, canvas.height / 2 - 30);
+          ctx.fillText(popupText, canvas.width / 2, canvas.height / 2 - 30);
+        }
         ctx.restore();
         popupAlpha -= 0.012;
       }
@@ -3214,6 +4044,11 @@
 
       // Update all visual effects (runs even during freeze)
       updateVisualEffects(delta);
+
+      // Update star shower effect
+      if (starParticles.length > 0) {
+        updateStarShower(delta);
+      }
 
       update(delta);
       draw();
@@ -3473,6 +4308,9 @@
       spawn();
       clickSfx();
       startBGM();
+      // Show left-side buttons during game
+      const leftSideButtons = document.getElementById('left-side-buttons');
+      if (leftSideButtons) leftSideButtons.classList.add('visible');
     }
 
     // ===== Difficulty Selection =====
@@ -3491,12 +4329,14 @@
           localStorage.setItem(NORMAL_WARNING_KEY, 'true');
           normalWarningPopup.classList.remove('hidden');
           normalNoShow.checked = false;
+          if (window.restartNormalDemo) window.restartNormalDemo();
         }
         // extremeモード選択時は警告ポップアップ表示
         if (difficulty === 'extreme') {
           localStorage.setItem(EXTREME_WARNING_KEY, 'true');
           extremeWarningPopup.classList.remove('hidden');
           extremeNoShow.checked = false;
+          if (window.restartExtremeDemo) window.restartExtremeDemo();
         }
         updateFallInterval();
       });
@@ -3584,6 +4424,9 @@
         if (titleBtn) titleBtn.style.display = 'none';
         init();
         spawn();
+        // Show left-side buttons
+        const leftSideButtons = document.getElementById('left-side-buttons');
+        if (leftSideButtons) leftSideButtons.classList.add('visible');
         clickSfx();
       });
     }
@@ -3598,6 +4441,9 @@
         started = false;
         gameOver = false;
         overlay.classList.remove('hidden');
+        // Hide left-side buttons
+        const leftSideButtons = document.getElementById('left-side-buttons');
+        if (leftSideButtons) leftSideButtons.classList.remove('visible');
         clickSfx();
       });
     }
@@ -3609,16 +4455,63 @@
     if (helpBtn && helpModal && helpClose) {
       helpBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        if (started && !gameOver) paused = true;
         helpModal.classList.remove('hidden');
       });
       helpClose.addEventListener('click', (e) => {
         e.stopPropagation();
         helpModal.classList.add('hidden');
+        if (started && !gameOver) paused = false;
       });
       helpModal.addEventListener('click', (e) => {
         if (e.target === helpModal) {
           helpModal.classList.add('hidden');
+          if (started && !gameOver) paused = false;
         }
+      });
+    }
+
+    // ===== メインメニュー Button =====
+    const menuBtn = document.getElementById('menu-btn');
+    if (menuBtn) {
+      menuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Save current score and max chain before returning to menu
+        if (started && !gameOver) {
+          saveRanking(score, maxChain);
+          displayRanking();
+        }
+        // Stop BGM and return to title screen
+        stopBGM();
+        started = false;
+        gameOver = false;
+        paused = false;
+        const restartBtn = document.getElementById('restart-btn');
+        const titleBtn = document.getElementById('title-btn');
+        if (restartBtn) restartBtn.style.display = 'none';
+        if (titleBtn) titleBtn.style.display = 'none';
+        overlay.classList.remove('hidden');
+        // Hide left-side buttons
+        const leftSideButtons = document.getElementById('left-side-buttons');
+        if (leftSideButtons) leftSideButtons.classList.remove('visible');
+        clickSfx();
+      });
+    }
+
+    // ===== タイム Button =====
+    const timeBtn = document.getElementById('time-btn');
+    const timePopup = document.getElementById('time-popup');
+    const timeContinueBtn = document.getElementById('time-continue-btn');
+    if (timeBtn && timePopup && timeContinueBtn) {
+      timeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (started && !gameOver) paused = true;
+        timePopup.classList.remove('hidden');
+      });
+      timeContinueBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        timePopup.classList.add('hidden');
+        if (started && !gameOver) paused = false;
       });
     }
 
@@ -3655,7 +4548,7 @@
         return;
       }
       rankingList.innerHTML = ranking.slice(0, 3).map((r, i) =>
-        `<div class="rank-item ${i === 0 ? 'rank-first' : ''}">${medals[i]} ${r.score.toLocaleString()}点 / ${r.maxChain}連鎖 / ${r.date}</div>`
+        `<div class="rank-item ${i === 0 ? 'rank-first' : ''}">${medals[i]} ${r.score.toLocaleString()}点 / ${r.maxChain}連続消し / ${r.date}</div>`
       ).join('');
     }
     displayRanking();
@@ -3665,8 +4558,8 @@
     function saveRankingIfNeeded() {
       if (gameOver && started && !rankingSaved) {
         rankingSaved = true;
-        const maxChainDisplay = parseInt(document.querySelector('#chain span')?.textContent || '0', 10);
-        saveRanking(score, maxChainDisplay);
+        console.log('[Ranking] Saving - score=' + score + ', maxChain=' + maxChain);
+        saveRanking(score, maxChain);
         displayRanking();
       }
     }

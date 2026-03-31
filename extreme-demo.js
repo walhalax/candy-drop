@@ -326,6 +326,12 @@
     if (demoPlaying) requestAnimationFrame(demoGameLoop);
   }
 
+  // ポップアップ開時にデモを最初から再生するための関数
+  window.restartExtremeDemo = function() {
+    initDemoBoard();
+    demoLastTime = 0;
+  };
+
   initDemoBoard();
   demoPlaying = true;
   requestAnimationFrame(demoGameLoop);

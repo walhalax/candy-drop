@@ -1,3 +1,36 @@
+# Task Plan: マジックボタン・リデザイン + 最大連鎖数カウント
+
+## Status
+実装完了
+
+## 実装内容
+
+### マジックボタン レイヤー構造変更
+- **背景円** (Layer 1): グラデーション背景
+- **魔女の帽子** (Layer 2): 半透明(alpha=0.5) - 帽子のみ透明度を適用
+- **メーターバー** (Layer 3): 帽子の上に描画（最前面）- 視認性最重要
+- **円形フレーム** (Layer 4): 最前面に線描画
+
+### メーターバー デザイン変更
+- stroke/outline方式を廃止し、fill方式に統一
+- Filled bars: 純粋な橙色 `rgb(255, 85, 0)` + グロー効果
+- Empty bars: 暗い灰色 `rgb(60, 60, 75)` （完全不透明）
+- サイズ: バー高さ2.6px × 30本、バー間隔0、円周全覆盖
+- startX=1, startY=2, divWidth=78
+
+### 最大連鎖数(maxChain)カウント追加
+- `maxChain`変数追加（track maximum chain）
+- `cascadeChain > maxChain`時に更新
+- ゲーム開始時(`init`)にmaxChain = 0にリセット
+- ランキング保存時にmaxChainを使用（DOM参照から変数直接参照に変更）
+- デバッグ用console.log追加
+
+### マジック、メーター増加除外
+- `magicClearingInProgress`フラグ使用
+- マジック発動時〜gravity/chain settlement完了まで(~500ms)メーター増加を停止
+
+---
+
 # Task Plan: iOS/iPad Optimization - PWA Complete
 
 ## Goal

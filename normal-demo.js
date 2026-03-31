@@ -465,6 +465,13 @@
     if (demoPlaying) requestAnimationFrame(demoGameLoop);
   }
 
+  // ポップアップ開時にデモを最初から再生するための関数
+  window.restartNormalDemo = function() {
+    currentPattern = 1;
+    initPattern1();
+    demoLastTime = 0;
+  };
+
   initPattern1();
   demoPlaying = true;
   requestAnimationFrame(demoGameLoop);
