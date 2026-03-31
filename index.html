@@ -3855,22 +3855,6 @@
       const candyText = 'Candy';
       const candyWidth = ctx.measureText(candyText).width;
 
-      // ===== タイトル背景（視認性確保） =====
-      const titlePadding = size * 0.06;
-      const titleBgWidth = candyWidth + titlePadding * 2;
-      const titleBgHeight = candyFontSize * 1.4 + titlePadding;
-      const titleBgX = centerX - titleBgWidth / 2;
-      const titleBgY = textY - candyFontSize * 0.5 - titlePadding * 0.5;
-
-      // 背景用円（タイトル周囲）- 境界線のみ
-      ctx.save();
-      ctx.strokeStyle = 'rgba(255, 105, 180, 0.6)';
-      ctx.lineWidth = size * 0.015;
-      ctx.beginPath();
-      ctx.roundRect(titleBgX, titleBgY, titleBgWidth, titleBgHeight, size * 0.04);
-      ctx.stroke();
-      ctx.restore();
-
       // 虹色グラデーション（タイトルh1と同じ）
       const rainbowGrad = ctx.createLinearGradient(
         centerX - candyWidth, 0,
@@ -3884,13 +3868,16 @@
       rainbowGrad.addColorStop(0.83, '#8800ff');
       rainbowGrad.addColorStop(1, '#ff0088');
 
-      // テキスト轮廓（ドロップシャドウ效果的）
+      // テキスト境界線（ドロップシャドウ效果的）
       ctx.save();
       ctx.shadowColor = 'rgba(255, 20, 147, 0.4)';
       ctx.shadowBlur = size * 0.03;
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = size * 0.02;
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = size * 0.015;
       ctx.fillStyle = rainbowGrad;
+      ctx.strokeText(candyText, centerX, textY);
       ctx.fillText(candyText, centerX, textY);
       ctx.restore();
 
@@ -3903,10 +3890,13 @@
 
       // ===== "Drops" テキスト =====
       ctx.font = `700 ${dropsFontSize}px 'Nunito', sans-serif`;
-      ctx.fillStyle = '#ff1493';
       ctx.shadowColor = 'rgba(255, 20, 147, 0.3)';
       ctx.shadowBlur = size * 0.015;
       ctx.shadowOffsetY = size * 0.01;
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = size * 0.012;
+      ctx.fillStyle = '#ff1493';
+      ctx.strokeText('Drops', centerX, textY + candyFontSize * 0.7);
       ctx.fillText('Drops', centerX, textY + candyFontSize * 0.7);
 
       // ===== 下部の"Puzzle Game" =====
