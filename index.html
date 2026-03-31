@@ -840,6 +840,64 @@
     .help-close:active {
       transform: scale(0.98);
     }
+    /* Extreme Mode Warning Popup */
+    #extreme-warning-popup .modal-content {
+      max-width: 360px;
+    }
+    #extreme-warning-popup .popup-video {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 10px;
+      margin: 10px 0;
+      background: #000;
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 12px;
+    }
+    #extreme-warning-popup .popup-checkbox {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 15px 0;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+    }
+    #extreme-warning-popup .popup-checkbox input {
+      margin-right: 8px;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    #extreme-warning-popup .popup-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 15px;
+    }
+    #extreme-warning-popup .popup-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    #extreme-warning-popup .popup-btn:active {
+      transform: scale(0.98);
+    }
+    #extreme-warning-popup .popup-btn.start {
+      background: linear-gradient(145deg, #ff69b4, #ff1493);
+      color: #fff;
+    }
+    #extreme-warning-popup .popup-btn.back {
+      background: linear-gradient(145deg, #aaaaaa, #888888);
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -920,6 +978,24 @@
           <p><span class="key">M</span> ミュート</p>
         </div>
         <button id="help-close" class="help-close" onclick="document.getElementById('help-modal').classList.add('hidden')">閉じる</button>
+      </div>
+    </div>
+    <!-- っちゃムズ説明ポップアップ -->
+    <div id="extreme-warning-popup" class="modal hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+      <div class="modal-content">
+        <h2>透明ブロックとは？</h2>
+        <div class="popup-video">
+          <!-- 動画ここに追加 -->
+          <span>動画準備中...</span>
+        </div>
+        <label class="popup-checkbox">
+          <input type="checkbox" id="extreme-no-show">
+          次からは見ない
+        </label>
+        <div class="popup-buttons">
+          <button id="extreme-start-btn" class="popup-btn start">はじめる</button>
+          <button id="extreme-back-btn" class="popup-btn back">もどる</button>
+        </div>
       </div>
     </div>
     <!-- Game Over Restart Button -->
@@ -3256,6 +3332,26 @@
     document.addEventListener('touchend', stopContinuousMove);
     document.addEventListener('touchcancel', stopContinuousMove);
 
+    // ===== Extreme Mode Warning Popup 共通処理 =====
+    const EXTREME_WARNING_KEY = 'candyDrops_showExtremeWarning';
+    const extremeWarningPopup = document.getElementById('extreme-warning-popup');
+    const extremeNoShow = document.getElementById('extreme-no-show');
+    const extremeStartBtn = document.getElementById('extreme-start-btn');
+    const extremeBackBtn = document.getElementById('extreme-back-btn');
+
+    function shouldShowExtremeWarning() {
+      return localStorage.getItem(EXTREME_WARNING_KEY) !== 'false';
+    }
+
+    function startGame() {
+      started = true;
+      overlay.classList.add('hidden');
+      init();
+      spawn();
+      clickSfx();
+      startBGM();
+    }
+
     // ===== Difficulty Selection =====
     const diffButtons = document.querySelectorAll('.diff-btn');
     diffButtons.forEach(btn => {
@@ -3267,6 +3363,10 @@
         btn.classList.add('selected');
         // Set difficulty
         difficulty = btn.dataset.diff;
+        // extremeモード選択時は警告フラグをリセット（次回ポップアップ表示）
+        if (difficulty === 'extreme') {
+          localStorage.setItem(EXTREME_WARNING_KEY, 'true');
+        }
         updateFallInterval();
       });
     });
@@ -3291,17 +3391,40 @@
 
     // ===== Start Button Click =====
     const startBtn = document.getElementById('start-btn');
+
     if (startBtn) {
       startBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (!started) {
-          started = true;
-          overlay.classList.add('hidden');
-          init();
-          spawn();
-          clickSfx();
-          startBGM();
+          // extremeモードで尚且つ警告表示フラグが立っている場合はポップアップ表示
+          if (difficulty === 'extreme' && shouldShowExtremeWarning()) {
+            extremeWarningPopup.classList.remove('hidden');
+            extremeNoShow.checked = false;
+          } else {
+            startGame();
+          }
         }
+      });
+    }
+
+    // っちゃムズポップアップ: はじめるボタン
+    if (extremeStartBtn) {
+      extremeStartBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // 次からは見ないにチェックが入っていた場合はフラグを保存
+        if (extremeNoShow.checked) {
+          localStorage.setItem(EXTREME_WARNING_KEY, 'false');
+        }
+        extremeWarningPopup.classList.add('hidden');
+        startGame();
+      });
+    }
+
+    // っちゃムズポップアップ: もどるボタン
+    if (extremeBackBtn) {
+      extremeBackBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        extremeWarningPopup.classList.add('hidden');
       });
     }
 
@@ -3517,78 +3640,123 @@
     ];
 
     function drawCandyIcon(ctx, size) {
-      const padding = size * 0.08;
-      const candySize = (size - padding * 2) * 0.35;
+      const padding = size * 0.1;
       const centerX = size / 2;
       const centerY = size / 2;
 
-      // 背景グラデーション
+      // 背景：ピンクグラデーション（タイトル画面と同じ）
       const bgGrad = ctx.createLinearGradient(0, 0, size, size);
       bgGrad.addColorStop(0, '#ffd6e7');
-      bgGrad.addColorStop(0.5, '#ffc8dd');
-      bgGrad.addColorStop(1, '#ffb6d9');
+      bgGrad.addColorStop(0.3, '#ffc8dd');
+      bgGrad.addColorStop(0.7, '#ffb6d9');
+      bgGrad.addColorStop(1, '#ffd6e7');
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, size, size);
 
-      // 右上と左下の角丸オーバーレイ
-      ctx.fillStyle = 'rgba(255, 105, 180, 0.1)';
+      // 装飾的なオーバーレイ円（タイトル画面デザイン要素）
+      ctx.globalAlpha = 0.15;
+      ctx.fillStyle = '#ff69b4';
       ctx.beginPath();
-      ctx.arc(size - padding, padding, size * 0.3, 0, Math.PI * 2);
+      ctx.arc(size * 0.85, size * 0.15, size * 0.25, 0, Math.PI * 2);
       ctx.fill();
       ctx.beginPath();
-      ctx.arc(padding, size - padding, size * 0.25, 0, Math.PI * 2);
+      ctx.arc(size * 0.15, size * 0.85, size * 0.2, 0, Math.PI * 2);
       ctx.fill();
+      ctx.globalAlpha = 1;
 
-      // キャンディ4色を配置
-      const positions = [
-        { x: -candySize * 0.8, y: -candySize * 0.6 },
-        { x: candySize * 0.8, y: -candySize * 0.6 },
-        { x: -candySize * 0.8, y: candySize * 0.6 },
-        { x: candySize * 0.8, y: candySize * 0.6 }
+      // ===== Rainbow Gradient Text: "Candy" =====
+      const candyFontSize = size * 0.22;
+      const dropsFontSize = size * 0.1;
+      const textY = centerY + size * 0.05;
+
+      ctx.font = `900 ${candyFontSize}px 'Nunito', sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // テキスト度量測
+      const candyText = 'Candy';
+      const candyWidth = ctx.measureText(candyText).width;
+
+      // 虹色グラデーション（タイトルh1と同じ）
+      const rainbowGrad = ctx.createLinearGradient(
+        centerX - candyWidth, 0,
+        centerX + candyWidth, 0
+      );
+      rainbowGrad.addColorStop(0, '#ff0000');
+      rainbowGrad.addColorStop(0.17, '#ff8800');
+      rainbowGrad.addColorStop(0.33, '#ffff00');
+      rainbowGrad.addColorStop(0.5, '#00ff00');
+      rainbowGrad.addColorStop(0.67, '#0088ff');
+      rainbowGrad.addColorStop(0.83, '#8800ff');
+      rainbowGrad.addColorStop(1, '#ff0088');
+
+      // テキスト轮廓（ドロップシャドウ效果的）
+      ctx.save();
+      ctx.shadowColor = 'rgba(255, 20, 147, 0.4)';
+      ctx.shadowBlur = size * 0.03;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = size * 0.02;
+      ctx.fillStyle = rainbowGrad;
+      ctx.fillText(candyText, centerX, textY);
+      ctx.restore();
+
+      // テキスト上部に shine 效果
+      ctx.save();
+      ctx.globalAlpha = 0.3;
+      ctx.fillStyle = '#fff';
+      ctx.fillText(candyText, centerX, textY);
+      ctx.restore();
+
+      // ===== "Drops" テキスト =====
+      ctx.font = `700 ${dropsFontSize}px 'Nunito', sans-serif`;
+      ctx.fillStyle = '#ff1493';
+      ctx.shadowColor = 'rgba(255, 20, 147, 0.3)';
+      ctx.shadowBlur = size * 0.015;
+      ctx.shadowOffsetY = size * 0.01;
+      ctx.fillText('Drops', centerX, textY + candyFontSize * 0.65);
+
+      // ===== 上下のキャンディ装飾 =====
+      const decorCandySize = size * 0.06;
+      const decorCandys = [
+        { x: centerX - candyWidth * 0.4, y: textY - candyFontSize * 0.7, color: '#ff4d6d' },
+        { x: centerX + candyWidth * 0.4, y: textY - candyFontSize * 0.7, color: '#4dabf7' },
+        { x: centerX - candyWidth * 0.25, y: textY + candyFontSize * 0.9, color: '#69db7c' },
+        { x: centerX + candyWidth * 0.25, y: textY + candyFontSize * 0.9, color: '#ffd43b' }
       ];
 
-      CANDY_COLORS.forEach((candy, i) => {
-        const pos = positions[i];
-        const cx = centerX + pos.x;
-        const cy = centerY + pos.y;
-
-        // ドロップシャドウ
+      decorCandys.forEach((candy) => {
+        // シャドウ
         ctx.beginPath();
-        ctx.arc(cx + 4, cy + 6, candySize / 2, 0, Math.PI * 2);
+        ctx.arc(candy.x + 2, candy.y + 3, decorCandySize / 2, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(0,0,0,0.15)';
         ctx.fill();
 
-        // メインの丸
+        // メイン
         ctx.beginPath();
-        ctx.arc(cx, cy, candySize / 2, 0, Math.PI * 2);
+        ctx.arc(candy.x, candy.y, decorCandySize / 2, 0, Math.PI * 2);
         const grad = ctx.createRadialGradient(
-          cx - candySize * 0.2, cy - candySize * 0.2, 0,
-          cx, cy, candySize / 2
+          candy.x - decorCandySize * 0.2, candy.y - decorCandySize * 0.2, 0,
+          candy.x, candy.y, decorCandySize / 2
         );
         grad.addColorStop(0, '#fff');
-        grad.addColorStop(0.3, candy.color);
-        grad.addColorStop(1, candy.shadow);
+        grad.addColorStop(0.4, candy.color);
+        grad.addColorStop(1, candy.color);
         ctx.fillStyle = grad;
         ctx.fill();
 
         // 高光
         ctx.beginPath();
-        ctx.arc(cx - candySize * 0.15, cy - candySize * 0.15, candySize * 0.15, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255,255,255,0.7)';
+        ctx.arc(candy.x - decorCandySize * 0.15, candy.y - decorCandySize * 0.15, decorCandySize * 0.2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
         ctx.fill();
       });
 
-      // タイトルテキスト
-      ctx.fillStyle = '#ff1493';
-      ctx.font = `bold ${size * 0.1}px 'Nunito', sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'bottom';
-      ctx.fillText('CandyDrop', centerX, size - padding);
-
-      // サブタイトル
+      // ===== 下部の"Puzzle Game" =====
+      ctx.font = `600 ${size * 0.045}px 'Nunito', sans-serif`;
       ctx.fillStyle = '#ff69b4';
-      ctx.font = `${size * 0.06}px 'Nunito', sans-serif`;
-      ctx.fillText('Puzzle Game', centerX, size - padding - size * 0.12);
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      ctx.fillText('Puzzle Game', centerX, size - padding * 0.8);
     }
 
     function generateIconBlob(size, callback) {
