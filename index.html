@@ -3816,15 +3816,15 @@
         return false;
       }
 
-      function placeCandys(count, sz, colors) {
+      function placeCandys(count, sz, colors, startColorIdx) {
         const placed = [];
         let attempts = 0;
         while (placed.length < count && attempts < 200) {
           // アイコン全体を範囲としてランダム配置
           const x = sz / 2 + Math.random() * (size - sz);
           const y = sz / 2 + Math.random() * (size - sz);
-          const colorIdx = placed.length % colors.length;
           if (!checkOverlap(x, y, sz, placed) && !checkOverlap(x, y, sz, allCandys)) {
+            const colorIdx = (startColorIdx + placed.length) % colors.length;
             placed.push({ x, y, size: sz, color: colors[colorIdx] });
             allCandys.push({ x, y, size: sz });
           }
@@ -3834,8 +3834,8 @@
       }
 
       const colors = ['#ff3377', '#33ff88', '#3388ff', '#ffee00', '#ff6633', '#8833ff'];
-      const largeCandys = placeCandys(4, largeSize, colors);
-      const smallCandys = placeCandys(6, smallSize, colors);
+      const largeCandys = placeCandys(4, largeSize, colors, 0);
+      const smallCandys = placeCandys(6, smallSize, colors, 4);
 
       // 全キャンディ描画
       [...largeCandys, ...smallCandys].forEach((candy) => {
