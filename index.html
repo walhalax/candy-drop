@@ -3660,16 +3660,41 @@
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, size, size);
 
-      // 装飾的なオーバーレイ円（タイトル画面デザイン要素）
-      ctx.globalAlpha = 0.15;
-      ctx.fillStyle = '#ff69b4';
-      ctx.beginPath();
-      ctx.arc(size * 0.85, size * 0.15, size * 0.25, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(size * 0.15, size * 0.85, size * 0.2, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.globalAlpha = 1;
+      // ===== 四隅のキャンディ装飾（ゲーム内と同じスタイル） =====
+      const bigCandySize = size * 0.18;
+      const cornerCandys = [
+        { x: size * 0.18, y: size * 0.18, color: '#ff4d6d', shadow: '#cc0033' },
+        { x: size * 0.82, y: size * 0.18, color: '#4dabf7', shadow: '#1971c2' },
+        { x: size * 0.18, y: size * 0.82, color: '#69db7c', shadow: '#2f9e44' },
+        { x: size * 0.82, y: size * 0.82, color: '#ffd43b', shadow: '#f08c00' }
+      ];
+
+      cornerCandys.forEach((candy) => {
+        // ドロップシャドウ
+        ctx.beginPath();
+        ctx.arc(candy.x + 4, candy.y + 6, bigCandySize / 2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        ctx.fill();
+
+        // メインの丸（グラデーション）
+        ctx.beginPath();
+        ctx.arc(candy.x, candy.y, bigCandySize / 2, 0, Math.PI * 2);
+        const grad = ctx.createRadialGradient(
+          candy.x - bigCandySize * 0.25, candy.y - bigCandySize * 0.25, 0,
+          candy.x, candy.y, bigCandySize / 2
+        );
+        grad.addColorStop(0, '#fff');
+        grad.addColorStop(0.3, candy.color);
+        grad.addColorStop(1, candy.shadow);
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // 高光
+        ctx.beginPath();
+        ctx.arc(candy.x - bigCandySize * 0.18, candy.y - bigCandySize * 0.18, bigCandySize * 0.18, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.75)';
+        ctx.fill();
+      });
 
       // ===== Rainbow Gradient Text: "Candy" =====
       const candyFontSize = size * 0.30;
@@ -3722,13 +3747,13 @@
       ctx.shadowOffsetY = size * 0.01;
       ctx.fillText('Drops', centerX, textY + candyFontSize * 0.65);
 
-      // ===== 上下のキャンディ装飾 =====
-      const decorCandySize = size * 0.10;
+      // ===== テキスト周囲のキャンディ装飾 =====
+      const decorCandySize = size * 0.12;
       const decorCandys = [
-        { x: centerX - candyWidth * 0.4, y: textY - candyFontSize * 0.7, color: '#ff4d6d' },
-        { x: centerX + candyWidth * 0.4, y: textY - candyFontSize * 0.7, color: '#4dabf7' },
-        { x: centerX - candyWidth * 0.25, y: textY + candyFontSize * 0.9, color: '#69db7c' },
-        { x: centerX + candyWidth * 0.25, y: textY + candyFontSize * 0.9, color: '#ffd43b' }
+        { x: centerX - candyWidth * 0.5, y: textY - candyFontSize * 0.6, color: '#ff4d6d', shadow: '#cc0033' },
+        { x: centerX + candyWidth * 0.5, y: textY - candyFontSize * 0.6, color: '#4dabf7', shadow: '#1971c2' },
+        { x: centerX - candyWidth * 0.35, y: textY + candyFontSize * 0.8, color: '#69db7c', shadow: '#2f9e44' },
+        { x: centerX + candyWidth * 0.35, y: textY + candyFontSize * 0.8, color: '#ffd43b', shadow: '#f08c00' }
       ];
 
       decorCandys.forEach((candy) => {
@@ -3742,18 +3767,18 @@
         ctx.beginPath();
         ctx.arc(candy.x, candy.y, decorCandySize / 2, 0, Math.PI * 2);
         const grad = ctx.createRadialGradient(
-          candy.x - decorCandySize * 0.2, candy.y - decorCandySize * 0.2, 0,
+          candy.x - decorCandySize * 0.25, candy.y - decorCandySize * 0.25, 0,
           candy.x, candy.y, decorCandySize / 2
         );
         grad.addColorStop(0, '#fff');
-        grad.addColorStop(0.4, candy.color);
-        grad.addColorStop(1, candy.color);
+        grad.addColorStop(0.3, candy.color);
+        grad.addColorStop(1, candy.shadow);
         ctx.fillStyle = grad;
         ctx.fill();
 
         // 高光
         ctx.beginPath();
-        ctx.arc(candy.x - decorCandySize * 0.15, candy.y - decorCandySize * 0.15, decorCandySize * 0.2, 0, Math.PI * 2);
+        ctx.arc(candy.x - decorCandySize * 0.18, candy.y - decorCandySize * 0.18, decorCandySize * 0.18, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(255,255,255,0.8)';
         ctx.fill();
       });
