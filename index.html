@@ -1447,16 +1447,22 @@
         border-radius: 8px;
       }
 
-      /* Next container - move to bottom of screen for portrait */
+      /* Next container - below game area for portrait phones */
       #next-container {
-        bottom: 75px;
-        left: calc(100% + 6px);
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
         font-size: 12px;
       }
 
       #next-container canvas {
-        width: 60px !important;
-        height: 60px !important;
+        width: 50px !important;
+        height: 50px !important;
+      }
+
+      /* Hide magic container on small phones - not enough space */
+      #magic-container {
+        display: none;
       }
 
       /* Left side buttons - repositioned for portrait */
