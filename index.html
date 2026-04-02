@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
   <!-- iOS Web App Meta -->
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-opaque">
   <meta name="apple-mobile-web-app-title" content="CandyDrop">
   <!-- iOS Touch Optimization -->
   <meta name="format-detection" content="telephone=no">
@@ -1457,10 +1457,10 @@
         border-radius: 8px;
       }
 
-      /* Next container - right side overlay, 150px left of magic */
+      /* Next container - right side overlay, directly above magic */
       #next-container {
         position: fixed;
-        right: 156px;
+        right: 6px;
         bottom: 145px;
         font-size: 11px;
         z-index: 80;
@@ -1514,7 +1514,7 @@
         top: 0;
         height: 100%;
         width: 140px;
-        background: rgba(255,240,245,0.95);
+        background: transparent;
         transform: translateX(-100%);
         transition: transform 0.3s ease;
         z-index: 290;
