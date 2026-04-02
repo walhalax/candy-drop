@@ -1589,7 +1589,7 @@
         this.masterGain.connect(this.ctx.destination);
         // Separate BGM gain for volume control
         this.bgmGain = this.ctx.createGain();
-        this.bgmGain.gain.value = 0.225;
+        this.bgmGain.gain.value = 0.21;
         this.bgmGain.connect(this.masterGain);
         // Setup BGM audio element
         this.bgmAudio = document.getElementById('bgm-audio');
@@ -1618,11 +1618,11 @@
       setMuted(muted) {
         this.muted = muted;
         if (this.masterGain) {
-          this.masterGain.gain.value = muted ? 0 : 1.5;
+          this.masterGain.gain.value = muted ? 0 : 1.4;
         }
         // Also update BGM gain based on mute state
         if (this.bgmGain) {
-          this.bgmGain.gain.value = muted ? 0 : (paused ? 0 : 0.225);
+          this.bgmGain.gain.value = muted ? 0 : (paused ? 0 : 0.21);
         }
         // Control BGM audio element
         if (this.bgmAudio) {
@@ -4449,7 +4449,7 @@
           paused = !paused;
           // Mute/unmute BGM on pause (only if not globally muted)
           if (audioManager.bgmGain) {
-            audioManager.bgmGain.gain.value = (paused || audioManager.muted) ? 0 : 0.225;
+            audioManager.bgmGain.gain.value = (paused || audioManager.muted) ? 0 : 0.21;
           }
           break;
         case 'KeyM': audioManager.toggleMute(); break;
