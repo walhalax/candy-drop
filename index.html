@@ -370,7 +370,7 @@
     }
     #next-container {
       position: absolute;
-      top: 0;
+      bottom: 500px;
       left: calc(100% + 10px);
       display: flex;
       flex-direction: column;
@@ -391,8 +391,10 @@
       box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
     }
     #magic-container {
-      position: relative;
-      margin-top: 4px;
+      position: absolute;
+      bottom: -200px;
+      left: 0;
+      width: 100%;
     }
     #magic-btn {
       border: 2px solid #888;
@@ -405,35 +407,53 @@
     }
     #magic-btn.active {
       border-color: #ff69b4;
-      background: rgba(255, 105, 180, 0.2);
-      opacity: 1;
+      background: rgba(255, 105, 180, 0.3);
+      opacity: 0.4;
       cursor: pointer;
-      box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
-      animation: magicPulse 1s ease-in-out infinite;
+      box-shadow: 0 0 30px rgba(255, 105, 180, 0.8), 0 0 60px rgba(255, 20, 147, 0.6), 0 0 90px rgba(200, 100, 255, 0.4);
+      animation: magicPulse 0.5s ease-in-out infinite;
     }
     #magic-btn.active:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 25px rgba(255, 105, 180, 0.7);
+      transform: scale(1.1);
+      box-shadow: 0 0 40px rgba(255, 105, 180, 1), 0 0 80px rgba(255, 20, 147, 0.8), 0 0 120px rgba(200, 100, 255, 0.6);
     }
     #magic-ok-overlay {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 900;
       color: #fff;
-      text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff1493;
+      text-shadow: 0 0 15px #ff69b4, 0 0 30px #ff1493, 0 0 45px #ffd700;
       pointer-events: none;
       display: none;
     }
     #magic-btn.active + #magic-ok-overlay {
       display: block;
-      animation: okBlink 0.6s ease-in-out infinite;
+      animation: okBlink 0.3s ease-in-out infinite;
     }
     @keyframes magicPulse {
-      0%, 100% { box-shadow: 0 0 15px rgba(255, 105, 180, 0.4); }
-      50% { box-shadow: 0 0 25px rgba(255, 105, 180, 0.8); }
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(255, 105, 180, 0.6), 0 0 40px rgba(255, 20, 147, 0.4), 0 0 60px rgba(200, 100, 255, 0.3);
+        transform: scale(1);
+        border-color: #ff69b4;
+      }
+      25% {
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 105, 180, 0.6), 0 0 90px rgba(255, 20, 147, 0.4);
+        transform: scale(1.02);
+        border-color: #ffd700;
+      }
+      50% {
+        box-shadow: 0 0 40px rgba(255, 20, 147, 1), 0 0 80px rgba(200, 100, 255, 0.7), 0 0 120px rgba(255, 105, 180, 0.5);
+        transform: scale(1.05);
+        border-color: #ff1493;
+      }
+      75% {
+        box-shadow: 0 0 35px rgba(200, 100, 255, 0.9), 0 0 70px rgba(255, 215, 0, 0.6), 0 0 105px rgba(255, 105, 180, 0.4);
+        transform: scale(1.03);
+        border-color: #da70d6;
+      }
     }
     @keyframes okBlink {
       0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
@@ -472,68 +492,76 @@
       font-weight: bold;
       color: #ff1493;
     }
-    /* iPad Touch Controls - Bottom Right */
-    #touch-controls {
+    /* iPad Touch Controls - Left D-Pad */
+    #touch-controls-left {
       position: fixed;
-      bottom: 20px;
+      bottom: 30px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(255, 105, 180, 0.25);
+      z-index: 100;
+      /* iOS blur effect */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      opacity: 0.2;
+    }
+    /* iPad Touch Controls - Right Rotate Buttons */
+    #touch-controls-right {
+      position: fixed;
+      bottom: 30px;
       right: 20px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.85);
+      gap: 6px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.75);
       border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(255, 105, 180, 0.3);
+      box-shadow: 0 4px 20px rgba(255, 105, 180, 0.25);
       z-index: 100;
       /* iOS blur effect */
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      opacity: 0.2;
     }
     .control-row {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       justify-content: center;
     }
     .touch-btn {
-      width: 56px;
-      height: 56px;
+      width: 52px;
+      height: 52px;
       border: none;
-      border-radius: 14px;
-      background: linear-gradient(145deg, #fff0f5, #ffe0ec);
+      border-radius: 12px;
+      background: linear-gradient(145deg, rgba(255, 240, 245, 0.9), rgba(255, 224, 236, 0.9));
       box-shadow:
-        0 2px 8px rgba(255, 105, 180, 0.25),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-      font-size: 24px;
+        0 2px 8px rgba(255, 105, 180, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      font-size: 33px;
       color: #ff1493;
       cursor: pointer;
       /* iOS touch feedback */
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
       user-select: none;
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
     }
     .touch-btn:active {
-      transform: scale(0.92);
-      background: linear-gradient(145deg, #ffe0ec, #ffd0e0);
+      transform: scale(0.9);
+      background: linear-gradient(145deg, rgba(255, 200, 220, 0.95), rgba(255, 180, 210, 0.95));
       box-shadow:
-        0 1px 4px rgba(255, 105, 180, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        0 1px 4px rgba(255, 105, 180, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
     }
-    .drop-btn {
-      width: 120px;
-      background: linear-gradient(145deg, #ffb6d9, #ff8fcc);
-      color: #fff;
-      font-size: 20px;
-      font-weight: bold;
-    }
-    .drop-btn:active {
-      background: linear-gradient(145deg, #ff8fcc, #ff6bb8);
-    }
-    /* Hide on desktop - show only on touch devices */
-    @media (hover: hover) and (pointer: fine) {
-      #touch-controls {
-        display: none;
-      }
+    /* Always show on all devices */
+    #touch-controls-left,
+    #touch-controls-right {
+      display: flex;
     }
     /* PWA Install Banner */
     #install-banner {
@@ -738,6 +766,7 @@
       user-select: none;
       min-width: 200px;
       text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transform: scale(0.8);
     }
     .start-btn:hover {
       transform: scale(1.05);
@@ -822,7 +851,34 @@
     .diff-btn.selected {
       background: linear-gradient(145deg, #ff69b4, #ff1493);
       color: #fff;
-      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4), 0 0 30px rgba(255, 105, 180, 0.6);
+      animation: selectedSparkle 1s ease-in-out infinite;
+      position: relative;
+    }
+    .diff-btn.selected::before,
+    .diff-btn.selected::after {
+      content: '✨';
+      position: absolute;
+      font-size: 16px;
+      animation: sparkleFloat 1.5s ease-in-out infinite;
+    }
+    .diff-btn.selected::before {
+      top: -8px;
+      left: -5px;
+      animation-delay: 0s;
+    }
+    .diff-btn.selected::after {
+      bottom: -8px;
+      right: -5px;
+      animation-delay: 0.75s;
+    }
+    @keyframes selectedSparkle {
+      0%, 100% { box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4), 0 0 30px rgba(255, 105, 180, 0.6), 0 0 50px rgba(255, 215, 0, 0.3); }
+      50% { box-shadow: 0 4px 20px rgba(255, 105, 180, 0.6), 0 0 40px rgba(255, 105, 180, 0.8), 0 0 60px rgba(255, 215, 0, 0.5); }
+    }
+    @keyframes sparkleFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      50% { transform: translateY(-5px) rotate(15deg); opacity: 0.7; }
     }
     .diff-desc {
       font-size: 11px;
@@ -871,7 +927,7 @@
     #left-side-buttons {
       position: fixed;
       left: 5px;
-      top: 60px;
+      top: 160px;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -965,6 +1021,69 @@
     }
     .help-close:active {
       transform: scale(0.98);
+    }
+    /* Menu Confirm Popup */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+    }
+    .modal-overlay.hidden {
+      display: none !important;
+    }
+    .popup-box {
+      background: #fff0f5;
+      padding: 25px;
+      border-radius: 20px;
+      max-width: 280px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(255, 105, 180, 0.4);
+    }
+    body.dark-mode .popup-box {
+      background: #2a2a3d;
+    }
+    .popup-box p {
+      color: #333;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    body.dark-mode .popup-box p {
+      color: #f0f0f0;
+    }
+    .popup-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .popup-btn {
+      padding: 10px 25px;
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .popup-btn:active {
+      transform: scale(0.95);
+    }
+    .yes-btn {
+      background: linear-gradient(145deg, #ff69b4, #ff1493);
+      color: #fff;
+    }
+    .cancel-btn {
+      background: #ddd;
+      color: #333;
+    }
+    body.dark-mode .cancel-btn {
+      background: #555;
+      color: #f0f0f0;
     }
     /* Extreme Mode Warning Popup */
     #extreme-warning-popup .modal-content {
@@ -1187,8 +1306,8 @@
   </div>
   <div id="game-container">
     <div id="ui">
-      <div id="score">スコア: <span>0</span></div>
       <div id="chain">最大連続消し: <span>0</span></div>
+      <div id="score">スコア: <span>0</span></div>
       <button id="mute-btn" style="background:none;border:none;cursor:pointer;font-size:20px;padding:0 5px;" title="ミュート切替 (M)">🔊</button>
       <button id="theme-btn" style="background:none;border:none;cursor:pointer;font-size:20px;padding:0 5px;" title="テーマ切替">🌙</button>
     </div>
@@ -1198,9 +1317,9 @@
       <canvas id="board"></canvas>
       <div id="next-container">
         <div>次のブロック</div>
-        <canvas id="next" width="80" height="80"></canvas>
+        <canvas id="next" width="100" height="100"></canvas>
         <div id="magic-container">
-          <canvas id="magic-btn" width="80" height="80"></canvas>
+          <canvas id="magic-btn" width="100" height="100"></canvas>
           <span id="magic-ok-overlay">OK</span>
         </div>
       </div>
@@ -1229,9 +1348,18 @@
     </div>
     <!-- 左サイドボタン（フィールド外左側） -->
     <div id="left-side-buttons">
-      <button id="help-btn" class="left-btn" onclick="document.getElementById('help-modal').classList.remove('hidden')">動かし方</button>
       <button id="menu-btn" class="left-btn">メインメニュー</button>
       <button id="time-btn" class="left-btn">タイム</button>
+    </div>
+    <!-- タイトルに戻る確認ポップアップ -->
+    <div id="menu-confirm-popup" class="modal-overlay hidden">
+      <div class="modal-content popup-box">
+        <p>タイトルにもどりますか？</p>
+        <div class="popup-buttons">
+          <button id="menu-confirm-yes" class="popup-btn yes-btn">はい</button>
+          <button id="menu-confirm-cancel" class="popup-btn cancel-btn">キャンセル</button>
+        </div>
+      </div>
     </div>
     <!-- 操作説明モーダル -->
     <div id="help-modal" class="modal hidden" onclick="if(event.target===this)this.classList.add('hidden')">
@@ -1317,18 +1445,20 @@
     <!-- Game Over Restart Button -->
     <button id="restart-btn" class="restart-btn">もう一度あそぶ</button>
     <button id="title-btn" class="title-btn">タイトルにもどる</button>
-    <!-- iPad Touch Controls -->
-    <div id="touch-controls">
-      <div class="control-row">
-        <button id="btn-rotate" class="touch-btn" aria-label="回転">↻</button>
-      </div>
+    <!-- iPad Touch Controls - Left D-Pad & Right Rotate Buttons -->
+    <div id="touch-controls-left">
       <div class="control-row">
         <button id="btn-left" class="touch-btn" aria-label="左">←</button>
-        <button id="btn-down" class="touch-btn" aria-label="下">↓</button>
         <button id="btn-right" class="touch-btn" aria-label="右">→</button>
       </div>
       <div class="control-row">
-        <button id="btn-drop" class="touch-btn drop-btn" aria-label="ドロップ">⬇</button>
+        <button id="btn-down" class="touch-btn" aria-label="下">↓</button>
+      </div>
+    </div>
+    <div id="touch-controls-right">
+      <div class="control-row">
+        <button id="btn-rotate-left" class="touch-btn" aria-label="左回転">↺</button>
+        <button id="btn-rotate-right" class="touch-btn" aria-label="右回転">↻</button>
       </div>
     </div>
   </div>
@@ -1884,44 +2014,44 @@
 
     function updateMagicButton() {
       if (!magicCanvas) return;
-      magicCtx.clearRect(0, 0, 80, 80);
+      magicCtx.clearRect(0, 0, 100, 100);
       if (magicActive && !magicUsed) {
         // Active state - draw witch hat with glow (background mostly transparent)
         const blinkIntensity = (Math.sin(magicBlinkPhase) + 1) / 2;
-        const grad = magicCtx.createRadialGradient(40, 40, 0, 40, 40, 38);
+        const grad = magicCtx.createRadialGradient(50, 50, 0, 50, 50, 45);
         grad.addColorStop(0, `rgba(255, 200, 100, ${0.2 + blinkIntensity * 0.2})`);
         grad.addColorStop(0.7, `rgba(255, 150, 200, ${0.15 + blinkIntensity * 0.15})`);
         grad.addColorStop(1, `rgba(200, 100, 255, ${0.1 + blinkIntensity * 0.1})`);
         magicCtx.fillStyle = grad;
         magicCtx.beginPath();
-        magicCtx.arc(40, 40, 36, 0, Math.PI * 2);
+        magicCtx.arc(50, 50, 45, 0, Math.PI * 2);
         magicCtx.fill();
         // Draw witch hat with glow
         magicCtx.shadowColor = '#ff69b4';
-        magicCtx.shadowBlur = 10 + blinkIntensity * 15;
-        drawWitchHat(magicCtx, 40, 40, 52, '#2a2a4a');
+        magicCtx.shadowBlur = 12 + blinkIntensity * 15;
+        drawWitchHat(magicCtx, 50, 50, 65, '#2a2a4a');
         magicCtx.shadowBlur = 0;
         magicCanvas.classList.add('active');
       } else {
         // Inactive state - Layer 1: background circle
-        const grad = magicCtx.createRadialGradient(40, 40, 0, 40, 40, 38);
+        const grad = magicCtx.createRadialGradient(50, 50, 0, 50, 50, 45);
         grad.addColorStop(0, 'rgba(180, 180, 200, 0.2)');
         grad.addColorStop(1, 'rgba(100, 100, 120, 0.12)');
         magicCtx.fillStyle = grad;
         magicCtx.beginPath();
-        magicCtx.arc(40, 40, 36, 0, Math.PI * 2);
+        magicCtx.arc(50, 50, 45, 0, Math.PI * 2);
         magicCtx.fill();
 
         // Layer 2: witch hat (transparent in inactive state)
-        drawWitchHat(magicCtx, 40, 40, 52, '#333344', 0.5);
+        drawWitchHat(magicCtx, 50, 50, 65, '#333344', 0.5);
 
         // Layer 3: meter bars (solid fill, filling entire circle interior)
         const divisions = 30;
-        const barHeight = 2.6; // Height per bar (even larger)
+        const barHeight = 3.5; // Height per bar (1.1x)
         const barGap = 0;      // No gap - bars touch each other
-        const divWidth = 78;   // Bars wider than circle to ensure full coverage
-        const startX = 1;      // Start further left to extend beyond circle edge
-        const startY = 2;      // Move up to extend beyond circle top
+        const divWidth = 106;   // Bars wider than circle to ensure full coverage (1.1x)
+        const startX = -3;      // Start further left to extend beyond circle edge
+        const startY = -3;      // Move up to extend beyond circle top
         const blinkIntensity = (Math.sin(magicBlinkPhase) + 1) / 2;
         const chargeRatio = magicCharge / MAGIC_THRESHOLD;
         for (let i = 0; i < divisions; i++) {
@@ -1944,9 +2074,9 @@
 
         // Layer 4: circular frame (front)
         magicCtx.strokeStyle = 'rgba(140, 140, 160, 0.75)';
-        magicCtx.lineWidth = 2.5;
+        magicCtx.lineWidth = 3;
         magicCtx.beginPath();
-        magicCtx.arc(40, 40, 36, 0, Math.PI * 2);
+        magicCtx.arc(50, 50, 45, 0, Math.PI * 2);
         magicCtx.stroke();
 
         magicCanvas.classList.remove('active');
@@ -2275,8 +2405,11 @@
       // Clear star shower
       starParticles = [];
       starShowerCanvas.style.display = 'none';
-      // Set clearing in progress flag to prevent meter charge during gravity/chain settlement
+      // CRITICAL: Set clearing in progress flag FIRST to prevent chain counting during gravity
       magicClearingInProgress = true;
+      // Reset chain counter to separate magic chains from user chains
+      chain = 0;
+      cascadeChain = 0;
       // Apply gravity after clearing
       applyGravity();
       // Clear flag after gravity/chain settles (500ms should cover chain reactions)
@@ -2549,7 +2682,7 @@
 
     // Post-rotation ground delay (200ms grace period before ground check)
     let rotationCompleteTimer = 0;
-    const ROTATION_COMPLETE_DELAY = 200; // ms
+    const ROTATION_COMPLETE_DELAY = 100; // ms (half)
 
     // Chain level for draw function access
     let chainLevel = 0;
@@ -2560,6 +2693,11 @@
     let popupColor = '#ffffff';
     let popupAlpha = 0;
     let popupScale = 1.0;
+
+    // Game over score animation
+    let gameOverScoreScale = 0;
+    let gameOverScoreTimer = 0;
+    const GAME_OVER_ANIM_DURATION = 800;
 
     // Shockwave effects
     let shockwaves = [];
@@ -2590,6 +2728,8 @@
       chainLevel = 0;
       popupText = '';
       popupAlpha = 0;
+      gameOverScoreScale = 0;
+      gameOverScoreTimer = 0;
       shockwaves = [];
       centerGlow = 0;
       freezePulse = 0;
@@ -2962,71 +3102,92 @@
     // Correct satellite position if it's outside the game area after rotation
     function correctSatellitePosition() {
       if (!current) return;
-      const sp = getSatellitePos(current);
-      let dx = 0, dy = 0;
 
-      // Push satellite back into game area
-      if (sp.x < 0) dx = -sp.x;           // Push right if satellite is too far left
-      if (sp.x >= COLS) dx = COLS - 1 - sp.x; // Push left if satellite is too far right
-      if (sp.y < 0) dy = -sp.y;           // Push down if satellite is too far up
-      if (sp.y >= ROWS) dy = ROWS - 1 - sp.y; // Push up if satellite is too far down
+      // Keep correcting until both main and satellite are in valid positions
+      for (let iteration = 0; iteration < 10; iteration++) {
+        const sp = getSatellitePos(current);
+        const mx = Math.round(current.x);
+        const my = Math.floor(current.y);
 
-      if (dx !== 0 || dy !== 0) {
-        current.x += dx;
-        current.y += dy;
-        return;
-      }
+        // Check if satellite is outside bounds
+        const satOutLeft = sp.x < 0;
+        const satOutRight = sp.x >= COLS;
+        const satOutTop = sp.y < 0;
+        const satOutBottom = sp.y >= ROWS;
 
-      // Check if satellite is overlapping with a block inside the game area
-      if (sp.x >= 0 && sp.x < COLS && sp.y >= 0 && sp.y < ROWS) {
-        if (board[sp.y][sp.x] !== null) {
-          // Satellite is overlapping - try to push main block away from obstacle
-          // Get the current rotation offset
-          const [ox, oy] = ROT_OFFSETS[current.rot];
+        if (!satOutLeft && !satOutRight && !satOutTop && !satOutBottom) {
+          // Satellite is in bounds - now check if overlapping with a block
+          if (sp.x >= 0 && sp.x < COLS && sp.y >= 0 && sp.y < ROWS && board[sp.y][sp.x] !== null) {
+            // Satellite is overlapping a block - need to push main block away
+            const [ox, oy] = ROT_OFFSETS[current.rot];
+            // Push direction is opposite to satellite offset
+            let pushX = ox !== 0 ? -Math.sign(ox) : 0;
+            let pushY = oy !== 0 ? -Math.sign(oy) : 0;
+            if (pushX === 0 && pushY === 0) pushX = 1;
 
-          // Special case: if satellite is below main (oy > 0) and there's space below main,
-          // move main block down - this enables "position swap" rotation
-          if (oy > 0 && canPlaceCell(current.x, current.y + 1)) {
-            current.y += 1;
-            return;
-          }
-
-          // Push direction is opposite to satellite offset (toward main block)
-          let pushX = 0, pushY = 0;
-          if (ox !== 0) pushX = -Math.sign(ox);
-          if (oy !== 0) pushY = -Math.sign(oy);
-          // Fallback for edge case
-          if (pushX === 0 && pushY === 0) pushX = 1;
-
-          // Try multiple push directions in order of preference
-          const attempts = [
-            { dx: pushX, dy: pushY },
-            { dx: pushX, dy: 0 },
-            { dx: 0, dy: pushY },
-            { dx: -pushX, dy: pushY },
-            { dx: pushX, dy: -pushY },
-            { dx: 0, dy: 1 },
-            { dx: 0, dy: -1 },
-            { dx: 1, dy: 0 },
-            { dx: -1, dy: 0 },
-          ];
-
-          for (const attempt of attempts) {
-            const newX = current.x + attempt.dx;
-            const newY = current.y + attempt.dy;
+            const newX = current.x + pushX;
+            const newY = current.y + pushY;
             const newSp = { x: newX + ox, y: newY + oy };
 
-            // Check if new main position is valid
-            if (!canPlaceCell(newX, newY)) continue;
-            // Check if new satellite position is valid (empty or out of bounds)
-            if (newSp.x >= 0 && newSp.x < COLS && newSp.y >= 0 && newSp.y < ROWS) {
-              if (board[newSp.y][newSp.x] !== null) continue;
+            // Verify main and satellite positions are valid
+            if (canPlaceCell(newX, newY) &&
+                (newSp.x < 0 || newSp.x >= COLS || newSp.y < 0 || newSp.y >= ROWS || board[newSp.y][newSp.x] === null)) {
+              current.x = newX;
+              current.y = newY;
+              continue;
             }
-            // Valid position found
-            current.x = newX;
-            current.y = newY;
-            return;
+            // Try perpendicular directions
+            if (canPlaceCell(newX + pushY, newY) &&
+                (({ x: newX + pushY + ox, y: newY + oy }).x < 0 || ({ x: newX + pushY + ox, y: newY + oy }).x >= COLS || board[newY + oy] === undefined || board[newY + oy] === null || ({ x: newX + pushY + ox, y: newY + oy }).y < 0 || ({ x: newX + pushY + ox, y: newY + oy }).y >= ROWS || board[newY + oy][newX + pushY + ox] === null)) {
+              current.x = newX + pushY;
+              current.y = newY;
+              continue;
+            }
           }
+          // Both main and satellite are valid - done!
+          return;
+        }
+
+        // Satellite is out of bounds - push main block toward it (away from wall)
+        let dx = 0, dy = 0;
+        if (satOutLeft) dx = -sp.x;           // Push right
+        if (satOutRight) dx = COLS - 1 - sp.x; // Push left
+        if (satOutTop) dy = -sp.y;             // Push down
+        if (satOutBottom) dy = ROWS - 1 - sp.y; // Push up
+
+        const newX = current.x + dx;
+        const newY = current.y + dy;
+
+        // Verify this new position doesn't place main block in a wall or block
+        if (canPlaceCell(newX, newY)) {
+          current.x = newX;
+          current.y = newY;
+          // Loop back and recheck
+        } else {
+          // Can't push that direction - try alternative directions
+          const attempts = [
+            { dx: dx, dy: 0 },
+            { dx: 0, dy: dy },
+            { dx: -dx, dy: dy },
+            { dx: dx, dy: -dy },
+          ];
+          let pushed = false;
+          for (const a of attempts) {
+            const ax = current.x + a.dx;
+            const ay = current.y + a.dy;
+            if (canPlaceCell(ax, ay)) {
+              current.x = ax;
+              current.y = ay;
+              pushed = true;
+              break;
+            }
+          }
+          if (!pushed) {
+            // Last resort: clamp main block and satellite separately
+            current.x = Math.max(0, Math.min(COLS - 1, current.x));
+            current.y = Math.max(0, Math.min(ROWS - 1, current.y));
+          }
+          // Loop back and recheck
         }
       }
     }
@@ -3269,7 +3430,9 @@
 
       for (let y = 0; y < ROWS; y++) {
         for (let x = 0; x < COLS; x++) {
-          if (board[y][x] !== null && !visited.has(`${x},${y}`)) {
+          // Skip null cells and obstacle (transparent) blocks - transparent blocks
+          // NEVER form matches on their own, even when 4+ connected
+          if (board[y][x] !== null && board[y][x] !== 'obstacle' && !visited.has(`${x},${y}`)) {
             const cells = floodFill(x, y, board[y][x], visited);
             if (cells.length >= 4) {
               chains++;
@@ -3313,7 +3476,8 @@
         if (magicJustCleared) {
           chain = 0;
           magicJustCleared = false; // Reset for next clear
-        } else {
+        } else if (!magicClearingInProgress) {
+          // Only count chains during normal gameplay, not during magic gravity settling
           chain = chains;
           updateUI();
           triggerChainPop();
@@ -3334,7 +3498,14 @@
     }
 
     function update(delta) {
-      if (!started || gameOver || paused || magicPaused) return;
+      // Update game over animation timer even when game is over
+      if (gameOver) {
+        if (gameOverScoreTimer > 0 && gameOverScoreTimer < GAME_OVER_ANIM_DURATION) {
+          gameOverScoreTimer += delta;
+        }
+        return;
+      }
+      if (!started || paused || magicPaused) return;
 
       // Update rotation timer and complete delay
       if (isRotating) {
@@ -4030,26 +4201,74 @@
       }
 
       if (gameOver) {
+        // Animate game over score display
+        if (gameOverScoreScale === 0 && gameOverScoreTimer === 0) {
+          gameOverScoreTimer = 0.001; // Start animation
+        }
+        const goProgress = Math.min(gameOverScoreTimer / GAME_OVER_ANIM_DURATION, 1);
+        // Elastic ease out
+        const elastic = goProgress === 1 ? 1 :
+          Math.pow(2, -10 * goProgress) * Math.sin((goProgress * 10 - 0.75) * (2 * Math.PI) / 3) + 1;
+        gameOverScoreScale = elastic;
+
+        const goScale = gameOverScoreScale;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+
         if (isDarkMode) {
           ctx.fillStyle = 'rgba(20,20,50,0.88)';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.save();
+          ctx.translate(centerX, centerY - 30);
+          ctx.scale(goScale, goScale);
           ctx.fillStyle = '#ff69b4';
           ctx.font = 'bold 28px Courier New';
           ctx.textAlign = 'center';
-          ctx.fillText('ゲームオーバー', canvas.width / 2, canvas.height / 2);
-          ctx.fillStyle = '#c0c0d0';
-          ctx.font = '14px Courier New';
-          ctx.fillText(`スコア: ${score}`, canvas.width / 2, canvas.height / 2 + 25);
+          ctx.fillText('ゲームオーバー', 0, 0);
+          ctx.restore();
+          ctx.save();
+          ctx.translate(centerX, centerY + 20);
+          ctx.scale(goScale, goScale);
+          // Rainbow gradient for score
+          const grad = ctx.createLinearGradient(centerX - 60, 0, centerX + 60, 0);
+          grad.addColorStop(0, '#ff0088');
+          grad.addColorStop(0.25, '#ff8800');
+          grad.addColorStop(0.5, '#ffff00');
+          grad.addColorStop(0.75, '#00ff88');
+          grad.addColorStop(1, '#ff0088');
+          ctx.fillStyle = grad;
+          ctx.font = 'bold 32px Courier New';
+          ctx.textAlign = 'center';
+          ctx.shadowColor = '#ff1493';
+          ctx.shadowBlur = 15;
+          ctx.fillText(`スコア: ${score}`, 0, 0);
+          ctx.restore();
         } else {
           ctx.fillStyle = 'rgba(255,200,220,0.85)';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.save();
+          ctx.translate(centerX, centerY - 30);
+          ctx.scale(goScale, goScale);
           ctx.fillStyle = '#ff1493';
           ctx.font = 'bold 28px Courier New';
           ctx.textAlign = 'center';
-          ctx.fillText('ゲームオーバー', canvas.width / 2, canvas.height / 2);
-          ctx.fillStyle = '#333';
-          ctx.font = '14px Courier New';
-          ctx.fillText(`スコア: ${score}`, canvas.width / 2, canvas.height / 2 + 25);
+          ctx.fillText('ゲームオーバー', 0, 0);
+          ctx.restore();
+          ctx.save();
+          ctx.translate(centerX, centerY + 20);
+          ctx.scale(goScale, goScale);
+          // Vibrant pink gradient for score
+          const grad = ctx.createLinearGradient(centerX - 60, 0, centerX + 60, 0);
+          grad.addColorStop(0, '#ff1493');
+          grad.addColorStop(0.5, '#ff69b4');
+          grad.addColorStop(1, '#ff1493');
+          ctx.fillStyle = grad;
+          ctx.font = 'bold 32px Courier New';
+          ctx.textAlign = 'center';
+          ctx.shadowColor = '#ff0088';
+          ctx.shadowBlur = 15;
+          ctx.fillText(`スコア: ${score}`, 0, 0);
+          ctx.restore();
         }
         // Restart button is shown via HTML button element
       }
@@ -4110,15 +4329,15 @@
 
     function drawNext() {
       const nextSize = Math.floor(28 * SCALE);
-      const bgGrad = nextCtx.createLinearGradient(0, 0, 80, 80);
+      const bgGrad = nextCtx.createLinearGradient(0, 0, 100, 100);
       bgGrad.addColorStop(0, '#ffd6e7');
       bgGrad.addColorStop(0.5, '#ffc8dd');
       bgGrad.addColorStop(1, '#ffe0f0');
       nextCtx.fillStyle = bgGrad;
-      nextCtx.fillRect(0, 0, 80, 80);
+      nextCtx.fillRect(0, 0, 100, 100);
       if (nextPuyo) {
-        drawPuyo(nextCtx, 20, 8, nextPuyo.colors[0], nextSize);
-        drawPuyo(nextCtx, 20, 40, nextPuyo.colors[1], nextSize);
+        drawPuyo(nextCtx, 25, 10, nextPuyo.colors[0], nextSize);
+        drawPuyo(nextCtx, 25, 50, nextPuyo.colors[1], nextSize);
       }
     }
 
@@ -4325,11 +4544,9 @@
       });
     }
 
-    setupTouchButton('btn-left', () => tryMove(-1));
-    setupTouchButton('btn-right', () => tryMove(1));
     setupTouchButton('btn-down', () => drop());
-    setupTouchButton('btn-drop', () => hardDrop());
-    setupTouchButton('btn-rotate', () => tryRotate(1));
+    setupTouchButton('btn-rotate-left', () => tryRotate(1));
+    setupTouchButton('btn-rotate-right', () => tryRotate(-1));
 
     // Long press for continuous move
     let moveInterval = null;
@@ -4344,22 +4561,112 @@
         clearInterval(moveInterval);
         moveInterval = null;
       }
+      if (fastMoveInterval) {
+        clearInterval(fastMoveInterval);
+        fastMoveInterval = null;
+      }
     }
+    // Long press timer for hard drop
+    let hardDropTimer = null;
+    const LONG_PRESS_THRESHOLD = 300; // ms
+    // Long press for fast move
+    let fastMoveInterval = null;
+    const FAST_MOVE_DELAY = 300; // ms before fast move starts
+    const FAST_MOVE_INTERVAL = 50; // ms for fast continuous move
 
-    ['btn-left', 'btn-right', 'btn-down'].forEach((id, i) => {
+    ['btn-left', 'btn-right'].forEach((id, i) => {
       const btn = document.getElementById(id);
       if (!btn) return;
-      const actions = [() => tryMove(-1), () => tryMove(1), () => drop()];
-      btn.addEventListener('touchstart', (e) => {
+      const actions = [() => tryMove(-1), () => tryMove(1)];
+      const startMove = (e) => {
         e.preventDefault();
         audioManager.init();
         if (!started || gameOver || paused) return;
         actions[i]();
-        startContinuousMove(actions[i]);
-      }, { passive: false });
+        // Start slow continuous move, then switch to fast after LONG_PRESS
+        fastMoveInterval = setTimeout(() => {
+          fastMoveInterval = null;
+          stopContinuousMove();
+          moveInterval = setInterval(() => {
+            if (!gameOver && started && !paused) actions[i]();
+          }, FAST_MOVE_INTERVAL);
+        }, FAST_MOVE_DELAY);
+        moveInterval = setInterval(() => {
+          if (!gameOver && started && !paused) actions[i]();
+        }, 100);
+      };
+      btn.addEventListener('touchstart', startMove, { passive: false });
       btn.addEventListener('touchend', stopContinuousMove);
       btn.addEventListener('touchcancel', stopContinuousMove);
+      // Mouse events (PC)
+      btn.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        audioManager.init();
+        if (!started || gameOver || paused) return;
+        actions[i]();
+        fastMoveInterval = setTimeout(() => {
+          fastMoveInterval = null;
+          stopContinuousMove();
+          moveInterval = setInterval(() => {
+            if (!gameOver && started && !paused) actions[i]();
+          }, FAST_MOVE_INTERVAL);
+        }, FAST_MOVE_DELAY);
+        moveInterval = setInterval(() => {
+          if (!gameOver && started && !paused) actions[i]();
+        }, 100);
+      });
+      btn.addEventListener('mouseup', stopContinuousMove);
+      btn.addEventListener('mouseleave', stopContinuousMove);
     });
+
+    // ↓ button: short press = soft drop, long press = hard drop
+    const btnDown = document.getElementById('btn-down');
+    if (btnDown) {
+      // Touch events (iOS)
+      btnDown.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        audioManager.init();
+        if (!started || gameOver || paused) return;
+        drop();
+        hardDropTimer = setTimeout(() => {
+          hardDrop();
+        }, LONG_PRESS_THRESHOLD);
+      }, { passive: false });
+      btnDown.addEventListener('touchend', () => {
+        if (hardDropTimer) {
+          clearTimeout(hardDropTimer);
+          hardDropTimer = null;
+        }
+      });
+      btnDown.addEventListener('touchcancel', () => {
+        if (hardDropTimer) {
+          clearTimeout(hardDropTimer);
+          hardDropTimer = null;
+        }
+      });
+      // Mouse events (PC)
+      btnDown.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return; // only left click
+        audioManager.init();
+        if (!started || gameOver || paused) return;
+        drop();
+        hardDropTimer = setTimeout(() => {
+          hardDrop();
+        }, LONG_PRESS_THRESHOLD);
+      });
+      btnDown.addEventListener('mouseup', () => {
+        if (hardDropTimer) {
+          clearTimeout(hardDropTimer);
+          hardDropTimer = null;
+        }
+      });
+      btnDown.addEventListener('mouseleave', () => {
+        if (hardDropTimer) {
+          clearTimeout(hardDropTimer);
+          hardDropTimer = null;
+        }
+      });
+    }
 
     // Safety: document-level touchend/touchcancel to catch lost events on iOS
     document.addEventListener('touchend', stopContinuousMove);
@@ -4598,9 +4905,21 @@
 
     // ===== メインメニュー Button =====
     const menuBtn = document.getElementById('menu-btn');
+    const menuConfirmPopup = document.getElementById('menu-confirm-popup');
+    const menuConfirmYes = document.getElementById('menu-confirm-yes');
+    const menuConfirmCancel = document.getElementById('menu-confirm-cancel');
     if (menuBtn) {
       menuBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        paused = true; // ゲーム停止
+        if (menuConfirmPopup) menuConfirmPopup.classList.remove('hidden');
+      });
+    }
+    if (menuConfirmYes) {
+      menuConfirmYes.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (menuConfirmPopup) menuConfirmPopup.classList.add('hidden');
+        paused = false; // ゲーム再開（タイトルに戻る前に）
         // Save current score and max chain before returning to menu
         if (started && !gameOver) {
           saveRanking(score, maxChain);
@@ -4620,6 +4939,13 @@
         const leftSideButtons = document.getElementById('left-side-buttons');
         if (leftSideButtons) leftSideButtons.classList.remove('visible');
         clickSfx();
+      });
+    }
+    if (menuConfirmCancel) {
+      menuConfirmCancel.addEventListener('click', (e) => {
+        e.stopPropagation();
+        paused = false; // 即時ゲーム再開
+        if (menuConfirmPopup) menuConfirmPopup.classList.add('hidden');
       });
     }
 
