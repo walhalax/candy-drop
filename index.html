@@ -1968,6 +1968,7 @@
       }
 
       playBgm() {
+        if (!this.bgmAudio) this.init();
         if (this.bgmAudio && !this.muted) {
           this.bgmAudio.currentTime = 0;
           this.bgmAudio.play().catch(() => {});
