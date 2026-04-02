@@ -28,6 +28,46 @@
   <!-- Emoji Font for iOS Simulator fallback -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Color+emoji&display=swap" rel="stylesheet">
   <style>
+    /* ===== CSS Design System for iPad Optimization ===== */
+    :root {
+      /* Base font sizes - unified scale for iPad readability */
+      --font-xs: 12px;
+      --font-sm: 14px;
+      --font-md: 16px;
+      --font-lg: 18px;
+      --font-xl: 20px;
+      --font-2xl: 24px;
+      --font-3xl: 28px;
+      --font-title: 52px;
+
+      /* Spacing scale */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 12px;
+      --space-lg: 16px;
+      --space-xl: 24px;
+      --space-2xl: 32px;
+
+      /* Button sizes */
+      --btn-height-sm: 36px;
+      --btn-height-md: 44px;
+      --btn-height-lg: 56px;
+      --btn-min-width: 200px;
+
+      /* Border radius */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+
+      /* Colors */
+      --pink-primary: #ff69b4;
+      --pink-dark: #ff1493;
+      --pink-light: #fff0f5;
+      --text-dark: #333;
+      --text-muted: #666;
+    }
+
     /* iOS Safe Area Support */
     html {
       margin: 0;
@@ -734,8 +774,8 @@
     #overlay.hidden { display: none; }
     #overlay.hidden ~ #candy-bg { z-index: -1; }
     #overlay h1 {
-      font-size: 47px;
-      margin-bottom: 26px;
+      font-size: var(--font-title);
+      margin-bottom: 30px;
       background: linear-gradient(90deg, #ff0000, #ff8800, #ffff00, #00ff00, #0088ff, #8800ff, #ff0088);
       background-size: 200% 100%;
       -webkit-background-clip: text;
@@ -1325,6 +1365,10 @@
       </div>
     </div>
   </div>
+  <!-- BGM Audio -->
+  <audio id="bgm-audio" preload="auto" loop>
+    <source src="bgm_samples/candy-drops-bgm.mp3" type="audio/mpeg">
+  </audio>
   <div id="game-container">
     <div id="ui">
       <div id="chain">最大連続消し: <span>0</span></div>
@@ -1517,6 +1561,7 @@
         this.ctx = null;
         this.masterGain = null;
         this.bgmGain = null;
+        this.bgmAudio = null;
         this.muted = false;
       }
 
@@ -1529,6 +1574,12 @@
         this.bgmGain = this.ctx.createGain();
         this.bgmGain.gain.value = 0.15;
         this.bgmGain.connect(this.masterGain);
+        // Setup BGM audio element
+        this.bgmAudio = document.getElementById('bgm-audio');
+        if (this.bgmAudio) {
+          this.bgmAudio.volume = 0.15;
+          this.bgmAudio.loop = true;
+        }
         this.loadMuteState();
       }
 
@@ -1556,11 +1607,33 @@
         if (this.bgmGain) {
           this.bgmGain.gain.value = muted ? 0 : (paused ? 0 : 0.15);
         }
+        // Control BGM audio element
+        if (this.bgmAudio) {
+          if (muted) {
+            this.bgmAudio.pause();
+          } else {
+            this.bgmAudio.play().catch(() => {});
+          }
+        }
         localStorage.setItem('candyDrops_muted', muted ? '1' : '0');
       }
 
       toggleMute() {
         this.setMuted(!this.muted);
+      }
+
+      playBgm() {
+        if (this.bgmAudio && !this.muted) {
+          this.bgmAudio.currentTime = 0;
+          this.bgmAudio.play().catch(() => {});
+        }
+      }
+
+      stopBgm() {
+        if (this.bgmAudio) {
+          this.bgmAudio.pause();
+          this.bgmAudio.currentTime = 0;
+        }
       }
 
       loadMuteState() {
@@ -1933,100 +2006,11 @@
     const STEP_TIME = 60000 / BPM / 2; // 8th notes
 
     function startBGM() {
-      stopBGM();
-      const ctx = audioManager.getCtx();
-      const dest = audioManager.getBgmNode();
-
-      const playStep = () => {
-        const now = ctx.currentTime;
-        const phraseLen = melodies[0].length; // 16 steps
-        const melodyStep = bgmStep % phraseLen;
-
-        // Change phrase every 16 steps (about 3.7 seconds)
-        if (melodyStep === 0 && bgmStep > 0) {
-          bgmPhrase = (bgmPhrase + 1) % melodies.length;
-        }
-
-        // Melody
-        const note = melodies[bgmPhrase][melodyStep];
-        if (note.freq > 0) {
-          const osc = ctx.createOscillator();
-          osc.type = note.type;
-          osc.frequency.value = note.freq;
-          const g = ctx.createGain();
-          g.gain.setValueAtTime(note.gain, now);
-          g.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-          const f = ctx.createBiquadFilter();
-          f.type = 'lowpass';
-          f.frequency.value = note.lpf;
-          osc.connect(f).connect(g).connect(dest);
-          osc.start(now);
-          osc.stop(now + 0.15);
-        }
-
-        // Bass
-        const bassNote = bassPattern[bgmStep % bassPattern.length];
-        if (bassNote.freq > 0) {
-          const osc = ctx.createOscillator();
-          osc.type = bassNote.type;
-          osc.frequency.value = bassNote.freq;
-          const g = ctx.createGain();
-          g.gain.setValueAtTime(bassNote.gain, now);
-          g.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-          osc.connect(g).connect(dest);
-          osc.start(now);
-          osc.stop(now + 0.2);
-        }
-
-        // Arpeggio
-        const arpNote = arpeggioPattern[bgmStep % arpeggioPattern.length];
-        if (arpNote.freq > 0) {
-          const osc = ctx.createOscillator();
-          osc.type = arpNote.type;
-          osc.frequency.value = arpNote.freq;
-          const g = ctx.createGain();
-          g.gain.setValueAtTime(arpNote.gain, now);
-          g.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-          const f = ctx.createBiquadFilter();
-          f.type = 'lowpass';
-          f.frequency.value = arpNote.lpf;
-          osc.connect(f).connect(g).connect(dest);
-          osc.start(now);
-          osc.stop(now + 0.08);
-        }
-
-        // Hi-hat
-        const hihat = hihatPattern[bgmStep % hihatPattern.length];
-        if (hihat.freq > 0) {
-          const bufSize = ctx.sampleRate * 0.02;
-          const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-          const data = buf.getChannelData(0);
-          for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
-          const noise = ctx.createBufferSource();
-          noise.buffer = buf;
-          const g = ctx.createGain();
-          g.gain.setValueAtTime(0.035, now);
-          g.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
-          const f = ctx.createBiquadFilter();
-          f.type = 'highpass';
-          f.frequency.value = 8000;
-          noise.connect(f).connect(g).connect(dest);
-          noise.start(now);
-        }
-
-        bgmStep++;
-        bgmTimerId = setTimeout(playStep, STEP_TIME);
-      };
-      playStep();
+      audioManager.playBgm();
     }
 
     function stopBGM() {
-      if (bgmTimerId) {
-        clearTimeout(bgmTimerId);
-        bgmTimerId = null;
-      }
-      bgmStep = 0;
-      bgmPhrase = 0;
+      audioManager.stopBgm();
     }
 
     // ===== CONSTANTS =====
