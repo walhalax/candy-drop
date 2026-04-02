@@ -1329,8 +1329,34 @@
     <div id="ui">
       <div id="chain">最大連続消し: <span>0</span></div>
       <div id="score">スコア: <span>0</span></div>
-      <button id="mute-btn" style="background:none;border:none;cursor:pointer;font-size:20px;padding:0 5px;" title="ミュート切替 (M)">🔊</button>
-      <button id="theme-btn" style="background:none;border:none;cursor:pointer;font-size:20px;padding:0 5px;" title="テーマ切替">🌙</button>
+      <button id="mute-btn" style="background:none;border:none;cursor:pointer;padding:0 5px;" title="ミュート切替 (M)">
+        <svg id="speaker-on-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff1493" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
+        <svg id="speaker-off-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff1493" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <line x1="23" y1="9" x2="17" y2="15"></line>
+          <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>
+      </button>
+      <button id="theme-btn" style="background:none;border:none;cursor:pointer;padding:0 5px;" title="テーマ切替">
+        <svg id="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff1493" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg id="moon-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff1493" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
     </div>
     <!-- スターシャワオーバーレイ -->
     <canvas id="star-shower-overlay"></canvas>
@@ -4430,8 +4456,11 @@
 
       // Update mute button icon
       const muteBtn = document.getElementById('mute-btn');
-      if (muteBtn) {
-        muteBtn.textContent = audioManager.muted ? '🔇' : '🔊';
+      const speakerOn = document.getElementById('speaker-on-icon');
+      const speakerOff = document.getElementById('speaker-off-icon');
+      if (muteBtn && speakerOn && speakerOff) {
+        speakerOn.style.display = audioManager.muted ? 'none' : 'block';
+        speakerOff.style.display = audioManager.muted ? 'block' : 'none';
       }
     });
 
@@ -4439,8 +4468,12 @@
     document.getElementById('mute-btn').addEventListener('click', () => {
       audioManager.init(); // Ensure audio is initialized
       audioManager.toggleMute();
-      const muteBtn = document.getElementById('mute-btn');
-      muteBtn.textContent = audioManager.muted ? '🔇' : '🔊';
+      const speakerOn = document.getElementById('speaker-on-icon');
+      const speakerOff = document.getElementById('speaker-off-icon');
+      if (speakerOn && speakerOff) {
+        speakerOn.style.display = audioManager.muted ? 'none' : 'block';
+        speakerOff.style.display = audioManager.muted ? 'block' : 'none';
+      }
     });
 
     // Theme toggle with localStorage persistence
@@ -4451,17 +4484,23 @@
       return localStorage.getItem('candyTheme');
     }
     let isDarkMode = getTheme() === 'dark';
+    const sunIcon = document.getElementById('sun-icon');
+    const moonIcon = document.getElementById('moon-icon');
     // Apply initial theme
     if (isDarkMode) {
       document.body.classList.add('dark-mode');
-      document.getElementById('theme-btn').textContent = '☀️';
+      if (sunIcon) sunIcon.style.display = 'block';
+      if (moonIcon) moonIcon.style.display = 'none';
       const titleTheme = document.getElementById('title-theme');
       if (titleTheme) titleTheme.textContent = '☀️';
     }
     document.getElementById('theme-btn').addEventListener('click', (e) => {
       e.stopPropagation(); // Prevent overlay click handler from firing
       isDarkMode = !isDarkMode;
-      document.getElementById('theme-btn').textContent = isDarkMode ? '☀️' : '🌙';
+      if (sunIcon && moonIcon) {
+        sunIcon.style.display = isDarkMode ? 'block' : 'none';
+        moonIcon.style.display = isDarkMode ? 'none' : 'block';
+      }
       const titleTheme = document.getElementById('title-theme');
       if (titleTheme) titleTheme.textContent = isDarkMode ? '☀️' : '🌙';
       if (isDarkMode) {
@@ -4786,7 +4825,12 @@
       // Toggle dark mode when clicking on title area (h1 or title-theme)
       if (e.target.tagName === 'H1' || e.target.id === 'title-theme') {
         isDarkMode = !isDarkMode;
-        document.getElementById('theme-btn').textContent = isDarkMode ? '☀️' : '🌙';
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+        if (sunIcon && moonIcon) {
+          sunIcon.style.display = isDarkMode ? 'block' : 'none';
+          moonIcon.style.display = isDarkMode ? 'none' : 'block';
+        }
         const titleTheme = document.getElementById('title-theme');
         if (titleTheme) titleTheme.textContent = isDarkMode ? '☀️' : '🌙';
         if (isDarkMode) {
