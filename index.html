@@ -1472,11 +1472,12 @@
         border-radius: 8px;
       }
 
-      /* Next container - right side overlay, directly above magic */
+      /* Next container - right side overlay, above game area */
       #next-container {
         position: fixed;
+        top: 50%;
         right: 6px;
-        bottom: 148px;
+        transform: translateY(-50%);
         font-size: 11px;
         z-index: 150;
       }
@@ -1490,8 +1491,7 @@
       #magic-container {
         position: fixed;
         right: 6px;
-        bottom: 100px;
-        left: auto;
+        top: calc(50% + 60px);
         width: auto;
         z-index: 150;
       }
