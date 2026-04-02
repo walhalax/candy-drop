@@ -1925,8 +1925,8 @@
         if (this.bgmAudio) {
           this.bgmAudio.volume = 0.15;
           this.bgmAudio.loop = true;
-          // Random BGM selection from www/bgm/clips/ folder
-          const bgmFiles = ['bgm/clips/candy-drops-bgm.mp3', 'bgm/clips/candy_afternoon.mp3'];
+          // Random BGM selection from www/bgm/ folder
+          const bgmFiles = ['bgm/candy-drops-bgm.mp3', 'bgm/candy_afternoon.mp3', 'bgm/candy-8bit.mp3', 'bgm/candy-idm.mp3', 'bgm/drop-man.mp3'];
           const randomBgm = bgmFiles[Math.floor(Math.random() * bgmFiles.length)];
           this.bgmAudio.src = randomBgm;
         }
