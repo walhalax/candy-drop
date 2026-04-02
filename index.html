@@ -1382,6 +1382,226 @@
     #bonus-popup .popup-btn:active {
       transform: scale(0.98);
     }
+
+    /* ===== Mobile UI (max 768px) ===== */
+    @media screen and (max-width: 768px) {
+      /* Font sizes reduced for mobile */
+      :root {
+        --font-xs: 14px;
+        --font-sm: 16px;
+        --font-md: 16px;
+        --font-lg: 18px;
+        --font-xl: 20px;
+        --font-2xl: 24px;
+        --font-3xl: 28px;
+        --font-title: 42px;
+      }
+
+      /* Touch controls - larger buttons, better spacing */
+      #touch-controls-left {
+        bottom: 20px;
+        left: 10px;
+        padding: 8px;
+        gap: 8px;
+      }
+      #touch-controls-right {
+        bottom: 20px;
+        right: 10px;
+        padding: 8px;
+        gap: 8px;
+      }
+      .touch-btn {
+        width: 72px;
+        height: 72px;
+        font-size: 36px;
+      }
+      .control-row {
+        gap: 10px;
+      }
+
+      /* Side buttons - stacked vertically at bottom center on mobile */
+      #left-side-buttons {
+        left: 50%;
+        transform: translateX(-50%);
+        top: auto;
+        bottom: 120px;
+        flex-direction: row;
+        gap: 8px;
+      }
+      .left-btn {
+        padding: 8px 14px;
+        font-size: 16px;
+      }
+
+      /* Next container - repositioned for mobile */
+      #next-container {
+        bottom: 380px;
+        left: calc(100% + 5px);
+        font-size: 16px;
+      }
+
+      /* Toggle button group - smaller icons */
+      #toggle-btn-group {
+        gap: 20px;
+      }
+      #toggle-btn-group svg {
+        width: 28px;
+        height: 28px;
+      }
+
+      /* Game container background */
+      #game-container {
+        background: rgba(255,240,245,0.70);
+      }
+
+      /* Overlay - adjusted padding for mobile */
+      #overlay {
+        padding: 15px;
+      }
+      #overlay h1 {
+        font-size: 36px;
+      }
+      .diff-btn {
+        padding: 12px 16px;
+        font-size: 18px;
+      }
+      .diff-desc {
+        font-size: 14px;
+      }
+
+      /* Ranking - smaller */
+      #ranking {
+        min-width: 200px;
+        padding: 10px;
+        font-size: 18px;
+      }
+      #ranking h3 {
+        font-size: 22px;
+      }
+      #ranking-list .rank-first {
+        font-size: 26px;
+      }
+      #ranking-list .rank-second {
+        font-size: 22px;
+      }
+      #ranking-list .rank-third {
+        font-size: 18px;
+      }
+
+      /* Start button */
+      .start-btn {
+        font-size: 20px;
+        padding: 12px 24px;
+      }
+    }
+
+    /* ===== Small Mobile (max 480px) ===== */
+    @media screen and (max-width: 480px) {
+      /* Even smaller fonts */
+      :root {
+        --font-xs: 12px;
+        --font-sm: 14px;
+        --font-md: 14px;
+        --font-lg: 16px;
+        --font-xl: 18px;
+        --font-2xl: 20px;
+        --font-3xl: 24px;
+        --font-title: 36px;
+      }
+
+      /* Touch controls - compact placement */
+      #touch-controls-left {
+        bottom: 15px;
+        left: 5px;
+        padding: 6px;
+        gap: 6px;
+      }
+      #touch-controls-right {
+        bottom: 15px;
+        right: 5px;
+        padding: 6px;
+        gap: 6px;
+      }
+      .touch-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 30px;
+        border-radius: 10px;
+      }
+
+      /* Side buttons at bottom */
+      #left-side-buttons {
+        bottom: 100px;
+        gap: 6px;
+      }
+      .left-btn {
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 12px;
+      }
+
+      /* Next container - above touch controls */
+      #next-container {
+        bottom: 280px;
+        left: calc(100% + 3px);
+        font-size: 14px;
+      }
+
+      /* Toggle buttons */
+      #toggle-btn-group svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      /* Overlay */
+      #overlay {
+        padding: 10px;
+      }
+      #overlay h1 {
+        font-size: 28px;
+      }
+      .diff-btn {
+        padding: 10px 14px;
+        font-size: 16px;
+      }
+      .diff-desc {
+        font-size: 12px;
+      }
+
+      /* Ranking compact */
+      #ranking {
+        min-width: 160px;
+        padding: 8px;
+        font-size: 14px;
+      }
+      #ranking h3 {
+        font-size: 18px;
+      }
+      #ranking-list .rank-first {
+        font-size: 20px;
+      }
+      #ranking-list .rank-second {
+        font-size: 18px;
+      }
+      #ranking-list .rank-third {
+        font-size: 16px;
+      }
+
+      /* Start button */
+      .start-btn {
+        font-size: 18px;
+        padding: 10px 20px;
+      }
+
+      /* Popups */
+      #bonus-popup .bonus-text,
+      #time-popup .popup-text {
+        font-size: 18px;
+      }
+      .modal-content {
+        padding: 15px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1500,7 +1720,7 @@
       <div class="modal-content">
         <h2>おまけ</h2>
         <p class="bonus-text">画面がまぶしかったらお月さまをさわってみて！</p>
-        <p class="bonus-text">ゲーム画面の中をさわったりこすしてみると...？</p>
+        <p class="bonus-text">ゲーム画面の中をさわったりこすってみると...？</p>
         <button id="bonus-close" class="popup-btn">閉じる</button>
       </div>
     </div>
