@@ -1394,7 +1394,7 @@
         --font-xl: 18px;
         --font-2xl: 20px;
         --font-3xl: 24px;
-        --font-title: 40px;
+        --font-title: 32px;
       }
 
       body {
@@ -1410,6 +1410,13 @@
 
       #score, #chain {
         font-size: 1.3em;
+      }
+
+      /* Title - single line on small screens */
+      #overlay h1 {
+        font-size: var(--font-title);
+        white-space: nowrap;
+        margin-bottom: 20px;
       }
 
       /* Touch controls - compact, 48px buttons (>=44px touch target) */
