@@ -640,9 +640,14 @@
         0 1px 4px rgba(255, 105, 180, 0.35),
         inset 0 1px 0 rgba(255, 255, 255, 0.4);
     }
-    /* Always show on all devices */
+    /* Hide touch controls by default on title screen */
     #touch-controls-left,
     #touch-controls-right {
+      display: none;
+    }
+    /* Show touch controls when game is running */
+    #touch-controls-left.visible,
+    #touch-controls-right.visible {
       display: flex;
     }
     /* PWA Install Banner */
@@ -5109,9 +5114,13 @@
       spawn();
       clickSfx();
       startBGM();
-      // Show left-side buttons during game
+      // Show left-side buttons and touch controls during game
       const leftSideButtons = document.getElementById('left-side-buttons');
       if (leftSideButtons) leftSideButtons.classList.add('visible');
+      const touchLeft = document.getElementById('touch-controls-left');
+      const touchRight = document.getElementById('touch-controls-right');
+      if (touchLeft) touchLeft.classList.add('visible');
+      if (touchRight) touchRight.classList.add('visible');
     }
 
     // ===== Difficulty Selection =====
@@ -5276,9 +5285,13 @@
         started = false;
         gameOver = false;
         overlay.classList.remove('hidden');
-        // Hide left-side buttons
+        // Hide left-side buttons and touch controls
         const leftSideButtons = document.getElementById('left-side-buttons');
         if (leftSideButtons) leftSideButtons.classList.remove('visible');
+        const touchLeft = document.getElementById('touch-controls-left');
+        const touchRight = document.getElementById('touch-controls-right');
+        if (touchLeft) touchLeft.classList.remove('visible');
+        if (touchRight) touchRight.classList.remove('visible');
         clickSfx();
       });
     }
@@ -5338,9 +5351,13 @@
         if (restartBtn) restartBtn.style.display = 'none';
         if (titleBtn) titleBtn.style.display = 'none';
         overlay.classList.remove('hidden');
-        // Hide left-side buttons
+        // Hide left-side buttons and touch controls
         const leftSideButtons = document.getElementById('left-side-buttons');
         if (leftSideButtons) leftSideButtons.classList.remove('visible');
+        const touchLeft = document.getElementById('touch-controls-left');
+        const touchRight = document.getElementById('touch-controls-right');
+        if (touchLeft) touchLeft.classList.remove('visible');
+        if (touchRight) touchRight.classList.remove('visible');
         clickSfx();
       });
     }
