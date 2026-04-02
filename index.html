@@ -1357,6 +1357,31 @@
       background: linear-gradient(145deg, #ff69b4, #ff1493);
       color: #fff;
     }
+    /* おまけポップアップ */
+    #bonus-popup .modal-content {
+      max-width: 400px;
+      text-align: center;
+    }
+    #bonus-popup .bonus-text {
+      font-size: 23px;
+      color: #555;
+      margin: 15px 0;
+      line-height: 1.5;
+    }
+    #bonus-popup .popup-btn {
+      padding: 10px 30px;
+      border: none;
+      border-radius: 20px;
+      font-size: 21px;
+      font-weight: bold;
+      cursor: pointer;
+      background: linear-gradient(145deg, #ff69b4, #ff1493);
+      color: #fff;
+      transition: all 0.2s ease;
+    }
+    #bonus-popup .popup-btn:active {
+      transform: scale(0.98);
+    }
   </style>
 </head>
 <body>
@@ -1458,6 +1483,7 @@
     <div id="left-side-buttons">
       <button id="menu-btn" class="left-btn">メインメニュー</button>
       <button id="time-btn" class="left-btn">ちょっと止める</button>
+      <button id="bonus-btn" class="left-btn">おまけ</button>
     </div>
     <!-- タイトルに戻る確認ポップアップ -->
     <div id="menu-confirm-popup" class="modal-overlay hidden">
@@ -1467,6 +1493,15 @@
           <button id="menu-confirm-yes" class="popup-btn yes-btn">はい</button>
           <button id="menu-confirm-cancel" class="popup-btn cancel-btn">キャンセル</button>
         </div>
+      </div>
+    </div>
+    <!-- おまけポップアップ -->
+    <div id="bonus-popup" class="modal hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+      <div class="modal-content">
+        <h2>おまけ</h2>
+        <p class="bonus-text">画面がまぶしかったらお月さまをさわってみて！</p>
+        <p class="bonus-text">ゲーム画面の中をさわったりこすしてみると...？</p>
+        <button id="bonus-close" class="popup-btn">閉じる</button>
       </div>
     </div>
     <!-- 操作説明モーダル -->
@@ -5037,6 +5072,21 @@
         e.stopPropagation();
         timePopup.classList.add('hidden');
         if (started && !gameOver) paused = false;
+      });
+    }
+
+    // ===== おまけ Button =====
+    const bonusBtn = document.getElementById('bonus-btn');
+    const bonusPopup = document.getElementById('bonus-popup');
+    const bonusCloseBtn = document.getElementById('bonus-close');
+    if (bonusBtn && bonusPopup && bonusCloseBtn) {
+      bonusBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        bonusPopup.classList.remove('hidden');
+      });
+      bonusCloseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        bonusPopup.classList.add('hidden');
       });
     }
 
