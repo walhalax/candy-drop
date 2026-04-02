@@ -289,8 +289,8 @@
   // Step1: 空🔴空空 / 空🔴空空 / 空空空空 / 空🔴空空 / 空🔴空空
   // Step2: 空空空空 / 空🔴空空 / 空🔴空空 / 空🔴空空 / 空🔴空空 (RED落下→4連結)
   // Step3: 全空 (+2法力)
-  const DUR_P1 = { idle: 1000, drop: 2000, burst: 600, final: 2000 };
-  const DUR_P2 = { idle: 1000, drop: 2000, burst: 600, settle: 800, final: 2000 };
+  const DUR_P1 = { idle: 1000, drop: 2000, burst: 600, final: 4000 };
+  const DUR_P2 = { idle: 1000, drop: 2000, burst: 600, settle: 800, final: 4000 };
   let currentPattern = 1;
 
   function initDemoBoard() {
