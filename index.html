@@ -1693,8 +1693,7 @@
     </div>
   </div>
   <!-- BGM Audio -->
-  <audio id="bgm-audio" preload="auto" loop>
-    <source src="bgm_samples/candy-drops-bgm.mp3" type="audio/mpeg">
+  <audio id="bgm-audio" preload="auto">
   </audio>
   <div id="game-container">
     <div id="ui">
@@ -1921,6 +1920,10 @@
         if (this.bgmAudio) {
           this.bgmAudio.volume = 0.15;
           this.bgmAudio.loop = true;
+          // Random BGM selection from www/bgm/ folder
+          const bgmFiles = ['bgm/candy-drops-bgm.mp3', 'bgm/candy_afternoon.mp3'];
+          const randomBgm = bgmFiles[Math.floor(Math.random() * bgmFiles.length)];
+          this.bgmAudio.src = randomBgm;
         }
         this.loadMuteState();
       }
