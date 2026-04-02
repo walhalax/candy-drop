@@ -1382,6 +1382,171 @@
     #bonus-popup .popup-btn:active {
       transform: scale(0.98);
     }
+
+    /* ===== Smartphone UI (< 768px) ===== */
+    @media (max-width: 767px) {
+      /* Typography - readable on small screens */
+      :root {
+        --font-xs: 12px;
+        --font-sm: 14px;
+        --font-md: 15px;
+        --font-lg: 16px;
+        --font-xl: 18px;
+        --font-2xl: 20px;
+        --font-3xl: 24px;
+        --font-title: 40px;
+      }
+
+      body {
+        font-size: 15px;
+      }
+
+      /* UI bar */
+      #ui {
+        font-size: 14px;
+        min-height: 28px;
+        padding: 0 2px;
+      }
+
+      #score, #chain {
+        font-size: 1.3em;
+      }
+
+      /* Touch controls - compact, 48px buttons (>=44px touch target) */
+      #touch-controls-left {
+        bottom: 12px;
+        left: 8px;
+        padding: 6px;
+        gap: 4px;
+      }
+
+      #touch-controls-right {
+        bottom: 12px;
+        right: 8px;
+        padding: 6px;
+        gap: 4px;
+      }
+
+      .touch-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 22px;
+        border-radius: 10px;
+      }
+
+      /* Game area */
+      #game-area {
+        padding: 4px;
+        border-radius: 8px;
+      }
+
+      /* Next container - move to bottom of screen for portrait */
+      #next-container {
+        bottom: 75px;
+        left: calc(100% + 6px);
+        font-size: 12px;
+      }
+
+      #next-container canvas {
+        width: 60px !important;
+        height: 60px !important;
+      }
+
+      /* Left side buttons - repositioned for portrait */
+      #left-side-buttons {
+        top: 70px;
+        left: 3px;
+        gap: 5px;
+      }
+
+      .left-btn {
+        padding: 6px 10px;
+        font-size: 13px;
+        border-radius: 12px;
+      }
+
+      /* Ranking - compact for small screens */
+      #ranking {
+        min-width: 200px;
+        padding: 10px;
+        margin: 8px 0;
+      }
+
+      #ranking h3 {
+        font-size: 16px;
+        padding-bottom: 5px;
+      }
+
+      #ranking-list {
+        font-size: 18px;
+        max-height: 150px;
+      }
+
+      #ranking-list .rank-first { font-size: 20px; }
+      #ranking-list .rank-second { font-size: 17px; }
+      #ranking-list .rank-third { font-size: 15px; }
+
+      /* Modals - mobile friendly sizing */
+      .modal-content {
+        max-width: 88%;
+        padding: 14px;
+        border-radius: 16px;
+      }
+
+      .modal-content h2 {
+        font-size: 18px;
+      }
+
+      .modal-content .control-group h3 {
+        font-size: 15px;
+      }
+
+      .modal-content .control-group p {
+        font-size: 13px;
+      }
+
+      /* All warning popups */
+      #extreme-warning-popup .modal-content,
+      #normal-warning-popup .modal-content,
+      #hard-warning-popup .modal-content,
+      #time-popup .modal-content {
+        max-width: 88%;
+        padding: 14px;
+      }
+
+      /* Bonus popup - compact */
+      #bonus-popup .modal-content {
+        max-width: 85%;
+        padding: 12px;
+      }
+
+      #bonus-popup .bonus-text {
+        font-size: 15px;
+        margin: 10px 0;
+      }
+
+      #bonus-popup .popup-btn {
+        padding: 8px 20px;
+        font-size: 15px;
+      }
+
+      /* Difficulty buttons */
+      .diff-btn {
+        font-size: 14px;
+        padding: 8px 12px;
+      }
+
+      .diff-desc {
+        font-size: 11px;
+      }
+
+      /* Start button */
+      .start-btn {
+        font-size: 16px;
+        padding: 10px 20px;
+        min-width: 160px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -5082,10 +5247,12 @@
     if (bonusBtn && bonusPopup && bonusCloseBtn) {
       bonusBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        paused = true;
         bonusPopup.classList.remove('hidden');
       });
       bonusCloseBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        paused = false;
         bonusPopup.classList.add('hidden');
       });
     }
