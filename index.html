@@ -1702,7 +1702,7 @@
     </div>
   </div>
   <!-- BGM Audio -->
-  <audio id="bgm-audio" preload="auto">
+  <audio id="bgm-audio" preload="auto" playsinline>
   </audio>
   <div id="game-container">
     <div id="ui">
@@ -1980,7 +1980,14 @@
         if (!this.bgmAudio) this.init();
         if (this.bgmAudio && !this.muted) {
           this.bgmAudio.currentTime = 0;
-          this.bgmAudio.play().catch(() => {});
+          // Wait for audio to be ready before playing
+          if (this.bgmAudio.readyState >= 3) {
+            this.bgmAudio.play().catch(() => {});
+          } else {
+            this.bgmAudio.addEventListener('canplay', () => {
+              this.bgmAudio.play().catch(() => {});
+            }, { once: true });
+          }
         }
       }
 
