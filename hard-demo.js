@@ -7,14 +7,14 @@
   // レイアウト: 左にゲームフィールド、右にマジックボタン
   const FIELD_COLS = 4;
   const FIELD_ROWS = 5;
-  const CELL = 40;
-  const FIELD_W = FIELD_COLS * CELL;  // 160
-  const FIELD_H = FIELD_ROWS * CELL;  // 200
-  const MAGIC_BTN_SIZE = 80;
+  const CELL = 40 * 1.4;
+  const FIELD_W = FIELD_COLS * CELL;  // 224
+  const FIELD_H = FIELD_ROWS * CELL;  // 280
+  const MAGIC_BTN_SIZE = 80 * 1.4;
   const PADDING = 10;
 
-  const TOTAL_W = FIELD_W + PADDING + MAGIC_BTN_SIZE;  // 250
-  const TOTAL_H = Math.max(FIELD_H, MAGIC_BTN_SIZE);   // 200
+  const TOTAL_W = FIELD_W + PADDING + MAGIC_BTN_SIZE;  // 346
+  const TOTAL_H = Math.max(FIELD_H, MAGIC_BTN_SIZE);   // 280
   demoCanvas.width = TOTAL_W;
   demoCanvas.height = TOTAL_H;
 
@@ -22,7 +22,7 @@
 
   // マジックボタン描画用座標
   const MAGIC_X = FIELD_W + PADDING;
-  const MAGIC_CX = MAGIC_X + 40;  // 40 + 40 = 80からの中心
+  const MAGIC_CX = MAGIC_X + MAGIC_BTN_SIZE / 2;  // ボタン中心
   const MAGIC_CY = 40;
 
   const CANDY_RED = '#ff3377';
