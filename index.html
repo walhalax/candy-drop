@@ -1460,9 +1460,20 @@
         height: 50px !important;
       }
 
-      /* Hide magic container on small phones - not enough space */
+      /* Magic container - right side overlay on phones */
       #magic-container {
-        display: none;
+        position: fixed;
+        right: 8px;
+        bottom: 90px;
+        left: auto;
+        width: auto;
+        z-index: 80;
+      }
+
+      #magic-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
       }
 
       /* Left side buttons - repositioned for portrait */
@@ -1509,15 +1520,15 @@
       }
 
       .modal-content h2 {
-        font-size: 18px;
-      }
-
-      .modal-content .control-group h3 {
         font-size: 15px;
       }
 
-      .modal-content .control-group p {
+      .modal-content .control-group h3 {
         font-size: 13px;
+      }
+
+      .modal-content .control-group p {
+        font-size: 11px;
       }
 
       /* All warning popups */
@@ -1525,38 +1536,38 @@
       #normal-warning-popup .modal-content,
       #hard-warning-popup .modal-content,
       #time-popup .modal-content {
-        max-width: 88%;
-        max-height: 90vh;
+        max-width: 85%;
+        max-height: 85vh;
         overflow-y: auto;
-        padding: 14px;
+        padding: 10px;
       }
 
       /* Bonus popup - compact */
       #bonus-popup .modal-content {
         max-width: 85%;
-        max-height: 90vh;
+        max-height: 80vh;
         overflow-y: auto;
-        padding: 12px;
+        padding: 10px;
       }
 
       #bonus-popup .bonus-text {
-        font-size: 15px;
-        margin: 10px 0;
+        font-size: 13px;
+        margin: 8px 0;
       }
 
       #bonus-popup .popup-btn {
-        padding: 8px 20px;
-        font-size: 15px;
+        padding: 6px 16px;
+        font-size: 13px;
       }
 
       /* Difficulty buttons */
       .diff-btn {
-        font-size: 14px;
-        padding: 8px 12px;
+        font-size: 12px;
+        padding: 6px 10px;
       }
 
       .diff-desc {
-        font-size: 11px;
+        font-size: 10px;
       }
 
       /* Start button */
