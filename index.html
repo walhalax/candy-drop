@@ -1385,6 +1385,20 @@
 
     /* ===== Smartphone UI (< 768px) ===== */
     @media (max-width: 767px) {
+      /* iOS safe area - prevent status bar overlap */
+      html {
+        padding-top: env(safe-area-inset-top);
+      }
+
+      body {
+        font-size: 15px;
+        padding-top: env(safe-area-inset-top);
+      }
+
+      #game-container {
+        padding-top: env(safe-area-inset-top);
+      }
+
       /* Typography - readable on small screens */
       :root {
         --font-xs: 12px;
@@ -1395,10 +1409,6 @@
         --font-2xl: 20px;
         --font-3xl: 24px;
         --font-title: 32px;
-      }
-
-      body {
-        font-size: 15px;
       }
 
       /* UI bar */
@@ -1447,10 +1457,10 @@
         border-radius: 8px;
       }
 
-      /* Next container - right side overlay, directly above magic */
+      /* Next container - right side overlay, 150px left of magic */
       #next-container {
         position: fixed;
-        right: 6px;
+        right: 156px;
         bottom: 145px;
         font-size: 11px;
         z-index: 80;
@@ -1511,7 +1521,8 @@
         box-shadow: 2px 0 15px rgba(255,105,180,0.3);
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
+        padding-top: env(safe-area-inset-top);
       }
 
       .left-drawer.open {
