@@ -348,7 +348,7 @@
       align-items: flex-start;
     }
     #game-area {
-      background: rgba(255,245,248,0.95);
+      background: rgba(255,245,248,0.60);
       border-radius: 12px;
       padding: 8px;
     }
@@ -984,18 +984,18 @@
       border-bottom: none;
     }
     #ranking-list .rank-first {
-      font-size: 42px;
+      font-size: 34px;
       font-weight: bold;
       color: #ff1493;
       text-shadow: 0 1px 0 #ffb6d9, 0 2px 0 #ff69b4;
     }
     #ranking-list .rank-second {
-      font-size: 36px;
+      font-size: 28px;
       font-weight: bold;
       color: #ff69b4;
     }
     #ranking-list .rank-third {
-      font-size: 30px;
+      font-size: 22px;
       color: #ff85c0;
     }
     /* 左サイドボタンコンテナ（フィールド外左側） */
@@ -1424,7 +1424,7 @@
       <canvas id="board"></canvas>
       <div id="next-container">
         <div>次のブロック</div>
-        <canvas id="next" width="100" height="100"></canvas>
+        <canvas id="next" width="130" height="130"></canvas>
         <div id="magic-container">
           <canvas id="magic-btn" width="100" height="100"></canvas>
           <span id="magic-ok-overlay">OK</span>
@@ -1588,7 +1588,7 @@
         this.masterGain.connect(this.ctx.destination);
         // Separate BGM gain for volume control
         this.bgmGain = this.ctx.createGain();
-        this.bgmGain.gain.value = 0.15;
+        this.bgmGain.gain.value = 0.225;
         this.bgmGain.connect(this.masterGain);
         // Setup BGM audio element
         this.bgmAudio = document.getElementById('bgm-audio');
@@ -1617,11 +1617,11 @@
       setMuted(muted) {
         this.muted = muted;
         if (this.masterGain) {
-          this.masterGain.gain.value = muted ? 0 : 1;
+          this.masterGain.gain.value = muted ? 0 : 1.5;
         }
         // Also update BGM gain based on mute state
         if (this.bgmGain) {
-          this.bgmGain.gain.value = muted ? 0 : (paused ? 0 : 0.15);
+          this.bgmGain.gain.value = muted ? 0 : (paused ? 0 : 0.225);
         }
         // Control BGM audio element
         if (this.bgmAudio) {
@@ -4382,16 +4382,16 @@
     }
 
     function drawNext() {
-      const nextSize = Math.floor(28 * SCALE);
-      const bgGrad = nextCtx.createLinearGradient(0, 0, 100, 100);
+      const nextSize = Math.floor(28 * SCALE * 1.3);
+      const bgGrad = nextCtx.createLinearGradient(0, 0, 130, 130);
       bgGrad.addColorStop(0, '#ffd6e7');
       bgGrad.addColorStop(0.5, '#ffc8dd');
       bgGrad.addColorStop(1, '#ffe0f0');
       nextCtx.fillStyle = bgGrad;
-      nextCtx.fillRect(0, 0, 100, 100);
+      nextCtx.fillRect(0, 0, 130, 130);
       if (nextPuyo) {
-        drawPuyo(nextCtx, 25, 10, nextPuyo.colors[0], nextSize);
-        drawPuyo(nextCtx, 25, 50, nextPuyo.colors[1], nextSize);
+        drawPuyo(nextCtx, 33, 13, nextPuyo.colors[0], nextSize);
+        drawPuyo(nextCtx, 33, 65, nextPuyo.colors[1], nextSize);
       }
     }
 
@@ -4448,7 +4448,7 @@
           paused = !paused;
           // Mute/unmute BGM on pause (only if not globally muted)
           if (audioManager.bgmGain) {
-            audioManager.bgmGain.gain.value = (paused || audioManager.muted) ? 0 : 0.15;
+            audioManager.bgmGain.gain.value = (paused || audioManager.muted) ? 0 : 0.225;
           }
           break;
         case 'KeyM': audioManager.toggleMute(); break;
