@@ -83,7 +83,6 @@
     }
     body {
       margin: 0;
-      padding: 0;
       padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
       /* Prevent pull-to-refresh and rubber-banding */
       overscroll-behavior: none;
@@ -97,6 +96,8 @@
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
+      margin: 0;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
       background: linear-gradient(135deg, #ffd6e7 0%, #ffb6d9 25%, #ffc8dd 50%, #ffe0f0 75%, #ffd6e7 100%);
       background-size: 400% 400%;
       animation: bgShimmer 8s ease infinite;
@@ -111,6 +112,20 @@
       overflow: hidden;
       position: fixed;
       inset: 0;
+    }
+    /* Force status bar area black in standalone web app mode */
+    @supports (padding-top: env(safe-area-inset-top)) {
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: env(safe-area-inset-top);
+        background: #000;
+        z-index: 9999;
+        pointer-events: none;
+      }
     }
     /* Dark mode styles */
     body.dark-mode {
@@ -1461,9 +1476,9 @@
       #next-container {
         position: fixed;
         right: 6px;
-        bottom: 145px;
+        bottom: 148px;
         font-size: 11px;
-        z-index: 80;
+        z-index: 150;
       }
 
       #next-container canvas {
@@ -1478,7 +1493,7 @@
         bottom: 100px;
         left: auto;
         width: auto;
-        z-index: 80;
+        z-index: 150;
       }
 
       #magic-btn {
