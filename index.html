@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <!-- iOS Safari Optimized Viewport -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
   <!-- iOS Web App Meta -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="CandyDrop">
   <!-- iOS Touch Optimization -->
   <meta name="format-detection" content="telephone=no">
+  <!-- Emoji Color Rendering -->
+  <meta name="color-scheme" content="light dark">
   <meta name="mobile-web-app-capable" content="yes">
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
@@ -23,9 +25,23 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Emoji Font for iOS Simulator fallback -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Color+emoji&display=swap" rel="stylesheet">
   <style>
     /* iOS Safe Area Support */
-    html, body {
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      /* iPad fullscreen fix */
+      position: fixed;
+      inset: 0;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
       margin: 0;
       padding: 0;
       padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
@@ -36,6 +52,8 @@
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       user-select: none;
+      height: 100%;
+      width: 100%;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -47,7 +65,8 @@
       align-items: center;
       min-height: 100vh;
       min-height: 100dvh;
-      font-family: 'Nunito', 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', sans-serif;
+      /* Font family with emoji support - iOS/Android/System emoji fallbacks */
+      font-family: 'Nunito', 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Android Emoji', 'Oxygen Emoji', sans-serif;
       font-weight: 700;
       overflow: hidden;
       position: fixed;
@@ -279,7 +298,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 4px;
+      padding: 0;
     }
     #game-area {
       position: relative;
@@ -306,15 +326,16 @@
       justify-content: space-between;
       align-items: center;
       color: #333;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
-      padding: 0 4px;
+      padding: 0 2px;
+      min-height: 32px;
     }
     #score {
       color: #ff1493;
       font-size: 1.5em;
       font-weight: 800;
-      font-family: 'Nunito', 'Hiragino Sans', sans-serif;
+      font-family: 'Nunito', 'Hiragino Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
       letter-spacing: -0.01em;
       text-shadow:
         0 1px 0 #ffb6d9,
@@ -343,7 +364,7 @@
       color: #ff69b4;
       font-size: 1.5em;
       font-weight: 800;
-      font-family: 'Nunito', 'Hiragino Sans', sans-serif;
+      font-family: 'Nunito', 'Hiragino Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
       letter-spacing: -0.01em;
       text-shadow:
         0 1px 0 #ffb6d9,
@@ -379,7 +400,7 @@
       color: #ff1493;
       font-size: 14px;
       font-weight: 800;
-      font-family: 'Nunito', 'Hiragino Sans', sans-serif;
+      font-family: 'Nunito', 'Hiragino Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
       text-shadow:
         0 1px 0 #ffb6d9,
         0 2px 0 #ff69b4,
@@ -476,7 +497,7 @@
       color: #ff1493;
       font-size: 12px;
       font-weight: 700;
-      font-family: 'Nunito', 'Hiragino Sans', sans-serif;
+      font-family: 'Nunito', 'Hiragino Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
       text-shadow: 0 1px 0 #ffb6d9, 0 1px 3px rgba(255,20,147,0.2);
       background: rgba(255,255,255,0.8);
       padding: 8px 15px;
@@ -530,12 +551,12 @@
     }
     .control-row {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       justify-content: center;
     }
     .touch-btn {
-      width: 52px;
-      height: 52px;
+      width: 62px;
+      height: 62px;
       border: none;
       border-radius: 12px;
       background: linear-gradient(145deg, rgba(255, 240, 245, 0.9), rgba(255, 224, 236, 0.9));
@@ -713,8 +734,8 @@
     #overlay.hidden { display: none; }
     #overlay.hidden ~ #candy-bg { z-index: -1; }
     #overlay h1 {
-      font-size: 36px;
-      margin-bottom: 20px;
+      font-size: 47px;
+      margin-bottom: 26px;
       background: linear-gradient(90deg, #ff0000, #ff8800, #ffff00, #00ff00, #0088ff, #8800ff, #ff0088);
       background-size: 200% 100%;
       -webkit-background-clip: text;
@@ -747,11 +768,11 @@
       animation: pulse 1.5s infinite;
     }
     .start-btn {
-      margin-top: 25px;
-      padding: 15px 40px;
-      font-size: 20px;
+      margin-top: 33px;
+      padding: 20px 52px;
+      font-size: 26px;
       font-weight: 900;
-      font-family: 'Nunito', 'Hiragino Sans', sans-serif;
+      font-family: 'Nunito', 'Hiragino Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
       color: #fff;
       background: linear-gradient(145deg, #ff69b4, #ff1493);
       border: none;
@@ -764,7 +785,7 @@
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
       user-select: none;
-      min-width: 200px;
+      min-width: 260px;
       text-shadow: 0 2px 4px rgba(0,0,0,0.2);
       transform: scale(0.8);
     }
@@ -830,19 +851,19 @@
       align-items: center;
     }
     .diff-btn {
-      padding: 10px 20px;
+      padding: 13px 26px;
       border: 2px solid #ff69b4;
       border-radius: 20px;
       background: #fff0f5;
       color: #ff1493;
-      font-size: 14px;
+      font-size: 18px;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.2s ease;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
       user-select: none;
-      min-width: 180px;
+      min-width: 234px;
     }
     .diff-btn:hover {
       background: #ffe0ec;
@@ -938,12 +959,12 @@
       display: flex;
     }
     .left-btn {
-      padding: 8px 12px;
+      padding: 10px 16px;
       border: 2px solid #ff69b4;
       border-radius: 16px;
       background: #fff0f5;
       color: #ff1493;
-      font-size: 12px;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -1983,17 +2004,24 @@
     }
 
     // ===== CONSTANTS =====
-    const SCALE = 1.68;
+    // Responsive SCALE: Calculate based on screen height for iPad fullscreen
+    // Base game area = 8 cols x 14 rows (including buffer), target 80% of screen height
     const COLS = 6;
     const ROWS = 12;
-    const CELL = Math.floor(32 * SCALE);
+    const BUFFER_CELLS = 1;
+    const BASE_CELL = 32;
+    // Calculate scale to fill 95% of screen height on tablets
+    const SCALE = Math.min(
+      Math.floor(window.innerHeight * 0.95 / ((ROWS + BUFFER_CELLS * 2) * BASE_CELL) * 100) / 100,
+      3.0  // Cap maximum scale for larger screens
+    );
+    const CELL = Math.floor(BASE_CELL * SCALE);
     const COLORS = ['#ff3377', '#33ff88', '#3388ff', '#ffee00', '#ff6633', '#8833ff'];
     const OJAMA = '#888888';
 
     const ROT_OFFSETS = [[0, 1], [1, 0], [0, -1], [-1, 0]];
 
     // Buffer zone for rotation - allows blocks to be drawn outside normal bounds
-    const BUFFER_CELLS = 1;
     const BUFFER_SIZE = BUFFER_CELLS * CELL;
     const GRID_OFFSET_X = BUFFER_SIZE;
     const GRID_OFFSET_Y = BUFFER_SIZE;
