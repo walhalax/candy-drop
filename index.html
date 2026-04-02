@@ -1447,11 +1447,11 @@
         border-radius: 8px;
       }
 
-      /* Next container - right side overlay */
+      /* Next container - right side overlay, directly above magic */
       #next-container {
         position: fixed;
         right: 6px;
-        bottom: 155px;
+        bottom: 145px;
         font-size: 11px;
         z-index: 80;
       }
@@ -1502,14 +1502,16 @@
         position: fixed;
         left: 0;
         top: 0;
-        bottom: 0;
-        width: 160px;
+        height: 100%;
+        width: 140px;
         background: rgba(255,240,245,0.95);
         transform: translateX(-100%);
         transition: transform 0.3s ease;
         z-index: 290;
-        padding-top: 20px;
         box-shadow: 2px 0 15px rgba(255,105,180,0.3);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
 
       .left-drawer.open {
