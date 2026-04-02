@@ -1472,11 +1472,13 @@
         border-radius: 8px;
       }
 
-      /* Next container - right side overlay, directly above magic button */
+      /* Next container - right side overlay */
       #next-container {
-        position: fixed;
-        right: 6px;
-        bottom: 148px;
+        position: fixed !important;
+        right: 6px !important;
+        left: auto !important;
+        bottom: 148px !important;
+        top: auto !important;
         font-size: 11px;
         z-index: 150;
       }
@@ -1486,12 +1488,14 @@
         height: 40px !important;
       }
 
-      /* Magic container - right side overlay, directly below next */
+      /* Magic container - right side overlay */
       #magic-container {
-        position: fixed;
-        right: 6px;
-        bottom: 100px;
-        width: auto;
+        position: fixed !important;
+        right: 6px !important;
+        left: auto !important;
+        bottom: 100px !important;
+        top: auto !important;
+        width: auto !important;
         z-index: 150;
       }
 
