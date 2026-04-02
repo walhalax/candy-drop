@@ -984,10 +984,19 @@
       border-bottom: none;
     }
     #ranking-list .rank-first {
-      font-size: 21px;
+      font-size: 42px;
       font-weight: bold;
       color: #ff1493;
       text-shadow: 0 1px 0 #ffb6d9, 0 2px 0 #ff69b4;
+    }
+    #ranking-list .rank-second {
+      font-size: 36px;
+      font-weight: bold;
+      color: #ff69b4;
+    }
+    #ranking-list .rank-third {
+      font-size: 30px;
+      color: #ff85c0;
     }
     /* 左サイドボタンコンテナ（フィールド外左側） */
     #left-side-buttons {
@@ -5063,7 +5072,7 @@
         return;
       }
       rankingList.innerHTML = ranking.slice(0, 3).map((r, i) =>
-        `<div class="rank-item ${i === 0 ? 'rank-first' : ''}">${medals[i]} ${r.score.toLocaleString()}点 / ${r.maxChain}連続消し / ${r.date}</div>`
+        `<div class="rank-item ${i === 0 ? 'rank-first' : i === 1 ? 'rank-second' : i === 2 ? 'rank-third' : ''}">${medals[i]} ${r.score.toLocaleString()}点 / ${r.maxChain}連続消し / ${r.date}</div>`
       ).join('');
     }
     displayRanking();
