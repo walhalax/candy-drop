@@ -1447,23 +1447,25 @@
         border-radius: 8px;
       }
 
-      /* Next container - right side, above magic button */
+      /* Next container - right side, fixed position */
       #next-container {
-        bottom: 200px;
-        left: calc(100% + 8px);
+        position: fixed;
+        right: 6px;
+        bottom: 155px;
         font-size: 11px;
+        z-index: 80;
       }
 
       #next-container canvas {
-        width: 45px !important;
-        height: 45px !important;
+        width: 40px !important;
+        height: 40px !important;
       }
 
       /* Magic container - right side overlay, below next */
       #magic-container {
         position: fixed;
         right: 6px;
-        bottom: 120px;
+        bottom: 100px;
         left: auto;
         width: auto;
         z-index: 80;
