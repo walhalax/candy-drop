@@ -1526,10 +1526,14 @@
         border-radius: 0 8px 8px 0;
         cursor: pointer;
         z-index: 1100;
-        display: flex;
+        display: none;
         align-items: center;
         justify-content: center;
         box-shadow: 2px 0 10px rgba(255,105,180,0.4);
+      }
+
+      .drawer-toggle.visible {
+        display: flex;
       }
 
       .left-drawer {
@@ -5121,6 +5125,10 @@
       const touchRight = document.getElementById('touch-controls-right');
       if (touchLeft) touchLeft.classList.add('visible');
       if (touchRight) touchRight.classList.add('visible');
+      const drawerToggle = document.getElementById('drawer-toggle');
+      const leftDrawer = document.getElementById('left-drawer');
+      if (drawerToggle) drawerToggle.classList.add('visible');
+      if (leftDrawer) leftDrawer.classList.remove('open');
     }
 
     // ===== Difficulty Selection =====
@@ -5292,6 +5300,10 @@
         const touchRight = document.getElementById('touch-controls-right');
         if (touchLeft) touchLeft.classList.remove('visible');
         if (touchRight) touchRight.classList.remove('visible');
+        const drawerToggle = document.getElementById('drawer-toggle');
+        const leftDrawer = document.getElementById('left-drawer');
+        if (drawerToggle) drawerToggle.classList.remove('visible');
+        if (leftDrawer) leftDrawer.classList.remove('open');
         clickSfx();
       });
     }
@@ -5358,6 +5370,10 @@
         const touchRight = document.getElementById('touch-controls-right');
         if (touchLeft) touchLeft.classList.remove('visible');
         if (touchRight) touchRight.classList.remove('visible');
+        const drawerToggle = document.getElementById('drawer-toggle');
+        const leftDrawer = document.getElementById('left-drawer');
+        if (drawerToggle) drawerToggle.classList.remove('visible');
+        if (leftDrawer) leftDrawer.classList.remove('open');
         clickSfx();
       });
     }
