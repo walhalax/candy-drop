@@ -574,7 +574,7 @@
       /* iOS blur effect */
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      opacity: 0.2;
+      opacity: 0.35;
     }
     /* iPad Touch Controls - Right Rotate Buttons */
     #touch-controls-right {
@@ -592,7 +592,7 @@
       /* iOS blur effect */
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      opacity: 0.2;
+      opacity: 0.35;
     }
     .control-row {
       display: flex;
@@ -964,7 +964,7 @@
     #ranking h3 {
       color: #ff1493;
       margin-bottom: 10px;
-      font-size: 34px;
+      font-size: 26px;
       font-weight: bold;
       text-align: center;
       padding-bottom: 8px;
@@ -1502,7 +1502,7 @@
       <div class="modal-content">
         <h2>あそび方</h2>
         <p class="popup-desc">同じ色が4個つながるとその色のブロックだけ消えるよ！</p>
-        <p class="popup-desc" style="margin-top: 8px; font-size: 34px;">いちばん上までうまらないように、たくさんブロックを消して点数をふやそう！</p>
+        <p class="popup-desc">いちばん上までうまらないように、たくさんブロックを消して点数をふやそう！</p>
         <canvas id="normal-demo-canvas"></canvas>
         <label class="popup-checkbox">
           <input type="checkbox" id="normal-no-show">
@@ -1519,7 +1519,7 @@
       <div class="modal-content">
         <h2>マジックをつかおう</h2>
         <p class="popup-desc">ブロックをどんどん消して、マジックパワーをためよう！</p>
-        <p class="popup-desc" style="margin-top: 8px; font-size: 34px;">上までたまると、ボタンを押して強力な魔法が使えるよ！</p>
+        <p class="popup-desc">上までたまると、ボタンを押して強力な魔法が使えるよ！</p>
         <canvas id="hard-demo-canvas"></canvas>
         <label class="popup-checkbox">
           <input type="checkbox" id="hard-no-show">
@@ -1899,7 +1899,7 @@
 
       // Master gain for this chain
       const masterGain = ctx.createGain();
-      masterGain.gain.setValueAtTime(0.25 + chainLevel * 0.03, now);
+      masterGain.gain.setValueAtTime((0.25 + chainLevel * 0.03) * 1.4, now);
       masterGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
       masterGain.connect(audioManager.getMaster());
 
@@ -1914,7 +1914,7 @@
         osc.frequency.setValueAtTime(freq, startTime);
 
         const g = ctx.createGain();
-        g.gain.setValueAtTime(0.15, startTime);
+        g.gain.setValueAtTime(0.15 * 1.4, startTime);
         g.gain.exponentialRampToValueAtTime(0.001, startTime + 0.2);
 
         const f = ctx.createBiquadFilter();
@@ -1934,7 +1934,7 @@
           osc.type = 'sine';
           osc.frequency.setValueAtTime(freq, now + 0.15 + i * 0.02);
           const g = ctx.createGain();
-          g.gain.setValueAtTime(0.12, now + 0.15 + i * 0.02);
+          g.gain.setValueAtTime(0.12 * 1.4, now + 0.15 + i * 0.02);
           g.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
           osc.connect(g).connect(masterGain);
           osc.start(now + 0.15 + i * 0.02);
@@ -1949,7 +1949,7 @@
           osc.type = 'square';
           osc.frequency.setValueAtTime(baseFreq * (3 + i * 0.5), now + 0.1 + i * 0.03);
           const g = ctx.createGain();
-          g.gain.setValueAtTime(0.05, now + 0.1 + i * 0.03);
+          g.gain.setValueAtTime(0.05 * 1.4, now + 0.1 + i * 0.03);
           g.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
           const f = ctx.createBiquadFilter();
           f.type = 'lowpass';
