@@ -1,6 +1,6 @@
 {
-  "name": "Candy-Drops",
-  "short_name": "CandyDrop",
+  "name": "Candy Drops",
+  "short_name": "Candy Drops",
   "description": "かわいいキャンディーを落とすパズルゲーム",
   "start_url": "./index.html",
   "display": "standalone",

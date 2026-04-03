@@ -1,4 +1,4 @@
-// Service Worker for Candy-Drops PWA
+// Service Worker for Candy Drops PWA
 const CACHE_VERSION = 'v2';
 const CACHE_NAME = `candydrop-${CACHE_VERSION}`;
 
