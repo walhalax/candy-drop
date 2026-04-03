@@ -1933,7 +1933,7 @@
           this.bgmAudio.volume = 0.15;
           this.bgmAudio.loop = true;
           // Random BGM selection from www/bgm/ folder
-          const bgmFiles = ['bgm/candy-drops-bgm.mp3', 'bgm/candy_afternoon.mp3', 'bgm/candy-8bit.mp3', 'bgm/candy-idm.mp3', 'bgm/drop-man.mp3'];
+          const bgmFiles = ['www/bgm/candy-drops-bgm.mp3', 'www/bgm/candy_afternoon.mp3', 'www/bgm/candy-8bit.mp3', 'www/bgm/candy-idm.mp3', 'www/bgm/drop-man.mp3'];
           const randomBgm = bgmFiles[Math.floor(Math.random() * bgmFiles.length)];
           console.log('init: setting src to', randomBgm);
           this.bgmAudio.src = randomBgm;

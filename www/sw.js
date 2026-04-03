@@ -7,11 +7,11 @@ const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
-  './bgm/candy-drops-bgm.mp3',
-  './bgm/candy_afternoon.mp3',
-  './bgm/candy-8bit.mp3',
-  './bgm/candy-idm.mp3',
-  './bgm/drop-man.mp3'
+  './www/bgm/candy-drops-bgm.mp3',
+  './www/bgm/candy_afternoon.mp3',
+  './www/bgm/candy-8bit.mp3',
+  './www/bgm/candy-idm.mp3',
+  './www/bgm/drop-man.mp3'
 ];
 
 // Install event - cache assets
