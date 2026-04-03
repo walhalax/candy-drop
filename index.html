@@ -1520,17 +1520,24 @@
       box-shadow: 0 6px 25px rgba(255, 105, 180, 0.5);
     }
     #tutorial-skip-label {
-      font-size: 18px;
+      font-size: 20px;
+      font-weight: bold;
       color: #fff;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px 20px;
+      border-radius: 20px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       cursor: pointer;
     }
     #tutorial-skip-label input {
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       cursor: pointer;
+    }
+    body.dark-mode #tutorial-skip-label {
+      background: rgba(50, 50, 80, 0.8);
     }
     body.dark-mode #tutorial-overlay {
       background: rgba(0, 0, 0, 0.7);
@@ -2113,31 +2120,6 @@
   </div>
 
   <script>
-    // ===== ORIENTATION HANDLING =====
-    const landscapeWarning = document.getElementById('landscape-warning');
-
-    function checkOrientation() {
-      const isLandscape = window.innerWidth > window.innerHeight;
-      const isTablet = window.innerWidth >= 768;
-      if (isLandscape && isTablet) {
-        landscapeWarning.classList.add('visible');
-      } else {
-        landscapeWarning.classList.remove('visible');
-      }
-    }
-
-    // Check on load and resize/orientation change
-    checkOrientation();
-    window.addEventListener('resize', checkOrientation);
-    window.addEventListener('orientationchange', checkOrientation);
-
-    // Try to lock orientation to portrait (requires HTTPS and user interaction on iOS)
-    if (screen.orientation && screen.orientation.lock) {
-      screen.orientation.lock('portrait').catch(() => {
-        // Orientation lock not supported or rejected
-      });
-    }
-
     // ===== AUDIO SYSTEM =====
     class AudioManager {
       constructor() {
@@ -5771,15 +5753,17 @@
 
       // Special handling for home screen tutorial step
       if (stepData.highlight === 'home-screen') {
-        // Show arrow pointing to share menu
+        // Show arrow pointing to share menu (50px left)
         tutorialArrow.style.display = 'block';
+        tutorialArrow.style.right = '110px';
+        tutorialArrow.style.left = 'auto';
         // Show home screen add image
         tutorialHomeImg.style.display = 'block';
         // Show text below image
         tutorialText.textContent = stepData.text;
         tutorialText.style.display = 'block';
         tutorialText.style.left = '50%';
-        tutorialText.style.top = 'calc(50% + 30vh)';
+        tutorialText.style.top = 'calc(50% + 28vh)';
         tutorialText.style.transform = 'translateX(-50%)';
         // Show finish buttons
         tutorialNextBtn.style.display = 'none';
@@ -5801,11 +5785,11 @@
       tutorialHighlight.style.top = (rect.top - padding) + 'px';
       tutorialHighlight.style.width = (rect.width + padding * 2) + 'px';
       tutorialHighlight.style.height = (rect.height + padding * 2) + 'px';
-      // Position text below the highlight
+      // Position text ABOVE the highlight (for controller steps)
       tutorialText.textContent = stepData.text;
       tutorialText.style.display = 'block';
       tutorialText.style.left = Math.max(10, rect.left + rect.width / 2 - 150) + 'px';
-      tutorialText.style.top = (rect.bottom + 15) + 'px';
+      tutorialText.style.top = (rect.top - 70) + 'px';
       tutorialText.style.transform = 'none';
       // Show/hide buttons based on whether it's the last step
       if (stepData.isLast) {
