@@ -1916,7 +1916,9 @@
       }
 
       init() {
+        console.log('init called, ctx exists:', !!this.ctx);
         if (this.ctx) return;
+        console.log('init: creating audio context and setup');
         this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         this.masterGain = this.ctx.createGain();
         this.masterGain.connect(this.ctx.destination);
@@ -1926,12 +1928,14 @@
         this.bgmGain.connect(this.masterGain);
         // Setup BGM audio element
         this.bgmAudio = document.getElementById('bgm-audio');
+        console.log('init: bgmAudio element:', this.bgmAudio);
         if (this.bgmAudio) {
           this.bgmAudio.volume = 0.15;
           this.bgmAudio.loop = true;
           // Random BGM selection from www/bgm/ folder
           const bgmFiles = ['bgm/candy-drops-bgm.mp3', 'bgm/candy_afternoon.mp3', 'bgm/candy-8bit.mp3', 'bgm/candy-idm.mp3', 'bgm/drop-man.mp3'];
           const randomBgm = bgmFiles[Math.floor(Math.random() * bgmFiles.length)];
+          console.log('init: setting src to', randomBgm);
           this.bgmAudio.src = randomBgm;
         }
         this.loadMuteState();
@@ -1977,17 +1981,27 @@
       }
 
       playBgm() {
-        if (!this.bgmAudio) this.init();
+        console.log('playBgm called, muted:', this.muted, 'bgmAudio:', this.bgmAudio);
+        if (!this.bgmAudio) {
+          console.log('bgmAudio null, calling init()');
+          this.init();
+        }
+        console.log('after init, muted:', this.muted, 'src:', this.bgmAudio?.src);
         if (this.bgmAudio && !this.muted) {
           this.bgmAudio.currentTime = 0;
           // Wait for audio to be ready before playing
           if (this.bgmAudio.readyState >= 3) {
-            this.bgmAudio.play().catch(() => {});
+            console.log('readyState >= 3, playing');
+            this.bgmAudio.play().catch(e => console.error('play error:', e));
           } else {
+            console.log('readyState < 3, waiting for canplay');
             this.bgmAudio.addEventListener('canplay', () => {
-              this.bgmAudio.play().catch(() => {});
+              console.log('canplay fired, playing');
+              this.bgmAudio.play().catch(e => console.error('play error:', e));
             }, { once: true });
           }
+        } else {
+          console.log('not playing, bgmAudio:', !!this.bgmAudio, 'muted:', this.muted);
         }
       }
 
