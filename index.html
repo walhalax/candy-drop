@@ -1502,6 +1502,52 @@
     body.dark-mode .tutorial-text::before {
       border-top-color: rgba(40, 40, 60, 0.98);
     }
+    /* Tutorial arrow pointing to share menu */
+    .tutorial-arrow {
+      position: fixed;
+      top: 15px;
+      right: 60px;
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 30px solid #ff69b4;
+      z-index: 502;
+      animation: tutorialArrowBounce 0.8s ease-in-out infinite;
+    }
+    .tutorial-arrow::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: -10px;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 15px solid #ff1493;
+      animation: tutorialArrowBounce 0.8s ease-in-out infinite;
+    }
+    @keyframes tutorialArrowBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    /* Home screen add image */
+    #tutorial-home-img {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+      max-width: 80%;
+      max-height: 50vh;
+      z-index: 502;
+      border-radius: 16px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+      animation: tutorialImgPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes tutorialImgPulse {
+      0%, 100% { box-shadow: 0 8px 40px rgba(255, 105, 180, 0.4); }
+      50% { box-shadow: 0 8px 60px rgba(255, 105, 180, 0.7); }
+    }
 
     /* ===== Tablet/Default UI ===== */
     /* Left drawer menu - base positioning for all screens */
@@ -1990,6 +2036,8 @@
     <div id="tutorial-overlay">
       <div id="tutorial-highlight" class="tutorial-highlight"></div>
       <div id="tutorial-text" class="tutorial-text"></div>
+      <div id="tutorial-arrow" class="tutorial-arrow" style="display: none;"></div>
+      <img id="tutorial-home-img" src="www/pic/add_home.png" alt="ホーム画面に追加" style="display: none;">
       <button id="tutorial-next-btn">つぎへ</button>
       <div id="tutorial-finish-container" style="display: none;">
         <button id="tutorial-finish-btn">せつめいを終わってゲームへ</button>
@@ -5591,6 +5639,8 @@
     const tutorialOverlay = document.getElementById('tutorial-overlay');
     const tutorialHighlight = document.getElementById('tutorial-highlight');
     const tutorialText = document.getElementById('tutorial-text');
+    const tutorialArrow = document.getElementById('tutorial-arrow');
+    const tutorialHomeImg = document.getElementById('tutorial-home-img');
     const tutorialNextBtn = document.getElementById('tutorial-next-btn');
     const tutorialFinishContainer = document.getElementById('tutorial-finish-container');
     const tutorialFinishBtn = document.getElementById('tutorial-finish-btn');
@@ -5624,6 +5674,11 @@
       {
         highlight: '#drawer-toggle',
         text: 'タイトルにもどるメニューを開けるよ！',
+        isLast: false
+      },
+      {
+        highlight: 'home-screen',
+        text: 'ホーム画面についかしたら、いつでもゲームをひらけるよ！',
         isLast: true
       }
     ];
@@ -5638,6 +5693,30 @@
         return;
       }
       const stepData = tutorialSteps[step];
+      // Hide all special tutorial elements first
+      tutorialHighlight.style.display = 'none';
+      tutorialArrow.style.display = 'none';
+      tutorialHomeImg.style.display = 'none';
+      tutorialText.style.display = 'none';
+
+      // Special handling for home screen tutorial step
+      if (stepData.highlight === 'home-screen') {
+        // Show arrow pointing to share menu
+        tutorialArrow.style.display = 'block';
+        // Show home screen add image
+        tutorialHomeImg.style.display = 'block';
+        // Show text below image
+        tutorialText.textContent = stepData.text;
+        tutorialText.style.display = 'block';
+        tutorialText.style.left = '50%';
+        tutorialText.style.top = 'calc(50% + 30vh)';
+        tutorialText.style.transform = 'translateX(-50%)';
+        // Show finish buttons
+        tutorialNextBtn.style.display = 'none';
+        tutorialFinishContainer.style.display = 'flex';
+        return;
+      }
+
       const target = document.querySelector(stepData.highlight);
       if (!target) {
         console.log('[Tutorial] Target not found:', stepData.highlight);
@@ -5647,14 +5726,17 @@
       const rect = target.getBoundingClientRect();
       // Add padding around the highlight
       const padding = 10;
+      tutorialHighlight.style.display = 'block';
       tutorialHighlight.style.left = (rect.left - padding) + 'px';
       tutorialHighlight.style.top = (rect.top - padding) + 'px';
       tutorialHighlight.style.width = (rect.width + padding * 2) + 'px';
       tutorialHighlight.style.height = (rect.height + padding * 2) + 'px';
       // Position text below the highlight
       tutorialText.textContent = stepData.text;
+      tutorialText.style.display = 'block';
       tutorialText.style.left = Math.max(10, rect.left + rect.width / 2 - 150) + 'px';
       tutorialText.style.top = (rect.bottom + 15) + 'px';
+      tutorialText.style.transform = 'none';
       // Show/hide buttons based on whether it's the last step
       if (stepData.isLast) {
         tutorialNextBtn.style.display = 'none';
@@ -5685,6 +5767,9 @@
       tutorialOverlay.classList.remove('visible');
       tutorialHighlight.style.display = 'none';
       tutorialText.style.display = 'none';
+      tutorialArrow.style.display = 'none';
+      tutorialHomeImg.style.display = 'none';
+      tutorialText.style.transform = 'none';
       tutorialActive = false;
       paused = false;
     }
