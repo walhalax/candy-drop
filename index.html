@@ -437,9 +437,9 @@
       100% { transform: scale(1); }
     }
     #next-container {
-      position: absolute;
-      bottom: 500px;
-      left: calc(100% + 10px);
+      position: fixed;
+      right: 10px;
+      top: 160px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -459,10 +459,10 @@
       box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
     }
     #magic-container {
-      position: absolute;
-      bottom: -200px;
-      left: 0;
-      width: 100%;
+      position: fixed;
+      right: 10px;
+      bottom: 200px;
+      width: auto;
     }
     #magic-btn {
       border: 2px solid #888;
@@ -1007,8 +1007,6 @@
     }
     /* 左サイドボタンコンテナ（フィールド外左側） */
     #left-side-buttons {
-      position: relative;
-      top: 200px;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -1414,13 +1412,12 @@
       display: flex;
     }
 
-    /* Left drawer - box type with top/bottom cutouts */
+    /* Left drawer - box type with tight button fit */
     .left-drawer {
       position: fixed;
       left: 0;
-      top: 100px;
+      top: 160px;
       height: auto;
-      bottom: 100px;
       width: 140px;
       background: rgba(255,240,245,0.95);
       border-radius: 0 16px 16px 0;
@@ -1430,7 +1427,7 @@
       box-shadow: 2px 0 15px rgba(255,105,180,0.3);
       display: flex;
       flex-direction: column;
-      padding: 10px 8px;
+      padding: 8px;
       overflow: hidden;
     }
 
