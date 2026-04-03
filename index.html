@@ -2120,6 +2120,24 @@
   </div>
 
   <script>
+    // ===== ORIENTATION HANDLING =====
+    const landscapeWarning = document.getElementById('landscape-warning');
+
+    function checkOrientation() {
+      const isLandscape = window.innerWidth > window.innerHeight;
+      const isTablet = window.innerWidth >= 768;
+      if (isLandscape && isTablet) {
+        landscapeWarning.classList.add('visible');
+      } else {
+        landscapeWarning.classList.remove('visible');
+      }
+    }
+
+    // Check on load and resize/orientation change
+    checkOrientation();
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
+
     // ===== AUDIO SYSTEM =====
     class AudioManager {
       constructor() {
