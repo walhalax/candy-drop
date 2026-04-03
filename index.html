@@ -1387,6 +1387,122 @@
       transform: scale(0.98);
     }
 
+    /* ===== Tutorial System ===== */
+    #tutorial-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 500;
+      display: none;
+    }
+    #tutorial-overlay.visible {
+      display: block;
+    }
+    .tutorial-highlight {
+      position: fixed;
+      border: 4px solid #ff69b4;
+      border-radius: 12px;
+      animation: tutorialBlink 0.8s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 501;
+    }
+    @keyframes tutorialBlink {
+      0%, 100% { border-color: #ff69b4; box-shadow: 0 0 20px #ff69b4; }
+      50% { border-color: #ff1493; box-shadow: 0 0 40px #ff1493; }
+    }
+    .tutorial-text {
+      position: fixed;
+      background: rgba(255, 240, 245, 0.98);
+      padding: 12px 18px;
+      border-radius: 16px;
+      font-size: 21px;
+      font-weight: bold;
+      color: #ff1493;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(255, 105, 180, 0.4);
+      z-index: 502;
+      max-width: 90%;
+      line-height: 1.4;
+    }
+    .tutorial-text::before {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 10px solid transparent;
+      border-top-color: rgba(255, 240, 245, 0.98);
+    }
+    #tutorial-next-btn {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 15px 40px;
+      font-size: 26px;
+      font-weight: bold;
+      background: linear-gradient(145deg, #ff69b4, #ff1493);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      z-index: 503;
+      box-shadow: 0 6px 25px rgba(255, 105, 180, 0.5);
+      animation: tutorialBtnPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes tutorialBtnPulse {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.05); }
+    }
+    #tutorial-finish-container {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      z-index: 503;
+    }
+    #tutorial-finish-btn {
+      padding: 15px 40px;
+      font-size: 26px;
+      font-weight: bold;
+      background: linear-gradient(145deg, #ff69b4, #ff1493);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 6px 25px rgba(255, 105, 180, 0.5);
+    }
+    #tutorial-skip-label {
+      font-size: 18px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    #tutorial-skip-label input {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+    body.dark-mode #tutorial-overlay {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    body.dark-mode .tutorial-text {
+      background: rgba(40, 40, 60, 0.98);
+      color: #ff69b4;
+    }
+    body.dark-mode .tutorial-text::before {
+      border-top-color: rgba(40, 40, 60, 0.98);
+    }
+
     /* ===== Tablet/Default UI ===== */
     /* Left drawer menu - base positioning for all screens */
     .drawer-toggle {
@@ -1868,6 +1984,18 @@
         <div class="popup-buttons">
           <button id="time-continue-btn" class="popup-btn start">つづける</button>
         </div>
+      </div>
+    </div>
+    <!-- Tutorial Overlay -->
+    <div id="tutorial-overlay">
+      <div id="tutorial-highlight" class="tutorial-highlight"></div>
+      <div id="tutorial-text" class="tutorial-text"></div>
+      <button id="tutorial-next-btn">つぎへ</button>
+      <div id="tutorial-finish-container" style="display: none;">
+        <button id="tutorial-finish-btn">せつめいを終わってゲームへ</button>
+        <label id="tutorial-skip-label">
+          <input type="checkbox" id="tutorial-skip-checkbox">つぎから見ない
+        </label>
       </div>
     </div>
     <!-- Game Over Restart Button -->
@@ -5144,6 +5272,10 @@
       const leftDrawer = document.getElementById('left-drawer');
       if (drawerToggle) drawerToggle.classList.add('visible');
       if (leftDrawer) leftDrawer.classList.remove('open');
+      // Show tutorial if not skipped
+      if (shouldShowTutorial()) {
+        startTutorial();
+      }
     }
 
     // ===== Difficulty Selection =====
@@ -5453,6 +5585,113 @@
         });
       });
     }
+
+    // ===== Tutorial System =====
+    const TUTORIAL_KEY = 'candyDrops_tutorial_skipped';
+    const tutorialOverlay = document.getElementById('tutorial-overlay');
+    const tutorialHighlight = document.getElementById('tutorial-highlight');
+    const tutorialText = document.getElementById('tutorial-text');
+    const tutorialNextBtn = document.getElementById('tutorial-next-btn');
+    const tutorialFinishContainer = document.getElementById('tutorial-finish-container');
+    const tutorialFinishBtn = document.getElementById('tutorial-finish-btn');
+    const tutorialSkipCheckbox = document.getElementById('tutorial-skip-checkbox');
+
+    let tutorialStep = 0;
+    let tutorialActive = false;
+
+    // Tutorial steps: { highlight: selector/rect, text: string, isLast: boolean }
+    const tutorialSteps = [
+      {
+        highlight: '#touch-controls-left',
+        text: 'ここをさわると、落ちてくるブロックを動かせるよ！',
+        isLast: false
+      },
+      {
+        highlight: '#touch-controls-right',
+        text: 'ここをさまると、落ちてくるブロックを回せるよ！',
+        isLast: false
+      },
+      {
+        highlight: '#next-container',
+        text: 'つぎに落ちてくるブロックがなにか分かるよ！',
+        isLast: false
+      },
+      {
+        highlight: '#magic-btn',
+        text: 'マジック！パワーが上までたまったら押してね！',
+        isLast: false
+      },
+      {
+        highlight: '#drawer-toggle',
+        text: 'タイトルにもどるメニューを開けるよ！',
+        isLast: true
+      }
+    ];
+
+    function shouldShowTutorial() {
+      return localStorage.getItem(TUTORIAL_KEY) !== 'true';
+    }
+
+    function showTutorialStep(step) {
+      if (step >= tutorialSteps.length) {
+        finishTutorial();
+        return;
+      }
+      const stepData = tutorialSteps[step];
+      const target = document.querySelector(stepData.highlight);
+      if (!target) {
+        console.log('[Tutorial] Target not found:', stepData.highlight);
+        finishTutorial();
+        return;
+      }
+      const rect = target.getBoundingClientRect();
+      // Add padding around the highlight
+      const padding = 10;
+      tutorialHighlight.style.left = (rect.left - padding) + 'px';
+      tutorialHighlight.style.top = (rect.top - padding) + 'px';
+      tutorialHighlight.style.width = (rect.width + padding * 2) + 'px';
+      tutorialHighlight.style.height = (rect.height + padding * 2) + 'px';
+      // Position text below the highlight
+      tutorialText.textContent = stepData.text;
+      tutorialText.style.left = Math.max(10, rect.left + rect.width / 2 - 150) + 'px';
+      tutorialText.style.top = (rect.bottom + 15) + 'px';
+      // Show/hide buttons based on whether it's the last step
+      if (stepData.isLast) {
+        tutorialNextBtn.style.display = 'none';
+        tutorialFinishContainer.style.display = 'flex';
+      } else {
+        tutorialNextBtn.style.display = 'block';
+        tutorialFinishContainer.style.display = 'none';
+      }
+    }
+
+    function startTutorial() {
+      tutorialStep = 0;
+      tutorialActive = true;
+      paused = true;
+      tutorialOverlay.classList.add('visible');
+      showTutorialStep(tutorialStep);
+    }
+
+    function nextTutorialStep() {
+      tutorialStep++;
+      showTutorialStep(tutorialStep);
+    }
+
+    function finishTutorial() {
+      if (tutorialSkipCheckbox.checked) {
+        localStorage.setItem(TUTORIAL_KEY, 'true');
+      }
+      tutorialOverlay.classList.remove('visible');
+      tutorialHighlight.style.display = 'none';
+      tutorialText.style.display = 'none';
+      tutorialActive = false;
+      paused = false;
+    }
+
+    // Tutorial event listeners
+    tutorialNextBtn.addEventListener('click', nextTutorialStep);
+    tutorialFinishBtn.addEventListener('click', finishTutorial);
 
     // ===== Ranking System =====
     const RANKING_KEY = 'candyDrops_ranking';
