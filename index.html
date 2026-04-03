@@ -5759,12 +5759,13 @@
         tutorialArrow.style.left = 'auto';
         // Show home screen add image
         tutorialHomeImg.style.display = 'block';
-        // Show text below image
+        // Show text ABOVE image, to the right side
         tutorialText.textContent = stepData.text;
         tutorialText.style.display = 'block';
-        tutorialText.style.left = '50%';
-        tutorialText.style.top = 'calc(50% + 28vh)';
-        tutorialText.style.transform = 'translateX(-50%)';
+        tutorialText.style.left = 'auto';
+        tutorialText.style.right = '20px';
+        tutorialText.style.top = '25vh';
+        tutorialText.style.transform = 'none';
         // Show finish buttons
         tutorialNextBtn.style.display = 'none';
         tutorialFinishContainer.style.display = 'flex';
