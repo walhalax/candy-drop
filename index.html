@@ -1464,7 +1464,7 @@
       text-align: center;
       box-shadow: 0 4px 20px rgba(255, 105, 180, 0.4);
       z-index: 502;
-      max-width: 150px;
+      max-width: 90%;
       line-height: 1.4;
     }
     .tutorial-text::before {
@@ -5778,6 +5778,7 @@
       tutorialArrow.style.display = 'none';
       tutorialHomeImg.style.display = 'none';
       tutorialText.style.display = 'none';
+      tutorialText.style.maxWidth = '';
 
       // Special handling for home screen tutorial step
       if (stepData.highlight === 'home-screen') {
@@ -5795,6 +5796,7 @@
         tutorialText.style.display = 'block';
         tutorialText.style.left = '50%';
         tutorialText.style.top = '50%';
+        tutorialText.style.maxWidth = '280px';
         tutorialText.style.transform = 'translate(calc(-50% + 50px), calc(-50% - 400px))';
         // Show finish buttons
         tutorialNextBtn.style.display = 'none';
@@ -5882,6 +5884,7 @@
       tutorialHomeImg.style.display = 'none';
       tutorialHomeImg.style.transform = '';
       tutorialText.style.transform = 'none';
+      tutorialText.style.maxWidth = '';
       tutorialActive = false;
       paused = false;
     }
