@@ -1007,14 +1007,14 @@
     }
     /* 左サイドボタンコンテナ（フィールド外左側） */
     #left-side-buttons {
-      position: fixed;
-      left: 5px;
-      top: 160px;
+      position: relative;
+      top: 200px;
       display: flex;
       flex-direction: column;
       gap: 8px;
       z-index: 250;
       display: none;
+      padding: 0 2px;
     }
     #left-side-buttons.visible {
       display: flex;
@@ -1403,7 +1403,7 @@
       border: none;
       border-radius: 0 8px 8px 0;
       cursor: pointer;
-      z-index: 950;
+      z-index: 9999;
       display: none;
       align-items: center;
       justify-content: center;
@@ -1414,22 +1414,24 @@
       display: flex;
     }
 
-    /* Left drawer - base styling */
+    /* Left drawer - box type with top/bottom cutouts */
     .left-drawer {
       position: fixed;
       left: 0;
-      top: 0;
-      height: 100%;
+      top: 100px;
+      height: auto;
+      bottom: 100px;
       width: 140px;
-      background: transparent;
+      background: rgba(255,240,245,0.95);
+      border-radius: 0 16px 16px 0;
       transform: translateX(-100%);
       transition: transform 0.3s ease;
-      z-index: 950;
+      z-index: 9998;
       box-shadow: 2px 0 15px rgba(255,105,180,0.3);
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
-      padding-top: env(safe-area-inset-top);
+      padding: 10px 8px;
+      overflow: hidden;
     }
 
     .left-drawer.open {
