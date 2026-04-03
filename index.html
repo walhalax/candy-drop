@@ -1518,6 +1518,9 @@
       border-radius: 30px;
       cursor: pointer;
       box-shadow: 0 6px 25px rgba(255, 105, 180, 0.5);
+      width: 100%;
+      max-width: 500px;
+      white-space: nowrap;
     }
     #tutorial-skip-label {
       font-size: 20px;
@@ -5782,16 +5785,16 @@
         tutorialArrow.style.display = 'block';
         tutorialArrow.style.right = '110px';
         tutorialArrow.style.left = 'auto';
-        // Show home screen add image (1.3x larger)
+        // Show home screen add image (1.1x larger, moved up 50px)
         tutorialHomeImg.style.display = 'block';
-        tutorialHomeImg.style.transform = 'translate(-50%, -50%) scale(1.3)';
-        tutorialHomeImg.style.top = '50%';
+        tutorialHomeImg.style.transform = 'translate(-50%, -50%) scale(1.1)';
+        tutorialHomeImg.style.top = 'calc(50% - 50px)';
         tutorialHomeImg.style.left = '50%';
-        // Show text BELOW arrow
+        // Show text BELOW arrow (moved up 350px from original)
         tutorialText.textContent = stepData.text;
         tutorialText.style.display = 'block';
         tutorialText.style.left = '50%';
-        tutorialText.style.top = '20vh';
+        tutorialText.style.top = 'calc(20vh - 350px)';
         tutorialText.style.transform = 'translateX(-50%)';
         // Show finish buttons
         tutorialNextBtn.style.display = 'none';
@@ -5813,11 +5816,11 @@
       tutorialHighlight.style.top = (rect.top - padding) + 'px';
       tutorialHighlight.style.width = (rect.width + padding * 2) + 'px';
       tutorialHighlight.style.height = (rect.height + padding * 2) + 'px';
-      // Position text ABOVE the highlight (for controller steps) - 100px above
+      // Position text ABOVE the highlight (for controller steps) - 150px above
       tutorialText.textContent = stepData.text;
       tutorialText.style.display = 'block';
       tutorialText.style.left = Math.max(10, rect.left + rect.width / 2 - 150) + 'px';
-      tutorialText.style.top = (rect.top - 100) + 'px';
+      tutorialText.style.top = (rect.top - 150) + 'px';
       tutorialText.style.transform = 'none';
       // Show/hide buttons based on whether it's the last step
       if (stepData.isLast) {
