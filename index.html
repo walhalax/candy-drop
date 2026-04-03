@@ -2169,9 +2169,16 @@
         this.loadMuteState();
       }
 
-      // Select and set random BGM
+      // Select and set random BGM (candy-drops-bgm has 1.5x probability)
       selectRandomBgm() {
-        const bgmFiles = ['www/bgm/candy-drops-bgm.mp3', 'www/bgm/candy_afternoon.mp3', 'www/bgm/candy-8bit.mp3', 'www/bgm/candy-idm.mp3', 'www/bgm/drop-man.mp3'];
+        // Weighted array: candy-drops-bgm appears twice for 1.5x probability
+        const bgmFiles = [
+          'www/bgm/candy-drops-bgm.mp3', 'www/bgm/candy-drops-bgm.mp3',
+          'www/bgm/candy_afternoon.mp3',
+          'www/bgm/candy-8bit.mp3',
+          'www/bgm/candy-idm.mp3',
+          'www/bgm/drop-man.mp3'
+        ];
         const randomBgm = bgmFiles[Math.floor(Math.random() * bgmFiles.length)];
         console.log('selectRandomBgm: setting src to', randomBgm);
         if (this.bgmAudio) {
